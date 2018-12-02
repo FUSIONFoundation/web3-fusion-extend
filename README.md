@@ -79,7 +79,7 @@ We'd greatly appreciate any [contribution](/CONTRIBUTING.md) you make.
 
 Documentation
 
- - [Overivew](/docs/README.md)
+ - [Overview](/docs/README.md)
  - [fsn](/docs/FSN.md)
  - [fsntx](/docs/FSNTX.md)
  - [Constants](/docs/FSNCONSTANTS.md)
