@@ -29,7 +29,7 @@ The Fusion protocol introduces quantumSwaps which are compposed of three functio
 
 To get started with the web3-fusion-extend package
 
-## Installtion
+## Installation
 
 ```bash
 npm install web3-fusion-extend
