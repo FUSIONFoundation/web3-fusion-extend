@@ -5,9 +5,7 @@
 This is the Ethereum compatible [JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
 which implements the [Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) spec. It's available on npm as a node module, for Bower and component as embeddable scripts, and as a meteor.js package.
 
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![dependency status][dep-image]][dep-url] [![dev dependency status][dep-dev-image]][dep-dev-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Stories in Ready][waffle-image]][waffle-url]
-
-<!-- [![browser support](https://ci.testling.com/ethereum/ethereum.js.png)](https://ci.testling.com/ethereum/ethereum.js) -->
+[![NPM version][npm-image]][npm-url] 
 
 You need to run a local Ethereum node to use this library.
 
@@ -71,11 +69,13 @@ var coinbase = web3.eth.coinbase;
 var balance = web3.eth.getBalance(coinbase);
 ```
 
-You can find more examples in the [`example`](https://github.com/ethereum/web3.js/tree/master/example) directory.
+You can find more examples in the [`test`](https://github.com/FusionFoundation//web3-fusion-extend/tree/master/example) directory.
 
 
-```
 ## Contribute!
+
+We'd greatly appreciate any [contribution](/CONTRIBUTING.md) you make.
+
 
 ### Requirements
 
