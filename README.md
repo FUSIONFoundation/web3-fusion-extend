@@ -77,9 +77,9 @@ We'd greatly appreciate any [contribution](/CONTRIBUTING.md) you make.
 
 ## Documentation
 
-Documentation can be found at [read the docs][docs]
+Documentation
 
- - [Overivew] (docs/oveview.)
+ - [Overivew] (/docs/README.md)
 
 
 ### Requirements
