@@ -9,7 +9,7 @@ It's available on npm as a node module.
 
 You need to run a local Ethereum node to use this library.
 
-[Documentation](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+[Documentation](./docs/README.md)
 
 ## Table of Contents
 
