@@ -79,7 +79,7 @@ We'd greatly appreciate any [contribution](/CONTRIBUTING.md) you make.
 
 Documentation
 
- - [Overivew] (/docs/README.md)
+ - [Overivew](/docs/README.md)
 
 
 ### Requirements
