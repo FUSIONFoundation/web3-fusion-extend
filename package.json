@@ -1,0 +1,25 @@
+{
+  "name": "web3-fusion-extend",
+  "version": "1.0.0",
+  "description": "A web3 layer with functions for FUSON's protocol",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/getAllBalances.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FUSIONFoundation/web3-fusion-extend.git"
+  },
+  "keywords": [
+    "Fusion",
+    "web3",
+    "quantumswap",
+    "assets"
+  ],
+  "author": "Fusion Foundation",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FUSIONFoundation/web3-fusion-extend/issues"
+  },
+  "homepage": "https://github.com/FUSIONFoundation/web3-fusion-extend#readme"
+}
