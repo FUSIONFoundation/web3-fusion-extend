@@ -1,9 +1,9 @@
 # Fusion JavaScript API
 
-[![Join the chat at https://gitter.im/ethereum/web3.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/web3.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+This package extends the Ethereum compatible [JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+which implements the [Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) spec to support the Fusion protocol.
 
-This is the Ethereum compatible [JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
-which implements the [Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) spec. It's available on npm as a node module, for Bower and component as embeddable scripts, and as a meteor.js package.
+It's available on npm as a node module.
 
 [![NPM version][npm-image]][npm-url] 
 
@@ -39,42 +39,47 @@ yarn add web3-fusion-extend
 
 ## Usage
 
-Use the `web3` object directly from the global namespace:
+Create a web3 object as your normally would and then call web3FusionExtend with that object.
+web3 will then have two additional interfaces (fsn and fsntx)
 
-```js
-console.log(web3); // {eth: .., shh: ...} // It's here!
+```
+    web3 = new Web3(provider);
+    web3 = web3FusionExtend.extend(web3)
+    console.log(web3.fsn.consts.FSNToken);
 ```
 
-Set a provider (`HttpProvider`):
-
 ```js
-if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider);
-} else {
-  // Set the provider you want from Web3.providers
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-}
-```
-
-Set a provider (`HttpProvider` using [HTTP Basic Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)):
-
-```js
-web3.setProvider(new web3.providers.HttpProvider('http://' + BasicAuthUsername + ':' + BasicAuthPassword + '@localhost:8545'));
+console.log(web3); // {fsn: .., fsntx: ...} // It's here!
 ```
 
 There you go, now you can use it:
 
 ```js
-var coinbase = web3.eth.coinbase;
 var balance = web3.eth.getBalance(coinbase);
+   web3.fsn
+        .getAllBalances( web3.eth.coinbase ) // fsn supports multiple assets and balances on an address
+        .then( balances => {
+          console.log( balances )
+          assert(  balances[web3.fsn.consts.FSNToken] , "there should be a balance for fusion tokens always"  )
+          done();
+        })
+        .catch(err => {
+          done(err);
+        });
 ```
 
-You can find more examples in the [`test`](https://github.com/FusionFoundation//web3-fusion-extend/tree/master/example) directory.
+You can find more examples in the [`test`](https://github.com/FusionFoundation//web3-fusion-extend/tree/master/test) directory.
 
 
 ## Contribute!
 
 We'd greatly appreciate any [contribution](/CONTRIBUTING.md) you make.
+
+## Documentation
+
+Documentation can be found at [read the docs][docs]
+
+ - [Overivew] (docs/oveview.)
 
 
 ### Requirements
