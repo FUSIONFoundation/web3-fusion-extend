@@ -7,7 +7,7 @@
     "lib": "./lib"
   },
   "scripts": {
-    "test": "mocha test/getAllBalances.js"
+    "test": "./node_modules/.bin/mocha --exit test/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/FUSIONFoundation/web3-fusion-extend/issues"
   },
-  "homepage": "https://github.com/FUSIONFoundation/web3-fusion-extend#readme"
+  "homepage": "https://github.com/FUSIONFoundation/web3-fusion-extend#readme",
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "web3": "^1.0.0-beta.36"
+  },
+  "dependencies": {}
 }

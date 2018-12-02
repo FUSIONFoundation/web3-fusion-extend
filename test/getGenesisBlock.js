@@ -1,6 +1,6 @@
 var assert = require("assert");
 var Web3 = require("web3");
-var web3FusionExtend = require("../web3FusionExtend");
+var web3FusionExtend = require("../index.js");
 
 var web3;
 var provider;

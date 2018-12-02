@@ -1,6 +1,6 @@
 var assert = require("assert");
 var Web3 = require("web3");
-var web3FusionExtend = require("../web3FusionExtend");
+var web3FusionExtend = require("../index.js");
 
 // CONNECT_STRING="ws://3.16.110.25:9001" WALLET_ADDRESS="0x4A5a7Aa4130e407d3708dE56db9000F059200C62" ./node_modules/mocha/bin/mocha --exit ./src/api/test/getAllBalances.js
 
