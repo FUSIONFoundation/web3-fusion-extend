@@ -115,5 +115,5 @@ npm test
 [LGPL-3.0+](LICENSE.md) © 2015 Contributors
 
 
-[npm-image]: https://badge.fury.io/js/web3.svg
+[npm-image]:https://badge.fury.io/js/web3-fusion-extend.svg
 [npm-url]: https://npmjs.org/package/web3-fusion-extend
