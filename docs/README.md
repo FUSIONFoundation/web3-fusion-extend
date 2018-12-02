@@ -10,5 +10,5 @@ as well as providing a :ref:`API reference documentation <#id1>` with examples.
 
 
  - [fsn](./FSN.md)
- - [fsntx](./FSNTXT.md)
+ - [fsntx](./FSNTX.md)
  - [Constants](./FSNCONSTANTS.md)

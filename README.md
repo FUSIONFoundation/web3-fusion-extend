@@ -81,7 +81,7 @@ Documentation
 
  - [Overivew](/docs/README.md)
  - [fsn](/docs/FSN.md)
- - [fsntx](/docs/FSNTXT.md)
+ - [fsntx](/docs/FSNTX.md)
  - [Constants](/docs/FSNCONSTANTS.md)
 
 ### Requirements
