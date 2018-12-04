@@ -2,7 +2,11 @@ var assert = require("assert");
 var Web3 = require("web3");
 var web3FusionExtend = require("../index.js");
 
-// CONNECT_STRING="ws://3.16.110.25:9001" PASSPHRASE="123456" WALLET_ADDRESS="0x4A5a7Aa4130e407d3708dE56db9000F059200C62" ./node_modules/mocha/bin/mocha --exit ./src/api/test/createAsset.js
+/*  Remember to set your environment variables to run this test
+    e.g. CONNECT_STRING="ws://3.16.110.25:9001" PASSPHRASE="123456" WALLET_ADDRESS="0x4A5a7Aa4130e407d3708dE56db9000F059200C62" ./node_modules/mocha/bin/mocha --exit ./src/api/test/createAsset.js
+
+    Note: this tests run slower as a block needs to be written in order to get transaction receipt
+    */
 
 console.log("Wallet ==> " , process.env.WALLET_ADDRESS);
 console.log("Connect String ==> " , process.env.CONNECT_STRING);
@@ -45,7 +49,7 @@ describe("Create asset test", function() {
     );
   });
 
-  describe("connect to server and get first block", function() {
+  describe("connect to server and gen asset", function() {
     it("Connect to Server", function(done) {
       provider = new Web3.providers.WebsocketProvider(
         process.env.CONNECT_STRING
