@@ -25,7 +25,7 @@ describe("get all balances test", function() {
       );
   });
 
-  describe("connect to server and get first block", function() {
+  describe("connect to server and get balance", function() {
     it("Connect to Server", function(done) {
       provider = new Web3.providers.WebsocketProvider(
         process.env.CONNECT_STRING

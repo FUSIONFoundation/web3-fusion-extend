@@ -134,11 +134,12 @@ genAsset            generate a asset
     symbol          the symbol of asset
     decimals        the asset decimal digit
     total           the total number of the asset and the owner will be get same number asset
+    CanChange       whether asset can be incremented or decremented by the owner [optional]
     password        the account password
 
 ```
 fsn.genAsset({from:fsn.coinbase,name:"FusionTest",symbol:"FST",decimals:1,total:"0x200"},"123456")
-fsn.genAsset({from:"0x91db50f5c36ae7616009d4e94462dca4d4c7e833",name:"BretS",symbol:"BDS",decimals:1,total:"0x2000000000"},"123123123")
+fsn.genAsset({from:"0x91db50f5c36ae7616009d4e94462dca4d4c7e833",name:"JONESY",symbol:"JSY",decimals:1,total:"0x2000000000"},"123123123")
 ```
 
 genNotation         gen a notation for a account
@@ -233,7 +234,7 @@ getTimeLockBalance  like name
     blockNumber     default now block number 
 
 ```
-fsn.getTimeLockBalance("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c")
+fsn.getTimeLockBalance("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","0x9c48c796cb0bed51a14291bc8cc56ed7b5c")
 ```
 
 makeSwap            create a quantum swap
@@ -271,4 +272,18 @@ fsn.takeSwap({from:fsn.coinbase,SwapID:"0xffffffffffffffffffffffffffffffffffffff
 ```
 
 
+```
+  web3.fsn.getHexDate = function( d ) {
+        return "0x" + (( new Date(d)).getTime() / 1000).toString(16)
+    };
+
+    web3.fsn.hex2a = function( hexData ) {
+        hexData = hexData.replace( "0x", "" )
+        let hex = hexData.toString();//force conversion
+        let str = '';
+        for (let i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    }
+```
 
