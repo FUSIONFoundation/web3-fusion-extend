@@ -82,7 +82,7 @@ describe("Create asset test", function() {
     });
 
     it("Generate a new asset", function(done) {
-      this.timeout(10000);
+      this.timeout(16000);
       web3.fsn
         .genAsset(
           {
@@ -125,7 +125,7 @@ describe("Create asset test", function() {
     });
 
     it("increment token supply and add to existing account", function(done) {
-      this.timeout(10000);
+      this.timeout(16000);
       web3.fsn
         .incAsset(
           {
