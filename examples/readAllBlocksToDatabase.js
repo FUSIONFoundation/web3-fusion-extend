@@ -25,7 +25,11 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  numberOfTransactions int,\n" +
-      "  PRIMARY KEY (hash)\n" +
+      "  b json,\n" + 
+      "  PRIMARY KEY (hash),\n" +
+      "  INDEX `recCreateted` (`recCreated`),\n" +
+      "  INDEX `timestamp` (`timeStamp`),\n" +
+      "  INDEX `numberOfTransactions` (`numberOfTransactions`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   },
   {
@@ -36,7 +40,20 @@ let buildTheSystem = [
       "  height BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-      "  PRIMARY KEY (hash)\n" +
+      "  t json,\n" + 
+      "  PRIMARY KEY (hash),\n" +
+      "  INDEX `recCreateted` (`recCreated`),\n" +
+      "  INDEX `height` (`height`)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+  },
+  {
+    txt: "Build Info Table",
+    sql:
+      "CREATE TABLE IF NOT EXISTS info (\n" +
+      "  lastheightProcessed BIGINT NOT NULL,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   }
 ];
@@ -49,15 +66,19 @@ function createTables(resolve, reject) {
     .query(buildTheSystem[buildIndex].sql)
     .then((results, fields) => {
       buildIndex += 1;
+      debugger
       if (buildIndex === buildTheSystem.length) {
         console.log("All done building DB");
         resolve(true);
       } else {
-        process.nextTick(createTables);
+        setTimeout( ()=> {
+            createTables( resolve, reject )
+        }, 10 )
       }
     })
     .catch(err => {
-      console.log("ERROR: " + buildTheSystem[buildIndex].txt);
+      debugger
+      console.log("ERROR: " + buildTheSystem[buildIndex].txt, err );
       reject(err);
     });
 }
