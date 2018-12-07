@@ -143,13 +143,61 @@ keepSQLAlive();
 
 let lastBlock = 0;
 
+function queryAddTagsForInsert( q, p ) {
+  for ( let i = 0 ; i < p.length ; i++ ) {
+      if ( i > 0 ) {
+        q += ",?"
+      } else {
+        q += "?"
+      }
+  }
+  q += ")"
+  return q;
+}
+
 // setup for database writing
 //
 function logBlock(block) {
-  _pool.getConnection().then( (conn)=>{
 
+  return _pool.getConnection().then( (conn)=>{
+
+    let query = 'Insert into blocks Values('
+    let now = new Date()
+
+    // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+    // "  height BIGINT NOT NULL UNIQUE,\n" +
+    // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+    // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+    // "  timeStamp BIGINT UNSIGNED,\n" +
+    // "  numberOfTransactions int,\n" +
+    // "  block json,\n" + 
+    let params = [ block.hash, 
+      block.number, 
+      now , 
+      now,
+      block.timestamp,
+      block.transactions.length,
+      JSON.stringify( block )
+    ]
+
+    query = queryAddTagsForInsert(query,params);
+
+    conn.query( query, params ).then( (okPacket) => {
+
+      return okPacket.affectedRows === 1
+    })
+    .catch( (err)=> {
+
+        if ( err.code === 'ER_DUP_ENTRY' ) {
+          // block was already written
+          // normal when we restart scan
+          return true
+        }
+        console.log("Block log error " , err )
+        throw err
+    })
     .finally(() => {
-      connection.release()
+      conn.release()
     })
   })
 
@@ -201,25 +249,39 @@ function logTransaction(transactions, index, resolve, reject) {
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
+    setTimeout(() => {
+      resumeBlockScan();
+    }, 2000);
     return;
   }
   if ( !_isDBConnected ) { 
     console.log( "Database is not connected yet ")
+    setTimeout(() => {
+      resumeBlockScan();
+    }, 2000);
     return
   }
 
   return web3.eth
     .getBlock(lastBlock)
     .then(block => {
-      return logBlock(block).then(ret => {
-        return logTransactions(block).then(ret => {
-          console.log(lastBlock, block);
-          lastBlock += 1;
-          setTimeout(() => {
-            resumeBlockScan();
-          }, 10);
+      if ( block ) {
+        return logBlock(block).then(ret => {
+          return logTransactions(block).then(ret => {
+            console.log(lastBlock, block);
+            lastBlock += 1;
+            setTimeout(() => {
+              resumeBlockScan();
+            }, 10);
+          });
         });
-      });
+      } else {
+        // wait for block to update
+        console.log( "Waiting for new block..." + (new Date()) )
+        setTimeout(() => {
+          resumeBlockScan();
+        }, 15000 );
+      }
     })
     .catch(err => {
       console.log("error talking to server, try again ", err);
