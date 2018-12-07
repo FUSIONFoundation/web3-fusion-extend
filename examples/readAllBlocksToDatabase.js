@@ -46,6 +46,7 @@ let buildTheSystem = [
       "  fromAddress VARCHAR(68),\n" +
       "  toAddress VARCHAR(68),\n" +
       "  fusionCommand VARCHAR(68),\n" +
+      "  data json,\n"+
       "  transaction json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `height` (`height`),\n" +
@@ -202,7 +203,7 @@ function logBlock(block) {
     // "  numberOfTransactions int,\n" +
     // "  block json,\n" +
     let params = [
-      block.hash,
+      block.hash.toLowerCase(),
       block.number,
       now,
       now,
@@ -213,7 +214,7 @@ function logBlock(block) {
 
     query = queryAddTagsForInsert(query, params);
 
-    conn
+    return conn
       .query(query, params)
       .then(okPacket => {
         return okPacket.affectedRows === 1;
@@ -230,11 +231,6 @@ function logBlock(block) {
       .finally(() => {
         conn.release();
       });
-  });
-
-  return new Promise((resolve, reject) => {
-    console.log(block);
-    resolve(true);
   });
 }
 
@@ -310,10 +306,10 @@ function logTransaction(transactions, index, resolve, reject) {
     retturn;
   }
 
-  web3.eth
+  return web3.eth
     .getTransaction(transactions[index])
     .then(transaction => {
-      web3.eth.getTransactionReceipt(transactions[index]).then(receipt => {
+      return web3.eth.getTransactionReceipt(transactions[index]).then(receipt => {
         return getTransactionLog(transaction).then(log => {
           console.log("transaction => ", receipt, transaction, log);
           return _pool.getConnection().then(conn => {
@@ -325,27 +321,41 @@ function logTransaction(transactions, index, resolve, reject) {
             let query = "Insert into transactions Values(";
             let now = new Date();
             let fusionCommand;
+            let logData = null;
+
+            if ( receipt.logs.length ) {
+
+              try {
+                logData = JSON.stringify( JSON.parse(
+                  web3.fsn.hex2a(receipt.logs[0].data) )
+                );
+              } catch ( e ) {
+                logData = null
+              }
+            }
+
+            if ( !logData && receipt.logs[0].data ) {
+              try {
+                  logData = JSON.stringify( { data : receipt.logs[0].data  })
+              }
+              catch (e) {
+                logData = null
+              }
+            }
+
+            transaction.to = transaction.to.toLowerCase()
+            transaction.from = transaction.from.toLowerCase()
 
             if (transaction.topics) {
-              let topic = parseInt(result.topics[0].substr(2));
-              if (transaction.fromAddress === web3.fsn.consts.FSNCallAddress) {
-                if (
-                  topic <
-                  web3.fsn.consts.FSNCallAddress_Topic_To_Function.length
-                ) {
+              let topic = parseInt(transaction.topics[0].substr(2));
+              if (transaction.to === web3.fsn.consts.FSNCallAddress || transaction.from === web3.fsn.consts.FSNCallAddress) {
                   fusionCommand =
                     web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
-                }
               } else if (
-                transaction.fromAddress === web3.fsn.consts.TicketLogAddress
+                transaction.to === web3.fsn.consts.TicketLogAddress || transaction.from === web3.fsn.consts.TicketLogAddress
               ) {
-                if (
-                  topic <
-                  web3.fsn.consts.TicketLogAddress_Topic_To_Function.length
-                ) {
                   fusionCommand =
                     web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
-                }
               }
             }
 
@@ -356,24 +366,28 @@ function logTransaction(transactions, index, resolve, reject) {
             // "  fromAddress VARCHAR(68),\n" +
             // "  toAddress VARCHAR(68),\n" +
             // "  fusionCommand VARCHAR(68),\n" +
+            // "  data json,\n"+
             // "  transaction json,\n" +
             let params = [
-              transaction.hash,
+              transaction.hash.toLowerCase(),
               transaction.blockNumber,
               now,
               now,
               transaction.from,
               transaction.to,
               fusionCommand,
+              logData,
               JSON.stringify(transaction)
             ];
 
             query = queryAddTagsForInsert(query, params);
 
-            conn
+            return conn
               .query(query, params)
               .then(okPacket => {
-                return okPacket.affectedRows === 1;
+                // if ( okPacket.affectedRows === 1 ) {
+                index += 1;
+                logTransaction(transactions, index, resolve, reject);
               })
               .catch(err => {
                 if (err.code === "ER_DUP_ENTRY") {
@@ -382,13 +396,11 @@ function logTransaction(transactions, index, resolve, reject) {
                   return true;
                 }
                 console.log("transaction log error ", err);
-                throw err;
+                reject( err );
               })
               .finally(() => {
                 conn.release();
               });
-            index += 1;
-            logTransaction(transactions, index, resolve, reject);
           });
         });
       });
