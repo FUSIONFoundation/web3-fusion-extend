@@ -14,6 +14,9 @@ var web3;
 var _pool;
 var _masterConnection;
 
+
+const INFO_ID = "INFO_ID"
+
 let buildTheSystem = [
   {
     txt: "Build Blocks",
@@ -25,7 +28,7 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  numberOfTransactions int,\n" +
-      "  block json,\n" + 
+      "  block json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
@@ -41,24 +44,32 @@ let buildTheSystem = [
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  fromAddress VARCHAR(68),\n" +
+      "  toAddress VARCHAR(68),\n" +
       "  fusionCommand VARCHAR(68),\n" +
-      "  transaction json,\n" + 
+      "  transaction json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `height` (`height`),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   },
   {
     txt: "Build Info Table",
     sql:
+      "Begin;\n"+
       "CREATE TABLE IF NOT EXISTS info (\n" +
+      "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  lastheightProcessed BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"+
+      "INSERT INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n"+
+      "VALUES( 'INFO_ID', -1, NOW(), NOW()  )\n"+
+      "ON DUPLICATE KEY UPDATE recEdited = NOW();\n"+
+      "Commit;\n"
   }
 ];
 
@@ -74,13 +85,13 @@ function createTables(resolve, reject) {
         console.log("All done building DB tables");
         resolve(true);
       } else {
-        setTimeout( ()=> {
-            createTables( resolve, reject )
-        }, 10 )
+        setTimeout(() => {
+          createTables(resolve, reject);
+        }, 10);
       }
     })
     .catch(err => {
-      console.log("ERROR: " + buildTheSystem[buildIndex].txt, err );
+      console.log("ERROR: " + buildTheSystem[buildIndex].txt, err);
       reject(err);
     });
 }
@@ -94,19 +105,28 @@ function keepSQLAlive() {
   _pool
     .getConnection()
     .then(conn => {
-          _masterConnection = conn;
-          return new Promise( ( resolve , reject) => {
-            createTables(resolve,reject)
-          }).then( (ret)=>{
-            _isDBConnected = true;
-            console.log("Databsase connected!"); 
-            return { success: true };
-          })
+      _masterConnection = conn;
+      return new Promise((resolve, reject) => {
+        createTables(resolve, reject);
+      }).then(ret => {
+        _masterConnection.query( "select * from info where _id = '"+INFO_ID+"';")
+        .then( (rows)=> {
+          lastBlock = rows[0].lastheightProcessed + 1;
+          // console.log(rows)
+          _isDBConnected = true;
+          console.log("Databsase connected!");
+          return { success: true };
+        })
+      });
     })
     .catch(err => {
-      console.error("connect to database failed, trying again in five seconds", err);
-      throw err;
-      setTimeout( ()=> { keepSQLAlive() }, 50000 )
+      console.error(
+        "connect to database failed, trying again in five seconds",
+        err
+      );
+      setTimeout(() => {
+        keepSQLAlive();
+      }, 50000);
     });
 }
 
@@ -143,26 +163,36 @@ keepSQLAlive();
 
 let lastBlock = 0;
 
-function queryAddTagsForInsert( q, p ) {
-  for ( let i = 0 ; i < p.length ; i++ ) {
-      if ( i > 0 ) {
-        q += ",?"
-      } else {
-        q += "?"
-      }
+function queryAddTagsForInsert(q, p) {
+  for (let i = 0; i < p.length; i++) {
+    if (i > 0) {
+      q += ",?";
+    } else {
+      q += "?";
+    }
   }
-  q += ")"
+  q += ")";
   return q;
+}
+
+function updateLastBlockProcessed() {
+  return _pool.getConnection().then(conn => {
+    conn.query( "update info set lastheightProcessed="+(lastBlock+1)+" where _id = '"+INFO_ID+"';")
+  .then( (rows)=> {
+    return { success: true };
+  })
+  .finally( ()=> {
+    conn.release();
+  })
+})
 }
 
 // setup for database writing
 //
 function logBlock(block) {
-
-  return _pool.getConnection().then( (conn)=>{
-
-    let query = 'Insert into blocks Values('
-    let now = new Date()
+  return _pool.getConnection().then(conn => {
+    let query = "Insert into blocks Values(";
+    let now = new Date();
 
     // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
     // "  height BIGINT NOT NULL UNIQUE,\n" +
@@ -170,38 +200,38 @@ function logBlock(block) {
     // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
     // "  timeStamp BIGINT UNSIGNED,\n" +
     // "  numberOfTransactions int,\n" +
-    // "  block json,\n" + 
-    let params = [ block.hash, 
-      block.number, 
-      now , 
+    // "  block json,\n" +
+    let params = [
+      block.hash,
+      block.number,
+      now,
       now,
       block.timestamp,
       block.transactions.length,
-      JSON.stringify( block )
-    ]
+      JSON.stringify(block)
+    ];
 
-    query = queryAddTagsForInsert(query,params);
+    query = queryAddTagsForInsert(query, params);
 
-    conn.query( query, params ).then( (okPacket) => {
-
-      return okPacket.affectedRows === 1
-    })
-    .catch( (err)=> {
-
-        if ( err.code === 'ER_DUP_ENTRY' ) {
+    conn
+      .query(query, params)
+      .then(okPacket => {
+        return okPacket.affectedRows === 1;
+      })
+      .catch(err => {
+        if (err.code === "ER_DUP_ENTRY") {
           // block was already written
           // normal when we restart scan
-          return true
+          return true;
         }
-        console.log("Block log error " , err )
-        throw err
-    })
-    .finally(() => {
-      conn.release()
-    })
-  })
+        console.log("Block log error ", err);
+        throw err;
+      })
+      .finally(() => {
+        conn.release();
+      });
+  });
 
-  
   return new Promise((resolve, reject) => {
     console.log(block);
     resolve(true);
@@ -221,6 +251,55 @@ function logTransactions(block) {
   });
 }
 
+let gtl = { blockNumber: 0 };
+
+function getTransactionLog(transaction) {
+  // if a fusion command go and get the log for this transaction
+  if (transaction.blockNumber != gtl.blockNumber) {
+    // reset gtl
+    gtl = { blockNumber: transaction.blockNumber };
+  }
+  if (gtl[transaction.hash]) {
+    // we have this transaction already
+    return new Promise((resolve, reject) => {
+      return resolve(gtl[transaction.hash]);
+    });
+  }
+  let add = transaction.to ?  transaction.to.toLowerCase() : null
+  let from = transaction.from
+  if (
+    add  === web3.fsn.consts.FSNCallAddress ||
+    add  === web3.fsn.consts.TicketLogAddress || 
+    from === web3.fsn.consts.FSNCallAddress ||
+    from === web3.fsn.consts.TicketLogAddress
+  ) {
+    // we will need to go and get the logs for this item
+    return web3.eth
+      .getPastLogs({
+        address: [
+          web3.fsn.consts.FSNCallAddress,
+          web3.fsn.consts.TicketLogAddress
+        ],
+        fromBlock: transaction.blockNumber,
+        toBlock: transaction.blockNumber
+      })
+      .then(logs => {
+        if (logs) {
+          // save cache of all logs from this block for this adddress
+          for (let log of logs) {
+            gtl[log.transactionHash] = log;
+          }
+        }
+        return gtl[transaction.hash];
+      });
+  } else {
+    // return a blank transaction
+    return new Promise((resolve, reject) => {
+      return resolve(null);
+    });
+  }
+}
+
 function logTransaction(transactions, index, resolve, reject) {
   if (transactions.length === index) {
     resolve(true);
@@ -235,9 +314,83 @@ function logTransaction(transactions, index, resolve, reject) {
     .getTransaction(transactions[index])
     .then(transaction => {
       web3.eth.getTransactionReceipt(transactions[index]).then(receipt => {
-        console.log("transaction => ", receipt, transaction);
-        index += 1;
-        logTransaction(transactions, index, resolve, reject);
+        return getTransactionLog(transaction).then(log => {
+          console.log("transaction => ", receipt, transaction, log);
+          return _pool.getConnection().then(conn => {
+            // merge receipt and transaction
+            //debugger
+            transaction.topics =
+              log && log.topics && log.topics.length > 0 ? log.topics : null;
+
+            let query = "Insert into transactions Values(";
+            let now = new Date();
+            let fusionCommand;
+
+            if (transaction.topics) {
+              let topic = parseInt(result.topics[0].substr(2));
+              if (transaction.fromAddress === web3.fsn.consts.FSNCallAddress) {
+                if (
+                  topic <
+                  web3.fsn.consts.FSNCallAddress_Topic_To_Function.length
+                ) {
+                  fusionCommand =
+                    web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
+                }
+              } else if (
+                transaction.fromAddress === web3.fsn.consts.TicketLogAddress
+              ) {
+                if (
+                  topic <
+                  web3.fsn.consts.TicketLogAddress_Topic_To_Function.length
+                ) {
+                  fusionCommand =
+                    web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
+                }
+              }
+            }
+
+            // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+            // "  height BIGINT NOT NULL,\n" +
+            // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+            // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+            // "  fromAddress VARCHAR(68),\n" +
+            // "  toAddress VARCHAR(68),\n" +
+            // "  fusionCommand VARCHAR(68),\n" +
+            // "  transaction json,\n" +
+            let params = [
+              transaction.hash,
+              transaction.blockNumber,
+              now,
+              now,
+              transaction.from,
+              transaction.to,
+              fusionCommand,
+              JSON.stringify(transaction)
+            ];
+
+            query = queryAddTagsForInsert(query, params);
+
+            conn
+              .query(query, params)
+              .then(okPacket => {
+                return okPacket.affectedRows === 1;
+              })
+              .catch(err => {
+                if (err.code === "ER_DUP_ENTRY") {
+                  // block was already written
+                  // normal when we restart scan
+                  return true;
+                }
+                console.log("transaction log error ", err);
+                throw err;
+              })
+              .finally(() => {
+                conn.release();
+              });
+            index += 1;
+            logTransaction(transactions, index, resolve, reject);
+          });
+        });
       });
     })
     .catch(err => {
@@ -254,33 +407,35 @@ function resumeBlockScan() {
     }, 2000);
     return;
   }
-  if ( !_isDBConnected ) { 
-    console.log( "Database is not connected yet ")
+  if (!_isDBConnected) {
+    console.log("Database is not connected yet ");
     setTimeout(() => {
       resumeBlockScan();
     }, 2000);
-    return
+    return;
   }
 
   return web3.eth
     .getBlock(lastBlock)
     .then(block => {
-      if ( block ) {
+      if (block) {
         return logBlock(block).then(ret => {
           return logTransactions(block).then(ret => {
             console.log(lastBlock, block);
-            lastBlock += 1;
-            setTimeout(() => {
-              resumeBlockScan();
-            }, 10);
+            return updateLastBlockProcessed().then( (ret)=> {
+              lastBlock += 1;
+              setTimeout(() => {
+                resumeBlockScan();
+              }, 10);
+            })
           });
         });
       } else {
         // wait for block to update
-        console.log( "Waiting for new block..." + (new Date()) )
+        console.log("Waiting for new block..." + new Date());
         setTimeout(() => {
           resumeBlockScan();
-        }, 15000 );
+        }, 15000);
       }
     })
     .catch(err => {
