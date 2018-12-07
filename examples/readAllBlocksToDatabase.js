@@ -25,9 +25,9 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  numberOfTransactions int,\n" +
-      "  b json,\n" + 
+      "  block json,\n" + 
       "  PRIMARY KEY (hash),\n" +
-      "  INDEX `recCreateted` (`recCreated`),\n" +
+      "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
       "  INDEX `numberOfTransactions` (`numberOfTransactions`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
@@ -40,10 +40,14 @@ let buildTheSystem = [
       "  height BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-      "  t json,\n" + 
+      "  fromAddress VARCHAR(68),\n" +
+      "  fusionCommand VARCHAR(68),\n" +
+      "  transaction json,\n" + 
       "  PRIMARY KEY (hash),\n" +
-      "  INDEX `recCreateted` (`recCreated`),\n" +
-      "  INDEX `height` (`height`)\n" +
+      "  INDEX `height` (`height`),\n" +
+      "  INDEX `recCreated` (`recCreated`),\n" +
+      "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `fusionCommand` (`fusionCommand`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   },
   {
@@ -66,9 +70,8 @@ function createTables(resolve, reject) {
     .query(buildTheSystem[buildIndex].sql)
     .then((results, fields) => {
       buildIndex += 1;
-      debugger
       if (buildIndex === buildTheSystem.length) {
-        console.log("All done building DB");
+        console.log("All done building DB tables");
         resolve(true);
       } else {
         setTimeout( ()=> {
@@ -77,13 +80,13 @@ function createTables(resolve, reject) {
       }
     })
     .catch(err => {
-      debugger
       console.log("ERROR: " + buildTheSystem[buildIndex].txt, err );
       reject(err);
     });
 }
 
 function keepSQLAlive() {
+  _isDBConnected = false;
   _pool = mysql.createPool(
     Object.assign({ multipleStatements: true }, dbConnect)
   );
@@ -101,8 +104,9 @@ function keepSQLAlive() {
           })
     })
     .catch(err => {
-      console.error("connect to database failed ", err);
+      console.error("connect to database failed, trying again in five seconds", err);
       throw err;
+      setTimeout( ()=> { keepSQLAlive() }, 50000 )
     });
 }
 
@@ -142,6 +146,14 @@ let lastBlock = 0;
 // setup for database writing
 //
 function logBlock(block) {
+  _pool.getConnection().then( (conn)=>{
+
+    .finally(() => {
+      connection.release()
+    })
+  })
+
+  
   return new Promise((resolve, reject) => {
     console.log(block);
     resolve(true);
@@ -190,6 +202,10 @@ function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
     return;
+  }
+  if ( !_isDBConnected ) { 
+    console.log( "Database is not connected yet ")
+    return
   }
 
   return web3.eth
