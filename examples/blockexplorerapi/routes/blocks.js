@@ -3,7 +3,7 @@ var router = express.Router();
 
 var { getConnection } = require("../dbapi/dbapi.js");
 
-/* GET users listing. */
+/* GET blocks listing. */
 // http://localhost:3000/blocks/30?sort=asc&page=200&size=50&field=timestamp
 // {"sort":"asc","page":"200","size":"50","field":"timestamp"}{"block":"30"}
 /*** examples

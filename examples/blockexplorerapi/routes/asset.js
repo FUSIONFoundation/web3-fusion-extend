@@ -3,16 +3,16 @@ var router = express.Router();
 
 var { getConnection } = require("../dbapi/dbapi.js");
 
-/* GET balance listing. */
-// http://localhost:3000/balance/
+/* GET assets listing. */
+// http://localhost:3000/assets/
 //
 /*** examples
  *
- *   http://localhost:3000/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
- *   http://localhost:3000/balances/all?page=0&size=2
+ *   http://localhost:3000/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
+ *   http://localhost:3000/assets/all?page=0&size=2
  *
  */
-router.get("/:account", function(req, res, next) {
+router.get("/:asset", function(req, res, next) {
   let page = req.query.page || 0;
   let size = req.query.size || 1;
 
@@ -28,10 +28,10 @@ router.get("/:account", function(req, res, next) {
     page = 0;
   }
 
-  if (req.params.account === "all") {
+  if (req.params.asset === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.currentBalance order by _id limit ?,?`, [
+        .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by timeStamp limit ?,?`, [
           page * size,
           size
         ])
@@ -45,8 +45,8 @@ router.get("/:account", function(req, res, next) {
   } else {
     getConnection().then(conn => {
       conn
-        .query("select * from currentBalance where _id = ?", [
-          req.params.account
+        .query("select * from transactions where fusionCommand = 'GenAssetFunc' and commandExtra = ? ", [
+          req.params.asset
         ])
         .then(rows => {
           res.send(rows);
