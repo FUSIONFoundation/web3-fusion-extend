@@ -10,6 +10,7 @@ var dbapi = require("./dbapi/dbapi.js")
 var indexRouter = require('./routes/index');
 var blocksRouter = require('./routes/blocks');
 var balanceRouter = require('./routes/balance');
+var transactionRouter = require('./routes/transactions');
 
 var app = express();
 
@@ -25,9 +26,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet({
   crossdomain: false
 }))
-app.use('/', indexRouter);
-app.use('/blocks', blocksRouter);
+app.use('/', indexRouter)
+app.use('/blocks', blocksRouter)
 app.use("/balance", balanceRouter )
+app.use("/transactions", transactionRouter )
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

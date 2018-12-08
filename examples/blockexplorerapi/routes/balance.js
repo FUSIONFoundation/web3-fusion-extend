@@ -5,30 +5,57 @@ var { getConnection } = require("../dbapi/dbapi.js");
 
 /* GET users listing. */
 // http://localhost:3000/balance/
-// {"sort":"asc","page":"200","size":"50","field":"timestamp"}{"block":"30"}
+//
 /*** examples
- * 
- *   http://localhost:3000/blocks/latest
- *   http://localhost:3000/blocks/300
  *
- *   http://localhost:3000/blocks/all?sort=asc&page=2&size=10&field=height
- * 
- *   fields can be:  [ timestamp, hash , numberOfTransactions, height ]
- * 
+ *   http://localhost:3000/balance/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
+ *   localhost:3000/balance/all?page=0&size=2
+ *
  */
 router.get("/:account", function(req, res, next) {
+  let page = req.query.page || 0;
+  let size = req.query.size || 1;
 
-    // else get one block
+  page = parseInt(page);
+  size = parseInt(size);
+
+  if (size > 100 || size < 1 || isNaN(size)) {
+    console.log("size ", size);
+    size = 100;
+  }
+
+  if (isNaN(page)) {
+    page = 0;
+  }
+
+  if (req.params.account === "all") {
     getConnection().then(conn => {
       conn
-        .query("select * from currentBalance where _id = ?", [req.params.account])
+        .query(`SELECT * FROM fusionblockdb.currentBalance order by _id limit ?,?`, [
+          page * size,
+          size
+        ])
         .then(rows => {
-          res.send(rows)
+          res.send(rows);
         })
         .finally(() => {
           conn.release();
         });
     });
-})
+  } else {
+    getConnection().then(conn => {
+      conn
+        .query("select * from currentBalance where _id = ?", [
+          req.params.account
+        ])
+        .then(rows => {
+          res.send(rows);
+        })
+        .finally(() => {
+          conn.release();
+        });
+    });
+  }
+});
 
 module.exports = router;
