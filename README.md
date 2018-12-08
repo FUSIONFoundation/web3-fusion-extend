@@ -71,8 +71,8 @@ var balance = web3.eth.getBalance(coinbase);
 You can find more examples in the [`test`](https://github.com/FusionFoundation//web3-fusion-extend/tree/master/test) directory.
 
 There is also a full block explorer api written as an example.
-
-- [BlockExplorerApi](/examples/blockexploreapi/README.md)
+         
+- [BlockExplorerApi](/examples/blockexplorerapi/README.md)
 
 
 ## Contribute!
