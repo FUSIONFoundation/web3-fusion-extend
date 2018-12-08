@@ -37,7 +37,7 @@ router.get("/:asset", function(req, res, next) {
           size
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
@@ -50,7 +50,7 @@ router.get("/:asset", function(req, res, next) {
           req.params.asset
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();

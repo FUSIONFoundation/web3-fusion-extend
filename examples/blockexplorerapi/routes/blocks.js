@@ -46,7 +46,7 @@ router.get("/:block", function(req, res, next) {
       conn
         .query(`SELECT * FROM fusionblockdb.blocks order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();
@@ -57,7 +57,7 @@ router.get("/:block", function(req, res, next) {
       conn
         .query("SELECT * FROM fusionblockdb.blocks order by height desc limit 1" )
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();
@@ -69,7 +69,7 @@ router.get("/:block", function(req, res, next) {
       conn
         .query("select * from blocks where height = ?", [parseInt(blockNumber)])
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();

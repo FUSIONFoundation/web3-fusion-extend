@@ -38,7 +38,7 @@ router.get("/:swap", function(req, res, next) {
           size
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
@@ -51,7 +51,7 @@ router.get("/:swap", function(req, res, next) {
           req.params.swap
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();

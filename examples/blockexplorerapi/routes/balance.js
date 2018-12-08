@@ -14,7 +14,7 @@ var { getConnection } = require("../dbapi/dbapi.js");
  */
 router.get("/:account", function(req, res, next) {
   let page = req.query.page || 0;
-  let size = req.query.size || 1;
+  let size = req.query.size || 100;
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
 
   page = parseInt(page);
@@ -32,12 +32,12 @@ router.get("/:account", function(req, res, next) {
   if (req.params.account === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.currentBalance order by _id ${sort} limit ?,?`, [
+        .query(`SELECT * FROM currentBalance order by _id ${sort} limit ?,?`, [
           page * size,
           size
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
@@ -50,7 +50,7 @@ router.get("/:account", function(req, res, next) {
           req.params.account
         ])
         .then(rows => {
-          res.send(rows);
+          res.json(rows);
         })
         .finally(() => {
           conn.release();

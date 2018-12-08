@@ -61,7 +61,7 @@ router.get("/:hash", function(req, res, next) {
       conn
         .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();
@@ -72,7 +72,7 @@ router.get("/:hash", function(req, res, next) {
       conn
         .query("SELECT * FROM fusionblockdb.transactions order by height, recCreated desc limit 1" )
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();
@@ -84,7 +84,7 @@ router.get("/:hash", function(req, res, next) {
       conn
         .query("select * from transactions where hash = ?", [hash])
         .then(rows => {
-          res.send(rows)
+          res.json(rows)
         })
         .finally(() => {
           conn.release();

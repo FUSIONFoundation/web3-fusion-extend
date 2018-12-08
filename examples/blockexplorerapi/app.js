@@ -66,4 +66,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+setTimeout( ()=> {
+  console.log( (new Date())  + " Port => " + app.get('port') )
+}, 5000 )
+
 module.exports = app;
