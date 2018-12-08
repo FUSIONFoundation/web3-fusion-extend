@@ -319,6 +319,7 @@ function getBalances( addrs, index, resolve, reject ) {
       return
     }
 
+   // debugger
     let address = addrs[index]
 
     if ( address ===  web3.fsn.consts.FSNCallAddress || address === web3.fsn.consts.TicketLogAddress ) {
@@ -326,7 +327,6 @@ function getBalances( addrs, index, resolve, reject ) {
     }
 
     let all
-
 
     console.log("GETTTING BALANCE " + address )
 
@@ -365,7 +365,7 @@ function logTransaction(transactions, index, resolve, reject) {
   if (transactions.length === index) {
     let keys = Object.keys( balancesToGet );
     if ( keys.length ) {
-      return getBalances( keys, index, resolve, reject )
+      return getBalances( keys, 0, resolve, reject )
     } else {
       resolve(true);
     }
