@@ -1,6 +1,6 @@
 var assert = require("assert");
 var Web3 = require("web3");
-var web3FusionExtend = require("../index.js");
+var web3FusionExtend = require("../../index.js");
 var mysql = require("promise-mysql");
 
 /*  Remember to set your environment variables to run this test
@@ -41,6 +41,7 @@ let buildTheSystem = [
       "CREATE TABLE IF NOT EXISTS transactions (\n" +
       "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  height BIGINT NOT NULL,\n" +
+      "  timeStamp BIGINT UNSIGNED,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  fromAddress VARCHAR(68),\n" +
@@ -53,6 +54,7 @@ let buildTheSystem = [
       "  INDEX `height` (`height`),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `timestamp` (`timeStamp`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
@@ -257,7 +259,7 @@ function logTransactions(block) {
 
   return new Promise((resolve, reject) => {
     console.log(block.transactions.length + " transactions ");
-    logTransaction(block.transactions, 0, resolve, reject);
+    logTransaction( block, block.transactions, 0, resolve, reject);
   });
 }
 
@@ -359,7 +361,7 @@ function getBalances( addrs, index, resolve, reject ) {
     })
 }
 
-function logTransaction(transactions, index, resolve, reject) {
+function logTransaction( block, transactions, index, resolve, reject) {
   if ( index === 0 ) {
     balancesToGet = {}
   }
@@ -451,6 +453,7 @@ function logTransaction(transactions, index, resolve, reject) {
             let params = [
               transaction.hash.toLowerCase(),
               transaction.blockNumber,
+              block.timestamp,
               now,
               now,
               transaction.from,
@@ -468,13 +471,13 @@ function logTransaction(transactions, index, resolve, reject) {
               .then(okPacket => {
                 // if ( okPacket.affectedRows === 1 ) {
                 index += 1;
-                logTransaction(transactions, index , resolve, reject);
+                logTransaction(block, transactions, index , resolve, reject);
               })
               .catch(err => {
                 if (err.code === "ER_DUP_ENTRY") {
                   // block was already written
                   // normal when we restart scan
-                  logTransaction(transactions, index + 1, resolve, reject);
+                  logTransaction(block, transactions, index + 1, resolve, reject);
                   return true;
                 }
                 console.log("transaction log error ", err);
