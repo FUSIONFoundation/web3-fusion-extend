@@ -14,8 +14,7 @@ var web3;
 var _pool;
 var _masterConnection;
 
-
-const INFO_ID = "INFO_ID"
+const INFO_ID = "INFO_ID";
 
 let buildTheSystem = [
   {
@@ -48,7 +47,7 @@ let buildTheSystem = [
       "  toAddress VARCHAR(68),\n" +
       "  fusionCommand VARCHAR(68),\n" +
       "  commandExtra VARCHAR(68),\n" +
-      "  data json,\n"+
+      "  data json,\n" +
       "  transaction json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `height` (`height`),\n" +
@@ -62,30 +61,30 @@ let buildTheSystem = [
   {
     txt: "Build Info Table",
     sql:
-      "Begin;\n"+
+      "Begin;\n" +
       "CREATE TABLE IF NOT EXISTS info (\n" +
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  lastheightProcessed BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"+
-      "INSERT INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n"+
-      "VALUES( 'INFO_ID', -1, NOW(), NOW()  )\n"+
-      "ON DUPLICATE KEY UPDATE recEdited = NOW();\n"+
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
+      "INSERT INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
+      "VALUES( 'INFO_ID', -1, NOW(), NOW()  )\n" +
+      "ON DUPLICATE KEY UPDATE recEdited = NOW();\n" +
       "Commit;\n"
   },
   {
     txt: "Build Current Balance Table",
     sql:
-      "Begin;\n"+
+      "Begin;\n" +
       "CREATE TABLE IF NOT EXISTS currentBalance (\n" +
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-      "  balanceInfo json,\n"+
+      "  balanceInfo json,\n" +
       "  PRIMARY KEY (_id)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"+
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
       "Commit;\n"
   }
 ];
@@ -126,14 +125,15 @@ function keepSQLAlive() {
       return new Promise((resolve, reject) => {
         createTables(resolve, reject);
       }).then(ret => {
-        _masterConnection.query( "select * from info where _id = '"+INFO_ID+"';")
-        .then( (rows)=> {
-          lastBlock = rows[0].lastheightProcessed + 1;
-          // console.log(rows)
-          _isDBConnected = true;
-          console.log("Databsase connected!");
-          return { success: true };
-        })
+        _masterConnection
+          .query("select * from info where _id = '" + INFO_ID + "';")
+          .then(rows => {
+            lastBlock = rows[0].lastheightProcessed + 1;
+            // console.log(rows)
+            _isDBConnected = true;
+            console.log("Databsase connected!");
+            return { success: true };
+          });
       });
     })
     .catch(err => {
@@ -194,14 +194,21 @@ function queryAddTagsForInsert(q, p) {
 
 function updateLastBlockProcessed() {
   return _pool.getConnection().then(conn => {
-    conn.query( "update info set lastheightProcessed="+(lastBlock+1)+" where _id = '"+INFO_ID+"';")
-  .then( (rows)=> {
-    return { success: true };
-  })
-  .finally( ()=> {
-    conn.release();
-  })
-})
+    conn
+      .query(
+        "update info set lastheightProcessed=" +
+          (lastBlock + 1) +
+          " where _id = '" +
+          INFO_ID +
+          "';"
+      )
+      .then(rows => {
+        return { success: true };
+      })
+      .finally(() => {
+        conn.release();
+      });
+  });
 }
 
 // setup for database writing
@@ -259,7 +266,7 @@ function logTransactions(block) {
 
   return new Promise((resolve, reject) => {
     console.log(block.transactions.length + " transactions ");
-    logTransaction( block, block.transactions, 0, resolve, reject);
+    logTransaction(block, block.transactions, 0, resolve, reject);
   });
 }
 
@@ -277,11 +284,11 @@ function getTransactionLog(transaction) {
       return resolve(gtl[transaction.hash]);
     });
   }
-  let add = transaction.to ?  transaction.to.toLowerCase() : null
-  let from = transaction.from
+  let add = transaction.to ? transaction.to.toLowerCase() : null;
+  let from = transaction.from;
   if (
-    add  === web3.fsn.consts.FSNCallAddress ||
-    add  === web3.fsn.consts.TicketLogAddress || 
+    add === web3.fsn.consts.FSNCallAddress ||
+    add === web3.fsn.consts.TicketLogAddress ||
     from === web3.fsn.consts.FSNCallAddress ||
     from === web3.fsn.consts.TicketLogAddress
   ) {
@@ -312,63 +319,75 @@ function getTransactionLog(transaction) {
   }
 }
 
-
 let balancesToGet = {};
 
-function getBalances( addrs, index, resolve, reject ) {
-  
-    if ( addrs.length === index ) {
-      resolve(true)
-      return
-    }
+function getBalances(addrs, index, resolve, reject) {
+  if (addrs.length === index) {
+    resolve(true);
+    return;
+  }
 
-   // debugger
-    let address = addrs[index]
+  // debugger
+  let address = addrs[index];
 
-    if ( address ===  web3.fsn.consts.FSNCallAddress || address === web3.fsn.consts.TicketLogAddress ) {
-      return getBalances( addrs, index + 1, resolve, reject )
-    }
+  if (
+    address === web3.fsn.consts.FSNCallAddress ||
+    address === web3.fsn.consts.TicketLogAddress
+  ) {
+    return getBalances(addrs, index + 1, resolve, reject);
+  }
 
-    let all
+  let all;
 
-    console.log("GETTTING BALANCE " + address )
+  console.log("GETTTING BALANCE " + address);
 
-    web3.fsn.getAllBalances( address ).then( (balances) => {
-        web3.fsn.getAllTimeLockBalances( address ).then( ( timeLockBalances ) => {
-          web3.fsn.allTicketsByAddress( address ).then( ( tickets ) => {
-             web3.fsn.allSwapsByAddress( address ).then( ( swaps ) => {
-               web3.fsn.getNotation( address ).then( ( notation ) => {
-                  all = JSON.stringify({ balances, timeLockBalances, tickets, swaps, notation })
-                   _pool.getConnection().then(conn => {
-                      let sql = `INSERT INTO currentBalance( _id, recCreated, recEdited, balanceInfo )\n`+
-                      `VALUES(  "${address}", NOW(), NOW() ,  '${all}'  )\n`+
-                      `ON DUPLICATE KEY UPDATE recEdited = NOW(), balanceInfo =  '${all}' ;\n`
-                       conn.query(sql).then( (rows) => {
-                         getBalances( addrs, index + 1, resolve, reject )
-                      })
-                      .finally( ()=> {
-                        conn.release()
-                      })
+  web3.fsn
+    .getAllBalances(address)
+    .then(balances => {
+      web3.fsn.getAllTimeLockBalances(address).then(timeLockBalances => {
+        web3.fsn.allTicketsByAddress(address).then(tickets => {
+          web3.fsn.allSwapsByAddress(address).then(swaps => {
+            web3.fsn.getNotation(address).then(notation => {
+              all = JSON.stringify({
+                balances,
+                timeLockBalances,
+                tickets,
+                swaps,
+                notation
+              });
+              _pool.getConnection().then(conn => {
+                let sql =
+                  `INSERT INTO currentBalance( _id, recCreated, recEdited, balanceInfo )\n` +
+                  `VALUES(  "${address}", NOW(), NOW() ,  '${all}'  )\n` +
+                  `ON DUPLICATE KEY UPDATE recEdited = NOW(), balanceInfo =  '${all}' ;\n`;
+                conn
+                  .query(sql)
+                  .then(rows => {
+                    getBalances(addrs, index + 1, resolve, reject);
                   })
-              })
-            })
-          })
-        })
+                  .finally(() => {
+                    conn.release();
+                  });
+              });
+            });
+          });
+        });
+      });
     })
-    .catch( (err) => {
-      console.log(" getAllBalances error  ", err  )
-      reject(err)
-    })
+    .catch(err => {
+      console.log(" getAllBalances error  ", err);
+      reject(err);
+    });
 }
 
-function logTransaction( block, transactions, index, resolve, reject) {
-  if ( index === 0 ) {
-    balancesToGet = {}
+function logTransaction(block, transactions, index, resolve, reject) {
+  if (index === 0) {
+    balancesToGet = {};
   }
   if (transactions.length === index) {
-    let keys = Object.keys( balancesToGet );
-    if ( keys.length ) {
-      return getBalances( keys, 0, resolve, reject )
+    let keys = Object.keys(balancesToGet);
+    if (keys.length) {
+      return getBalances(keys, 0, resolve, reject);
     } else {
       resolve(true);
     }
@@ -382,113 +401,150 @@ function logTransaction( block, transactions, index, resolve, reject) {
   return web3.eth
     .getTransaction(transactions[index])
     .then(transaction => {
-      return web3.eth.getTransactionReceipt(transactions[index]).then(receipt => {
-        return getTransactionLog(transaction).then(log => {
-          console.log("transaction => ", receipt, transaction, log);
-          return _pool.getConnection().then(conn => {
-            // merge receipt and transaction
-            //debugger
-            transaction.topics =
-              log && log.topics && log.topics.length > 0 ? log.topics : null;
+      return web3.eth
+        .getTransactionReceipt(transactions[index])
+        .then(receipt => {
+          return getTransactionLog(transaction).then(log => {
+            console.log("transaction => ", receipt, transaction, log);
+            return _pool.getConnection().then(conn => {
+              // merge receipt and transaction
+              //debugger
+              transaction.topics =
+                log && log.topics && log.topics.length > 0 ? log.topics : null;
 
-            let query = "Insert into transactions Values(";
-            let now = new Date();
-            let fusionCommand;
-            let commandExtra;
-            let logData = null;
-            let jsonLogData;
+              let query = "Insert into transactions Values(";
+              let now = new Date();
+              let fusionCommand;
+              let commandExtra;
+              let logData = null;
+              let jsonLogData;
 
-            if ( receipt.logs.length ) {
-
-              try {
-                jsonLogData = JSON.parse(
-                web3.fsn.hex2a(receipt.logs[0].data) )
-                logData = JSON.stringify(  jsonLogData )
-              } catch ( e ) {
-                logData = null
+              if (receipt.logs.length) {
+                try {
+                  jsonLogData = JSON.parse(
+                    web3.fsn.hex2a(receipt.logs[0].data)
+                  );
+                  logData = JSON.stringify(jsonLogData);
+                } catch (e) {
+                  logData = null;
+                }
               }
-            }
 
-            if ( !logData && receipt.logs ) {
-              try {
-                  logData = JSON.stringify( { data : receipt.logs[0].data  })
+              if (!logData && receipt.logs) {
+                try {
+                  logData = JSON.stringify({ data: receipt.logs[0].data });
+                } catch (e) {
+                  logData = null;
+                }
               }
-              catch (e) {
-                logData = null
-              }
-            }
 
-            transaction.to = transaction.to.toLowerCase()
-            transaction.from = transaction.from.toLowerCase()
+              transaction.to = transaction.to.toLowerCase();
+              transaction.from = transaction.from.toLowerCase();
 
-            balancesToGet[transaction.to] = true
-            balancesToGet[transaction.from] = true
+              balancesToGet[transaction.to] = true;
+              balancesToGet[transaction.from] = true;
 
-            if (transaction.topics) {
-              let topic = parseInt(transaction.topics[0].substr(2));
-              if (transaction.to === web3.fsn.consts.FSNCallAddress || transaction.from === web3.fsn.consts.FSNCallAddress) {
+              if (transaction.topics) {
+                let topic = parseInt(transaction.topics[0].substr(2));
+                if (
+                  transaction.to === web3.fsn.consts.FSNCallAddress ||
+                  transaction.from === web3.fsn.consts.FSNCallAddress
+                ) {
                   fusionCommand =
                     web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
-              } else if (
-                transaction.to === web3.fsn.consts.TicketLogAddress || transaction.from === web3.fsn.consts.TicketLogAddress
-              ) {
+                } else if (
+                  transaction.to === web3.fsn.consts.TicketLogAddress ||
+                  transaction.from === web3.fsn.consts.TicketLogAddress
+                ) {
                   fusionCommand =
                     web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
-              }
-            }
-
-            if ( fusionCommand === 'GenAssetFunc' && jsonLogData) {
-                commandExtra = jsonLogData.AssetID
-            }
-
-            // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
-            // "  height BIGINT NOT NULL,\n" +
-            // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-            // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-            // "  fromAddress VARCHAR(68),\n" +
-            // "  toAddress VARCHAR(68),\n" +
-            // "  fusionCommand VARCHAR(68),\n" +
-            // "  data json,\n"+
-            // "  transaction json,\n" +
-            let params = [
-              transaction.hash.toLowerCase(),
-              transaction.blockNumber,
-              block.timestamp,
-              now,
-              now,
-              transaction.from,
-              transaction.to,
-              fusionCommand,
-              commandExtra,
-              logData,
-              JSON.stringify(transaction)
-            ];
-
-            query = queryAddTagsForInsert(query, params);
-
-            conn
-              .query(query, params)
-              .then(okPacket => {
-                // if ( okPacket.affectedRows === 1 ) {
-                index += 1;
-                logTransaction(block, transactions, index , resolve, reject);
-              })
-              .catch(err => {
-                if (err.code === "ER_DUP_ENTRY") {
-                  // block was already written
-                  // normal when we restart scan
-                  logTransaction(block, transactions, index + 1, resolve, reject);
-                  return true;
                 }
-                console.log("transaction log error ", err);
-                reject( err );
-              })
-              .finally(() => {
-                conn.release();
-              });
+              }
+
+              if (jsonLogData) {
+                switch (fusionCommand) {
+                  case "GenAssetFunc":
+                    commandExtra = jsonLogData.AssetID;
+                    break;
+                  case "SendAssetFunc":
+                    commandExtra = jsonLogData.AssetID;
+                    break;
+                  case "TimeLockFunc":
+                    commandExtra = jsonLogData.AssetID;
+                    fusionCommand = jsonLogData.LockType;
+                    break;
+                  case "BuyTicketFunc":
+                    commandExtra = jsonLogData.Ticket;
+                    break;
+                  case "AssetValueChangeFunc":
+                    commandExtra = jsonLogData.AssetID;
+                    break;
+                  case "MakeSwapFunc":
+                    commandExtra = jsonLogData.SwapID;
+                    break;
+                  case "TakeSwapFunc":
+                    commandExtra = jsonLogData.SwapID;
+                    break;
+                  case "RecallSwapFunc":
+                    commandExtra = jsonLogData.SwapID;
+                    break;
+                }
+              }
+
+              // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+              // "  height BIGINT NOT NULL,\n" +
+              // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+              // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+              // "  fromAddress VARCHAR(68),\n" +
+              // "  toAddress VARCHAR(68),\n" +
+              // "  fusionCommand VARCHAR(68),\n" +
+              // "  data json,\n"+
+              // "  transaction json,\n" +
+              let params = [
+                transaction.hash.toLowerCase(),
+                transaction.blockNumber,
+                block.timestamp,
+                now,
+                now,
+                transaction.from,
+                transaction.to,
+                fusionCommand,
+                commandExtra,
+                logData,
+                JSON.stringify(transaction)
+              ];
+
+              query = queryAddTagsForInsert(query, params);
+
+              conn
+                .query(query, params)
+                .then(okPacket => {
+                  // if ( okPacket.affectedRows === 1 ) {
+                  index += 1;
+                  logTransaction(block, transactions, index, resolve, reject);
+                })
+                .catch(err => {
+                  if (err.code === "ER_DUP_ENTRY") {
+                    // block was already written
+                    // normal when we restart scan
+                    logTransaction(
+                      block,
+                      transactions,
+                      index + 1,
+                      resolve,
+                      reject
+                    );
+                    return true;
+                  }
+                  console.log("transaction log error ", err);
+                  reject(err);
+                })
+                .finally(() => {
+                  conn.release();
+                });
+            });
           });
         });
-      });
     })
     .catch(err => {
       console.log("error getting transaction ", err);
@@ -519,12 +575,12 @@ function resumeBlockScan() {
         return logBlock(block).then(ret => {
           return logTransactions(block).then(ret => {
             console.log(lastBlock, block);
-            return updateLastBlockProcessed().then( (ret)=> {
+            return updateLastBlockProcessed().then(ret => {
               lastBlock += 1;
               setTimeout(() => {
                 resumeBlockScan();
               }, 10);
-            })
+            });
           });
         });
       } else {
