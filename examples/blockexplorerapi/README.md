@@ -40,33 +40,35 @@ npm install
 
 ## API Commands
 
+If running locally replace explorefusion.io with your own server link
+
 #Assets
 
-  http://localhost:3000/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
-  http://localhost:3000/assets/all?page=0&size=2&sort=desc
+  http://explorefusion.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
+  http://explorefusion.io/assets/all?page=0&size=2&sort=desc
 
 #Balance
 
-  http://localhost:3000/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
-  http://localhost:3000/balances/all?page=0&size=2&sort=asc
+  http://explorefusion.io/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
+  http://explorefusion.io/balances/all?page=0&size=2&sort=asc
 
 #Blocks
 
-  http://localhost:3000/blocks/latest
-  http://localhost:3000/blocks/300
+  http://explorefusion.io/blocks/latest
+  http://explorefusion.io/blocks/300
 
-  http://localhost:3000/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
+  http://explorefusion.io/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
 
   fields can be:  [ timestamp, hash , numberOfTransactions, height ]
 
 #Swaps
 
- http://localhost:3000/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
- http://localhost:3000/swaps/all?page=0&size=2&sort=asc
+ http://explorefusion.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
+ http://explorefusion.io/swaps/all?page=0&size=2&sort=asc
 
 #Transactions
 
- http://localhost:3000/transactions/latest
- http://localhost:3000/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa
- http://localhost:3000/transactions/all?sort=asc&page=2&size=10&field=height
+ http://explorefusion.io/transactions/latest
+ http://explorefusion.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa
+ http://explorefusion.io/transactions/all?sort=asc&page=2&size=10&field=height
   fields can be:  [ timestamp, hash , type, block , asset ]
