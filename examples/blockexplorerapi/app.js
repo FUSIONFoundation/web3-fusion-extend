@@ -9,6 +9,7 @@ var dbapi = require("./dbapi/dbapi.js")
 
 var indexRouter = require('./routes/index');
 var blocksRouter = require('./routes/blocks');
+var balanceRouter = require('./routes/balance');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(helmet({
 }))
 app.use('/', indexRouter);
 app.use('/blocks', blocksRouter);
+app.use("/balance", balanceRouter )
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
