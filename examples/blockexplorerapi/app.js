@@ -3,7 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var RateLimit = require('express-rate-limit');
 const helmet = require('helmet')
+var dbapi = require("./dbapi/dbapi.js")
 
 var indexRouter = require('./routes/index');
 var blocksRouter = require('./routes/blocks');
@@ -19,7 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(helmet())
+app.use(helmet({
+  crossdomain: false
+}))
 app.use('/', indexRouter);
 app.use('/blocks', blocksRouter);
 
@@ -35,6 +39,13 @@ var apiLimiter = new RateLimit({
  
 // only apply to requests that begin with /user/
 app.use('/', apiLimiter);
+
+// enable cor support
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // error handler
 app.use(function(err, req, res, next) {
