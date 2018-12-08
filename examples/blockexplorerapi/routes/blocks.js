@@ -11,7 +11,7 @@ var { getConnection } = require("../dbapi/dbapi.js");
  *   http://localhost:3000/blocks/latest
  *   http://localhost:3000/blocks/300
  *
- *   http://localhost:3000/blocks/all?sort=asc&page=2&size=10&field=height
+ *   http://localhost:3000/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
  * 
  *   fields can be:  [ timestamp, hash , numberOfTransactions, height ]
  * 
@@ -27,6 +27,7 @@ router.get("/:block", function(req, res, next) {
   let page =  req.query.page || 0;
   let size = req.query.size || 1;
   let field = allowedFields[req.query.field] ? req.query.field : 'height'
+  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
 
   page = parseInt( page )
   size = parseInt( size )
@@ -43,7 +44,7 @@ router.get("/:block", function(req, res, next) {
   if (blockNumber === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.blocks order by ${field} limit ?,?` , [ (page*size), size ] )
+        .query(`SELECT * FROM fusionblockdb.blocks order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
         .then(rows => {
           res.send(rows)
         })

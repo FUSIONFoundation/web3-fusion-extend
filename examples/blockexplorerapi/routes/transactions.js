@@ -26,6 +26,7 @@ router.get("/:hash", function(req, res, next) {
   let page =  req.query.page || 0;
   let size = req.query.size || 100;
   let field = allowedFields[req.query.field] ? req.query.field : 'height'
+  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
 
   page = parseInt( page )
   size = parseInt( size )
@@ -48,17 +49,17 @@ router.get("/:hash", function(req, res, next) {
   }
 
   if ( field === 'timestamp' ) {
-      field = ['timestamp','recCreated']
+      field = [`timestamp  ${sort}`,'recCreated']
   }
 
   if ( field === 'height' ) {
-      field = ['height','recCreated']
+      field = [`height  ${sort}`,'recCreated']
   }
 
   if (hash === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.transactions order by ${field} limit ?,?` , [ (page*size), size ] )
+        .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
         .then(rows => {
           res.send(rows)
         })

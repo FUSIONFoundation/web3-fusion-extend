@@ -9,13 +9,14 @@ var { getConnection } = require("../dbapi/dbapi.js");
 /*** examples
  *
  *   http://localhost:3000/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
- *   http://localhost:3000/assets/all?page=0&size=2
+ *   http://localhost:3000/assets/all?page=0&size=2&sort=desc
  *
  */
 router.get("/:asset", function(req, res, next) {
   let page = req.query.page || 0;
   let size = req.query.size || 1;
-
+  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+ 
   page = parseInt(page);
   size = parseInt(size);
 
@@ -31,7 +32,7 @@ router.get("/:asset", function(req, res, next) {
   if (req.params.asset === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by timeStamp limit ?,?`, [
+        .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by timeStamp ${sort} limit ?,?`, [
           page * size,
           size
         ])
