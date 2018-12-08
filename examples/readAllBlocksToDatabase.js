@@ -46,6 +46,7 @@ let buildTheSystem = [
       "  fromAddress VARCHAR(68),\n" +
       "  toAddress VARCHAR(68),\n" +
       "  fusionCommand VARCHAR(68),\n" +
+      "  commandExtra VARCHAR(68),\n" +
       "  data json,\n"+
       "  transaction json,\n" +
       "  PRIMARY KEY (hash),\n" +
@@ -53,7 +54,7 @@ let buildTheSystem = [
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
-      "  INDEX `fusionCommand` (`fusionCommand`)\n" +
+      "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   },
   {
@@ -391,14 +392,16 @@ function logTransaction(transactions, index, resolve, reject) {
             let query = "Insert into transactions Values(";
             let now = new Date();
             let fusionCommand;
+            let commandExtra;
             let logData = null;
+            let jsonLogData;
 
             if ( receipt.logs.length ) {
 
               try {
-                logData = JSON.stringify( JSON.parse(
-                  web3.fsn.hex2a(receipt.logs[0].data) )
-                );
+                jsonLogData = JSON.parse(
+                web3.fsn.hex2a(receipt.logs[0].data) )
+                logData = JSON.stringify(  jsonLogData )
               } catch ( e ) {
                 logData = null
               }
@@ -432,6 +435,10 @@ function logTransaction(transactions, index, resolve, reject) {
               }
             }
 
+            if ( fusionCommand === 'GenAssetFunc' && jsonLogData) {
+                commandExtra = jsonLogData.AssetID
+            }
+
             // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
             // "  height BIGINT NOT NULL,\n" +
             // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
@@ -449,6 +456,7 @@ function logTransaction(transactions, index, resolve, reject) {
               transaction.from,
               transaction.to,
               fusionCommand,
+              commandExtra,
               logData,
               JSON.stringify(transaction)
             ];
