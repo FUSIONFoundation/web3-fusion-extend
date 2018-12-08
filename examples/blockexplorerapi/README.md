@@ -1,6 +1,6 @@
 
 # web3-fusion-extend.js - Fusion JavaScript API
-# blockexplorerapi 
+# Block Explorer API 
 
 ### Overview
 
