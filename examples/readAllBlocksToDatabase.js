@@ -71,6 +71,19 @@ let buildTheSystem = [
       "VALUES( 'INFO_ID', -1, NOW(), NOW()  )\n"+
       "ON DUPLICATE KEY UPDATE recEdited = NOW();\n"+
       "Commit;\n"
+  },
+  {
+    txt: "Build Current Balance Table",
+    sql:
+      "Begin;\n"+
+      "CREATE TABLE IF NOT EXISTS currentBalance (\n" +
+      "  _id varchar(68) NOT NULL UNIQUE,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  balanceInfo json,\n"+
+      "  PRIMARY KEY (_id)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"+
+      "Commit;\n"
   }
 ];
 
@@ -296,9 +309,66 @@ function getTransactionLog(transaction) {
   }
 }
 
+
+let balancesToGet = {};
+
+function getBalances( addrs, index, resolve, reject ) {
+  
+    if ( addrs.length === index ) {
+      resolve(true)
+      return
+    }
+
+    let address = addrs[index]
+
+    if ( address ===  web3.fsn.consts.FSNCallAddress || address === web3.fsn.consts.TicketLogAddress ) {
+      return getBalances( addrs, index + 1, resolve, reject )
+    }
+
+    let all
+
+
+    console.log("GETTTING BALANCE " + address )
+
+    web3.fsn.getAllBalances( address ).then( (balances) => {
+        web3.fsn.getAllTimeLockBalances( address ).then( ( timeLockBalances ) => {
+          web3.fsn.allTicketsByAddress( address ).then( ( tickets ) => {
+             web3.fsn.allSwapsByAddress( address ).then( ( swaps ) => {
+               web3.fsn.getNotation( address ).then( ( notation ) => {
+                  all = JSON.stringify({ balances, timeLockBalances, tickets, swaps, notation })
+                   _pool.getConnection().then(conn => {
+                      let sql = `INSERT INTO currentBalance( _id, recCreated, recEdited, balanceInfo )\n`+
+                      `VALUES(  "${address}", NOW(), NOW() ,  '${all}'  )\n`+
+                      `ON DUPLICATE KEY UPDATE recEdited = NOW(), balanceInfo =  '${all}' ;\n`
+                       conn.query(sql).then( (rows) => {
+                         getBalances( addrs, index + 1, resolve, reject )
+                      })
+                      .finally( ()=> {
+                        conn.release()
+                      })
+                  })
+              })
+            })
+          })
+        })
+    })
+    .catch( (err) => {
+      console.log(" getAllBalances error  ", err  )
+      reject(err)
+    })
+}
+
 function logTransaction(transactions, index, resolve, reject) {
+  if ( index === 0 ) {
+    balancesToGet = {}
+  }
   if (transactions.length === index) {
-    resolve(true);
+    let keys = Object.keys( balancesToGet );
+    if ( keys.length ) {
+      return getBalances( keys, index, resolve, reject )
+    } else {
+      resolve(true);
+    }
     return;
   }
   if (!web3._isConnected) {
@@ -334,7 +404,7 @@ function logTransaction(transactions, index, resolve, reject) {
               }
             }
 
-            if ( !logData && receipt.logs[0].data ) {
+            if ( !logData && receipt.logs ) {
               try {
                   logData = JSON.stringify( { data : receipt.logs[0].data  })
               }
@@ -345,6 +415,9 @@ function logTransaction(transactions, index, resolve, reject) {
 
             transaction.to = transaction.to.toLowerCase()
             transaction.from = transaction.from.toLowerCase()
+
+            balancesToGet[transaction.to] = true
+            balancesToGet[transaction.from] = true
 
             if (transaction.topics) {
               let topic = parseInt(transaction.topics[0].substr(2));
@@ -382,17 +455,18 @@ function logTransaction(transactions, index, resolve, reject) {
 
             query = queryAddTagsForInsert(query, params);
 
-            return conn
+            conn
               .query(query, params)
               .then(okPacket => {
                 // if ( okPacket.affectedRows === 1 ) {
                 index += 1;
-                logTransaction(transactions, index, resolve, reject);
+                logTransaction(transactions, index , resolve, reject);
               })
               .catch(err => {
                 if (err.code === "ER_DUP_ENTRY") {
                   // block was already written
                   // normal when we restart scan
+                  logTransaction(transactions, index + 1, resolve, reject);
                   return true;
                 }
                 console.log("transaction log error ", err);
