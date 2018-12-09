@@ -2,6 +2,9 @@ var assert = require("assert");
 var Web3 = require("web3");
 var web3FusionExtend = require("../../index.js");
 var mysql = require("promise-mysql");
+const fetch = require("node-fetch");
+const CryptoJS = require("crypto-js");
+const rp = require("request-promise");
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="ws://3.16.110.25:9001" DB_CONNECT_STRING="{'host':'localhost','user':'root','password':'password','database':'db1','connectionLimit':10}" node ./examples/readAllBlocksToADatabase
@@ -568,6 +571,8 @@ function resumeBlockScan() {
     return;
   }
 
+  updateOnlinePrice();
+
   return web3.eth
     .getBlock(lastBlock)
     .then(block => {
@@ -596,5 +601,106 @@ function resumeBlockScan() {
       setTimeout(() => {
         resumeBlockScan();
       }, 10000);
+    });
+}
+
+var lasttime = 0;
+var inpriceget = false;
+var onlineCounter = 0;
+
+function updateOnlinePrice() {
+  if (!process.env.CMC_KEY) {
+    return;
+  }
+  if (inpriceget) {
+    return;
+  }
+  if (lasttime !== 0) {
+    let newtime = new Date().getTime();
+    if (lasttime + 420 * 1000 < newtime) {
+      // we check every 7 minutes to keep api correct
+      lasttime = newtime;
+    } else {
+      return;
+    }
+  } else {
+    lasttime = new Date().getTime();
+  }
+  console.log("get quotte");
+
+  inpriceget = true;
+  onlineCounter += 1;
+  // if (onlineCounter < 5) {
+  //   return;
+  // }
+  onlineCounter = 0;
+
+  const requestOptions = {
+    method: "GET",
+    uri: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest",
+    qs: {
+      symbol: "FSN",
+      // limit: 5000,
+      convert: "USD"
+    },
+    headers: {
+      "X-CMC_PRO_API_KEY": process.env.CMC_KEY
+    },
+    json: true,
+    gzip: true
+  };
+
+  let x = {
+    status: {
+      timestamp: "2018-12-09T12:48:28.094Z",
+      error_code: 0,
+      error_message: null,
+      elapsed: 5,
+      credit_count: 1
+    },
+    data: {
+      FSN: {
+        id: 2530,
+        name: "Fusion",
+        symbol: "FSN",
+        slug: "fusion",
+        circulating_supply: 29704811.2,
+        total_supply: 57344000,
+        max_supply: null,
+        date_added: "2018-02-16T00:00:00.000Z",
+        num_market_pairs: 13,
+        tags: [],
+        platform: {
+          id: 1027,
+          name: "Ethereum",
+          symbol: "ETH",
+          slug: "ethereum"
+        },
+        cmc_rank: 133,
+        last_updated: "2018-12-09T12:46:22.000Z",
+        quote: {
+          USD: {
+            price: 0.654078335847,
+            volume_24h: 506902.697094068,
+            percent_change_1h: 0.685086,
+            percent_change_24h: 1.13452,
+            percent_change_7d: -3.37596,
+            market_cap: 19429273.476345327,
+            last_updated: "2018-12-09T12:46:22.000Z"
+          }
+        }
+      }
+    }
+  };
+
+  rp(requestOptions)
+    .then(response => {
+      debugger;
+      console.log("API call response:", response);
+      console.log(JSON.stringify(response));
+    })
+    .catch(err => {
+      debugger;
+      console.log("API call error:", err.message);
     });
 }
