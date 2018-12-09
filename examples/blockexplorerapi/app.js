@@ -13,6 +13,7 @@ var balanceRouter = require('./routes/balance');
 var transactionRouter = require('./routes/transactions');
 var assetRouter = require('./routes/asset');
 var swapsRouter = require('./routes/swaps');
+var fsnpriceRouter = require('./routes/fsnprice');
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use("/balances", balanceRouter )
 app.use("/transactions", transactionRouter )
 app.use("/assets" , assetRouter)
 app.use("/swaps", swapsRouter ) 
+app.use("/fsnprice", fsnpriceRouter )
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

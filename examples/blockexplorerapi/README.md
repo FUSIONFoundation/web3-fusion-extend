@@ -72,3 +72,14 @@ If running locally replace explorefusion.io with your own server link
  http://explorefusion.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa
  http://explorefusion.io/transactions/all?sort=asc&page=2&size=10&field=height
   fields can be:  [ timestamp, hash , type, block , asset ]
+
+#Fusion Price
+
+last price
+http://explorefusion.io/fsnprice
+
+historical prices
+http://explorefusion.io/fsnprice/?page=0&size=2&sort=asc
+
+last two prices
+http://explorefusion.io/fsnprice/?page=0&size=2&sort=desc
