@@ -6,6 +6,7 @@ var logger = require('morgan');
 var RateLimit = require('express-rate-limit');
 const helmet = require('helmet')
 var dbapi = require("./dbapi/dbapi.js")
+const noSniff = require('dont-sniff-mimetype')
 
 var indexRouter = require('./routes/index');
 var blocksRouter = require('./routes/blocks');
@@ -29,18 +30,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet({
   crossdomain: false
 }))
-app.use('/', indexRouter)
-app.use('/blocks', blocksRouter)
-app.use("/balances", balanceRouter )
-app.use("/transactions", transactionRouter )
-app.use("/assets" , assetRouter)
-app.use("/swaps", swapsRouter ) 
-app.use("/fsnprice", fsnpriceRouter )
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// Sets "X-Content-Type-Options: nosniff".
+app.use(noSniff())
 
 var apiLimiter = new RateLimit({
   windowMs: 15*60*1000, // 15 minutes
@@ -52,9 +43,30 @@ app.use('/', apiLimiter);
 
 // enable cor support
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  console.log("return")
+  
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-Content-Type-Options, Content-Type, Accept, Authorization");
+ 
+  
+    // Pass to next layer of middleware
   next();
+});
+
+app.use('/', indexRouter)
+app.use('/blocks', blocksRouter)
+app.use("/balances", balanceRouter )
+app.use("/transactions", transactionRouter )
+app.use("/assets" , assetRouter)
+app.use("/swaps", swapsRouter ) 
+app.use("/fsnprice", fsnpriceRouter )
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
 // error handler
