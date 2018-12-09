@@ -89,6 +89,26 @@ let buildTheSystem = [
       "  PRIMARY KEY (_id)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
       "Commit;\n"
+  },
+  {
+    txt: "Build Fusion Price Table",
+    sql:
+      "Begin;\n" +
+      "CREATE TABLE IF NOT EXISTS priceWatch (\n" +
+      "  _id varchar(68) NOT NULL UNIQUE,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  price DOUBLE,\n" +
+      "  market_cap DOUBLE,\n" +
+      "  circulating_supply DOUBLE,\n" +
+      "  percentChange1H DOUBLE,\n" +
+      "  percentChange24H DOUBLE,\n" +
+      "  last_updated DATETIME,\n" +
+      "  total_supply BIGINT(20),\n" +
+      "  PRIMARY KEY (_id),\n" +
+      "  index `last_updated` (`last_updated`)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
+      "Commit;\n"
   }
 ];
 
@@ -110,6 +130,7 @@ function createTables(resolve, reject) {
       }
     })
     .catch(err => {
+      debugger;
       console.log("ERROR: " + buildTheSystem[buildIndex].txt, err);
       reject(err);
     });
@@ -609,6 +630,11 @@ var inpriceget = false;
 var onlineCounter = 0;
 
 function updateOnlinePrice() {
+  if (!_isDBConnected) {
+    setTimeout(() => {
+      updateOnlinePrice();
+    }, 100);
+  }
   if (!process.env.CMC_KEY) {
     return;
   }
@@ -626,7 +652,7 @@ function updateOnlinePrice() {
   } else {
     lasttime = new Date().getTime();
   }
-  console.log("get quotte");
+  console.log("get quote");
 
   inpriceget = true;
   onlineCounter += 1;
@@ -639,8 +665,8 @@ function updateOnlinePrice() {
     method: "GET",
     uri: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest",
     qs: {
-      symbol: "FSN",
-      // limit: 5000,
+      id: 2530,
+      // symbol: "FSN",
       convert: "USD"
     },
     headers: {
@@ -650,57 +676,107 @@ function updateOnlinePrice() {
     gzip: true
   };
 
-  let x = {
-    status: {
-      timestamp: "2018-12-09T12:48:28.094Z",
-      error_code: 0,
-      error_message: null,
-      elapsed: 5,
-      credit_count: 1
-    },
-    data: {
-      FSN: {
-        id: 2530,
-        name: "Fusion",
-        symbol: "FSN",
-        slug: "fusion",
-        circulating_supply: 29704811.2,
-        total_supply: 57344000,
-        max_supply: null,
-        date_added: "2018-02-16T00:00:00.000Z",
-        num_market_pairs: 13,
-        tags: [],
-        platform: {
-          id: 1027,
-          name: "Ethereum",
-          symbol: "ETH",
-          slug: "ethereum"
-        },
-        cmc_rank: 133,
-        last_updated: "2018-12-09T12:46:22.000Z",
-        quote: {
-          USD: {
-            price: 0.654078335847,
-            volume_24h: 506902.697094068,
-            percent_change_1h: 0.685086,
-            percent_change_24h: 1.13452,
-            percent_change_7d: -3.37596,
-            market_cap: 19429273.476345327,
-            last_updated: "2018-12-09T12:46:22.000Z"
-          }
-        }
-      }
-    }
-  };
+  // let x = {
+  //   status: {
+  //     timestamp: "2018-12-09T12:48:28.094Z",
+  //     error_code: 0,
+  //     error_message: null,
+  //     elapsed: 5,
+  //     credit_count: 1
+  //   },
+  //   data: {
+  //     FSN: {
+  //       id: 2530,
+  //       name: "Fusion",
+  //       symbol: "FSN",
+  //       slug: "fusion",
+  //       circulating_supply: 29704811.2,
+  //       total_supply: 57344000,
+  //       max_supply: null,
+  //       date_added: "2018-02-16T00:00:00.000Z",
+  //       num_market_pairs: 13,
+  //       tags: [],
+  //       platform: {
+  //         id: 1027,
+  //         name: "Ethereum",
+  //         symbol: "ETH",
+  //         slug: "ethereum"
+  //       },
+  //       cmc_rank: 133,
+  //       last_updated: "2018-12-09T12:46:22.000Z",
+  //       quote: {
+  //         USD: {
+  //           price: 0.654078335847,
+  //           volume_24h: 506902.697094068,
+  //           percent_change_1h: 0.685086,
+  //           percent_change_24h: 1.13452,
+  //           percent_change_7d: -3.37596,
+  //           market_cap: 19429273.476345327,
+  //           last_updated: "2018-12-09T12:46:22.000Z"
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   rp(requestOptions)
     .then(response => {
-      debugger;
-      console.log("API call response:", response);
-      console.log(JSON.stringify(response));
+      inpriceget = false;
+      let x = response;
+
+      if (x.status.error_code === 0) {
+        let query = "Insert into priceWatch Values(";
+        x.data.FSN = x.data["2530"];
+        priceStructure = {
+          price: x.data.FSN.quote.USD.price,
+          market_cap: x.data.FSN.quote.USD.market_cap,
+          circulating_supply: x.data.FSN.circulating_supply, // : 29704811.2,
+          percentChange1H: x.data.FSN.quote.USD.percent_change_1h,
+          percentChange24H: x.data.FSN.quote.USD.percent_change_24h,
+          last_updated: x.data.FSN.quote.USD.last_updated,
+          total_supply: x.data.FSN.total_supply
+        };
+
+        let now = new Date();
+
+        let params = [
+          x.status.timestamp,
+          now,
+          now,
+          priceStructure.price,
+          priceStructure.market_cap,
+          priceStructure.circulating_supply,
+          priceStructure.percentChange1H,
+          priceStructure.percentChange24H,
+          new Date(priceStructure.last_updated),
+          priceStructure.total_supply
+        ];
+
+        query = queryAddTagsForInsert(query, params);
+
+        return _pool.getConnection().then(conn => {
+          return conn
+            .query(query, params)
+            .then(okPacket => {
+              return okPacket.affectedRows === 1;
+            })
+            .catch(err => {
+              if (err.code === "ER_DUP_ENTRY") {
+                // block was already written
+                // normal when we restart scan
+                return true;
+              }
+              console.log("price log error ", err);
+              // throw err;
+            })
+            .finally(() => {
+              conn.release();
+            });
+        });
+      }
     })
     .catch(err => {
-      debugger;
       console.log("API call error:", err.message);
+      inpriceget = false;
     });
 }
