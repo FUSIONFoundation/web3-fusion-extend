@@ -185,7 +185,7 @@ function keepWeb3Alive() {
       keepWeb3Alive();
     }, 5);
   });
-  provider.on("end", function() {
+  provider.on("end", function(err) {
     web3._isConnected = false;
     console.log("web3 connection error ", err);
     console.log("will try to reconnect");
