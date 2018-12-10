@@ -32,11 +32,25 @@ router.get("/", function(req, res, next) {
 
 getConnection().then(conn => {
     conn
-    .query(`SELECT * FROM priceWatch order by last_updated ${sort}  limit ?,?`, [
+    .query(`Begin;
+           SELECT * FROM priceWatch order by last_updated ${sort}  limit ?,?;
+           Select "TotalTransactions", count(*) from transactions;
+           select "LastBlock", MAX(height) from blocks;
+           SELECT * FROM blocks order by timestamp desc  limit 0,2;
+           Commit;`
+           , [
         page * size,
         size
     ])
     .then(rows => {
+        if ( rows.length === 6 ) {
+            return res.json( {
+                priceInfo : rows[1][0],
+                totalTransactions : rows[2][0]['count(*)'],
+                maxBlock : rows[3][0]['MAX(height)'],
+                lastTwoBlocks : rows[4]
+             } )
+        }
         res.json(rows);
     })
     .finally(() => {
