@@ -45,10 +45,10 @@ getConnection().then(conn => {
     .then(rows => {
         if ( rows.length === 6 ) {
             return res.json( {
-                priceInfo : rows[1][0],
-                totalTransactions : rows[2][0]['count(*)'],
-                maxBlock : rows[3][0]['MAX(height)'],
-                lastTwoBlocks : rows[4]
+                priceInfo : JSON.parse( JSON.stringify( rows[1][0] ) ) ,
+                totalTransactions :  JSON.parse( JSON.stringify( rows[2][0]['count(*)'])),
+                maxBlock :  JSON.parse( JSON.stringify( rows[3][0]['MAX(height)'] )),
+                lastTwoBlocks :  JSON.parse( JSON.stringify( rows[4] )) 
              } )
         }
         res.json(rows);
