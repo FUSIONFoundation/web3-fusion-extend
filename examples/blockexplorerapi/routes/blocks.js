@@ -67,7 +67,7 @@ router.get("/:block", function(req, res, next) {
     // else get one block
     getConnection().then(conn => {
       conn
-        .query("select * from blocks where height = ?", [parseInt(blockNumber)])
+        .query("select * from blocks where height = ? or hash=?", [parseInt(blockNumber),blockNumber])
         .then(rows => {
           res.json(rows)
         })
