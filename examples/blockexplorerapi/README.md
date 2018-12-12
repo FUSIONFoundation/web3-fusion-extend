@@ -73,6 +73,9 @@ If running locally replace explorefusion.io with your own server link
  http://explorefusion.io/transactions/all?sort=asc&page=2&size=10&field=height
   fields can be:  [ timestamp, hash , type, block , asset ]
 
+  Return an array of transactions from a - seperated array
+  http://explorefusion.io/transactions/ts?ts=address1-address2
+
 #Fusion Price
 
 last price

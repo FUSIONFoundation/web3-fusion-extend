@@ -56,6 +56,21 @@ router.get("/:hash", function(req, res, next) {
       field = [`height  ${sort}`,'recCreated']
   }
 
+
+  if ( hash === 'ts' ) {
+    let tsA = req.query.ts ?  req.query.ts.split("-") : []
+    getConnection().then(conn => {
+      conn
+        .query(`SELECT * FROM transactions where hash  in (?)` , [ tsA ] )
+        .then(rows => {
+          res.json(rows)
+        })
+        .finally(() => {
+          conn.release();
+        });
+    });
+  }
+
   if (hash === "all") {
     getConnection().then(conn => {
       conn
