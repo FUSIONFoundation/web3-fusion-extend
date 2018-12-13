@@ -43,6 +43,7 @@ Create a web3 object as your normally would and then call web3FusionExtend with 
 web3 will then have two additional interfaces (fsn and fsntx)
 
 ```
+    var web3FusionExtend = require('web3-fusion-extend')
     web3 = new Web3(provider);
     web3 = web3FusionExtend.extend(web3)
     console.log(web3.fsn.consts.FSNToken);
