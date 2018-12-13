@@ -26,9 +26,9 @@ DB_CONNECT_STRING="{'host':'mysqlserver,'user':'adminuser','password':'password'
 
 # Fusion Org and its public explorer api 
 
-Fusion organization keeps an api endpoint open at https://explorefusion.io to assist in application development
+Fusion organization keeps an api endpoint open at https://api.fusionnetwork.io to assist in application development
 
-You can try commands like https://explorefusion.io/blocks/latest  or https://explorefusion.io/transactions/latest
+You can try commands like https://api.fusionnetwork.io/blocks/latest  or https://api.fusionnetwork.io/transactions/latest
 
 Note if you are not a developer the results may look scary but they are the actual last block or transaction info
 
@@ -40,49 +40,49 @@ npm install
 
 ## API Commands
 
-If running locally replace explorefusion.io with your own server link
+If running locally replace api.fusionnetwork.io with your own server link
 
 #Assets
 
-  http://explorefusion.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
-  http://explorefusion.io/assets/all?page=0&size=2&sort=desc
+  http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
+  http://api.fusionnetwork.io/assets/all?page=0&size=2&sort=desc
 
 #Balance
 
-  http://explorefusion.io/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
-  http://explorefusion.io/balances/all?page=0&size=2&sort=asc
+  http://api.fusionnetwork.io/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
+  http://api.fusionnetwork.io/balances/all?page=0&size=2&sort=asc
 
 #Blocks
 
-  http://explorefusion.io/blocks/latest
-  http://explorefusion.io/blocks/300
+  http://api.fusionnetwork.io/blocks/latest
+  http://api.fusionnetwork.io/blocks/300
 
-  http://explorefusion.io/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
+  http://api.fusionnetwork.io/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
 
   fields can be:  [ timestamp, hash , numberOfTransactions, height ]
 
 #Swaps
 
- http://explorefusion.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
- http://explorefusion.io/swaps/all?page=0&size=2&sort=asc
+ http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae
+ http://api.fusionnetwork.io/swaps/all?page=0&size=2&sort=asc
 
 #Transactions
 
- http://explorefusion.io/transactions/latest
- http://explorefusion.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa
- http://explorefusion.io/transactions/all?sort=asc&page=2&size=10&field=height
+ http://api.fusionnetwork.io/transactions/latest
+ http://api.fusionnetwork.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa
+ http://api.fusionnetwork.io/transactions/all?sort=asc&page=2&size=10&field=height
   fields can be:  [ timestamp, hash , type, block , asset ]
 
   Return an array of transactions from a - seperated array
-  http://explorefusion.io/transactions/ts?ts=address1-address2
+  http://api.fusionnetwork.io/transactions/ts?ts=address1-address2
 
 #Fusion Price
 
 last price
-http://explorefusion.io/fsnprice
+http://api.fusionnetwork.io/fsnprice
 
 historical prices
-http://explorefusion.io/fsnprice/?page=0&size=2&sort=asc
+http://api.fusionnetwork.io/fsnprice/?page=0&size=2&sort=asc
 
 last two prices
-http://explorefusion.io/fsnprice/?page=0&size=2&sort=desc
+http://api.fusionnetwork.io/fsnprice/?page=0&size=2&sort=desc

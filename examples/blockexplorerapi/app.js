@@ -35,7 +35,7 @@ app.use(noSniff())
 
 var apiLimiter = new RateLimit({
   windowMs: 15*60*1000, // 15 minutes
-  max: 1000,
+  max: 5000,
 });
  
 // only apply to requests that begin with /user/
