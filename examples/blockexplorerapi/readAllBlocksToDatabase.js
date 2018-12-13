@@ -221,7 +221,7 @@ function updateLastBlockProcessed() {
     conn
       .query(
         "update info set lastheightProcessed=" +
-          (lastBlock + 1) +
+          (lastBlock ) +
           " where _id = '" +
           INFO_ID +
           "';"
@@ -723,7 +723,6 @@ function updateOnlinePrice() {
     .then(response => {
       inpriceget = false;
       let x = response;
-
       if (x.status.error_code === 0) {
         let query = "Insert into priceWatch Values(";
         x.data.FSN = x.data["2530"];
