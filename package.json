@@ -1,6 +1,6 @@
 {
   "name": "web3-fusion-extend",
-  "version": "1.0.0-beta.10",
+  "version": "1.0.0-beta.11",
   "description": "A web3 layer with functions for FUSON's protocol",
   "main": "./index.js",
   "directories": {
