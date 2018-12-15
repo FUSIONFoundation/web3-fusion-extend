@@ -6,18 +6,21 @@ const fetch = require("node-fetch");
 const CryptoJS = require("crypto-js");
 const rp = require("request-promise");
 
+let version =  1.00
+
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="ws://3.16.110.25:9001" DB_CONNECT_STRING="{'host':'localhost','user':'root','password':'password','database':'db1','connectionLimit':10}" node ./examples/readAllBlocksToADatabase
 */
 
-console.log("CONNECT_STRING ==> ", process.env.CONNECT_STRING);
-console.log("DATABASE_CONNECT ==> ", process.env.DB_CONNECT_STRING);
+// console.log("CONNECT_STRING ==> ", process.env.CONNECT_STRING);
+// console.log("DATABASE_CONNECT ==> ", process.env.DB_CONNECT_STRING);
 var dbConnect = JSON.parse(process.env.DB_CONNECT_STRING.replace(/'/g, '"'));
 var web3;
 var _pool;
 var _masterConnection;
 
 const INFO_ID = "INFO_ID";
+const VERSION_ID = "VERSION_ID"
 
 let buildTheSystem = [
   {
@@ -72,8 +75,10 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
-      "INSERT INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
-      "VALUES( 'INFO_ID', -1, NOW(), NOW()  )\n" +
+      "INSERT  IGNORE INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
+      "VALUES( 'INFO_ID', -1, NOW(), NOW()  );\n" +
+      "INSERT IGNORE INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
+      "VALUES( 'VERSION_ID', -1, NOW(), NOW()  )\n" +
       "ON DUPLICATE KEY UPDATE recEdited = NOW();\n" +
       "Commit;\n"
   },
@@ -217,14 +222,20 @@ function queryAddTagsForInsert(q, p) {
 }
 
 function updateLastBlockProcessed() {
+  let now = new Date()
   return _pool.getConnection().then(conn => {
     conn
       .query(
+        "begin;" +
         "update info set lastheightProcessed=" +
           (lastBlock ) +
-          " where _id = '" +
+          ", recEdited = ? where _id = '" +
           INFO_ID +
-          "';"
+          "';"  +
+          "update info set lastheightProcessed=?, recEdited = ? where _id = '" +
+          VERSION_ID +
+          "';"  +
+          "commit;" , [ now, version , now ]
       )
       .then(rows => {
         return { success: true };
@@ -612,9 +623,12 @@ function resumeBlockScan() {
       } else {
         // wait for block to update
         console.log("Waiting for new block..." + new Date());
-        setTimeout(() => {
-          resumeBlockScan();
-        }, 15000);
+        // lets update the database to show we alive
+        return updateLastBlockProcessed().then(ret => {
+              setTimeout(() => {
+                resumeBlockScan();
+              }, 15000);
+            })
       }
     })
     .catch(err => {
