@@ -71,6 +71,7 @@ let buildTheSystem = [
       "CREATE TABLE IF NOT EXISTS info (\n" +
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  lastheightProcessed BIGINT NOT NULL,\n" +
+      "  version BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
@@ -228,15 +229,17 @@ function updateLastBlockProcessed() {
         "begin;" +
         "update info set lastheightProcessed=" +
           (lastBlock ) +
-          ", recEdited = ? where _id = '" +
+          ", recEdited = ?, version = ? where _id = '" +
           INFO_ID +
           "';"  +
-          "insert IGNORE into info Values( ? , ? , ? , ?) " +
-          " ON DUPLICATE KEY UPDATE recEdited = NOW() ;" +
-          "commit;" , [   now , VERSION_ID, version , now, now ]
+          "commit;" , [   now , version  ]
       )
       .then(rows => {
         return { success: true };
+      })
+      .catch( (err)=>{
+        console.log("UPDATET block error ")
+        throw err
       })
       .finally(() => {
         conn.release();
