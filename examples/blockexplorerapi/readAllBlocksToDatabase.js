@@ -76,11 +76,10 @@ let buildTheSystem = [
       "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
       "INSERT  IGNORE INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
-      "VALUES( 'INFO_ID', -1, NOW(), NOW()  );\n" +
-      "INSERT IGNORE INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
-      "VALUES( 'VERSION_ID', -1, NOW(), NOW()  )\n" +
+      "VALUES "+
+      "    ( 'INFO_ID', -1, NOW(), NOW()  ) \n" +
       "ON DUPLICATE KEY UPDATE recEdited = NOW();\n" +
-      "Commit;\n"
+       "Commit;\n"
   },
   {
     txt: "Build Current Balance Table",
@@ -232,10 +231,9 @@ function updateLastBlockProcessed() {
           ", recEdited = ? where _id = '" +
           INFO_ID +
           "';"  +
-          "update info set lastheightProcessed=?, recEdited = ? where _id = '" +
-          VERSION_ID +
-          "';"  +
-          "commit;" , [ now, version , now ]
+          "insert IGNORE into info Values( ? , ? , ? , ?) " +
+          " ON DUPLICATE KEY UPDATE recEdited = NOW() ;" +
+          "commit;" , [   now , VERSION_ID, version , now, now ]
       )
       .then(rows => {
         return { success: true };
