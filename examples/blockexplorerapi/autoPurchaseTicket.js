@@ -10,6 +10,13 @@ const optionDefinitions = [
   { name: "numberOfTickets", alias: "n", type: Number }
 ];
 
+console.log( `Example: 
+              node autoPurchaseTicket --c"wss://example.com" -p "./password.txt" -k "./keystore.key" -n 10\n
+              -c --connectString web socket gateway to connect to
+              -k  --keyStore keystore file to use
+              -p  --passPharseFile key file
+              -n  --Number of tickets to purchase` )
+
 const options = commandLineArgs(optionDefinitions);
 
 console.log(options);
@@ -153,12 +160,12 @@ function buyATicket(data) {
           let totalTickets = Object.keys(res).length;
           if (totalTickets < options.numberOfTickets) {
             console.log(
-              `${totalTickets} of ${options.numberOfTickets} purchasing one`
+              `${totalTickets} of ${options.numberOfTickets} purchasing one, action happening around block ${block.number} ` + (new Date())
             );
             return web3.fsntx
               .buildBuyTicketTx({ from: key.address })
               .then(tx => {
-                console.log(tx);
+                // console.log(tx);
                 // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
                 return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
               })
