@@ -98,7 +98,7 @@ function connectService()
 
   provider.on("connect", () => {
     let data = {}
-    buyATicket()
+    buyATicket(data)
   });
 
   provider.on("error", e => {
@@ -106,16 +106,19 @@ function connectService()
   });
 
   provider.on("end", e => {
-      console.log( "connection ended will try to reconnect in 5 minutes"  )
+      console.log( "connection ended will try to reconnect in 5 seconds"  )
       provider.__reset  = true
       setTimeout( ()=> {
-          
-      })
+        connectService()
+      }, 5000)
   } )
 }
 
+
+connectService()
+
 function buyATicket() {
-    console.log( "" )
+    console.log( "connecting " )
 }
 
 
