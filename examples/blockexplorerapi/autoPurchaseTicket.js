@@ -121,6 +121,8 @@ function connectService() {
 
 connectService();
 
+let totalTicketsBought  = 0
+
 function buyATicket(data) {
   if (data.reset) {
     return;
@@ -150,13 +152,14 @@ function buyATicket(data) {
               })
               .then(txHash => {
                 console.log("wait for buy ticket tx -> ", txHash);
-                if (!data.reset) {
+                if (data.reset) {
                   return true;
                 }
                 return waitForTransactionToComplete(txHash, data)
                   .then(r => {
                     if (r.status) {
                         console.log("Ticket bought")
+                        totalTicketsBought += 1
                       data.lastblock = block.number;
                       setTimeout(() => {
                         buyATicket(data);
@@ -171,6 +174,7 @@ function buyATicket(data) {
                   });
               });
           } else {
+              console.log("Tickets the same - "+ options.numberOfTickets + ",  tb = " + totalTicketsBought + " retrying " + (new Date()))
             setTimeout(() => {
               buyATicket(data);
             }, 4000);
@@ -195,11 +199,9 @@ function waitForTransactionToComplete(transID, data) {
   if (data.reset) {
     return;
   }
-  console.log("waiting....")
   return web3.eth
     .getTransactionReceipt(transID)
     .then(receipt => {
-        console.log( "transaction receipt returned " , transID, receipt )
       if (!receipt) {
         // assume not scheduled yet
         return waitForTransactionToComplete(transID, data);
