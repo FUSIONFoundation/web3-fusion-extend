@@ -87,7 +87,7 @@ function connectService() {
 
   try {
     provider = new web3.providers.WebsocketProvider(options.connectString);
-    web3.setProvider(provider)
+    web3.setProvider(provider);
   } catch (e) {
     console.log(
       "Provider has a problem trying again in 10 seconds or check connect argument"
@@ -98,30 +98,39 @@ function connectService() {
     return;
   }
 
+  let data = { lastblock: 0 };
+  provider.__data = data;
+
   provider.on("connect", () => {
-    console.log("Connected buying ticket")
-    let data = { lastblock: 0 };
-    provider.__data = data;
+    console.log("Connected buying ticket");
     buyATicket(data);
   });
 
   provider.on("error", e => {
     console.log("connection error ", e);
+    if (!data.reset) {
+        data.reset = true;
+        setTimeout(() => {
+          connectService();
+        }, 3000);
+      }
   });
 
   provider.on("end", e => {
     console.log("connection ended will try to reconnect in 5 seconds");
     provider.__reset = true;
-    provider.__data.reset = true;
-    setTimeout(() => {
-      connectService();
-    }, 5000);
+    if (!data.reset) {
+      data.reset = true;
+      setTimeout(() => {
+        connectService();
+      }, 3000);
+    }
   });
 }
 
 connectService();
 
-let totalTicketsBought  = 0
+let totalTicketsBought = 0;
 
 function buyATicket(data) {
   if (data.reset) {
@@ -131,11 +140,17 @@ function buyATicket(data) {
   web3.eth
     .getBlock("latest")
     .then(block => {
-        // debugger
+      // debugger
+      if (data.reset) {
+        return;
+      }
       if (data.lastblock !== block.number) {
         return web3.fsn.allTicketsByAddress(key.address).then(res => {
-           //  debugger
-          let totalTickets = Object.keys(res).length
+          //  debugger
+          if (data.reset) {
+            return;
+          }
+          let totalTickets = Object.keys(res).length;
           if (totalTickets < options.numberOfTickets) {
             console.log(
               `${totalTickets} of ${options.numberOfTickets} purchasing one`
@@ -145,10 +160,7 @@ function buyATicket(data) {
               .then(tx => {
                 console.log(tx);
                 // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
-                return web3.fsn.signAndTransmit(
-                  tx,
-                  signInfo.signTransaction
-                );
+                return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
               })
               .then(txHash => {
                 console.log("wait for buy ticket tx -> ", txHash);
@@ -157,24 +169,34 @@ function buyATicket(data) {
                 }
                 return waitForTransactionToComplete(txHash, data)
                   .then(r => {
+                    if (data.reset) {
+                      return;
+                    }
                     if (r.status) {
-                        console.log("Ticket bought")
-                        totalTicketsBought += 1
+                      console.log("Ticket bought");
+                      totalTicketsBought += 1;
                       data.lastblock = block.number;
                       setTimeout(() => {
                         buyATicket(data);
                       }, 4000);
                     } else {
-                        console.log("Ticket buy failed (? funds)")
+                      console.log("Ticket buy failed (? funds)");
                       throw new Error("failed to buy");
                     }
                   })
                   .catch(err => {
-                    throw err
+                    throw err;
                   });
               });
           } else {
-              console.log("Tickets the same - "+ options.numberOfTickets + ",  tb = " + totalTicketsBought + " retrying " + (new Date()))
+            console.log(
+              "Tickets the same - " +
+                options.numberOfTickets +
+                ",  tb = " +
+                totalTicketsBought +
+                " retrying " +
+                new Date()
+            );
             setTimeout(() => {
               buyATicket(data);
             }, 4000);
@@ -202,6 +224,9 @@ function waitForTransactionToComplete(transID, data) {
   return web3.eth
     .getTransactionReceipt(transID)
     .then(receipt => {
+      if (data.reset) {
+        return true;
+      }
       if (!receipt) {
         // assume not scheduled yet
         return waitForTransactionToComplete(transID, data);
