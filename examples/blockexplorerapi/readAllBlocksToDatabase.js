@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 const CryptoJS = require("crypto-js");
 const rp = require("request-promise");
 
-let version =  1.00
+let version = 1.0;
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="ws://3.16.110.25:9001" DB_CONNECT_STRING="{'host':'localhost','user':'root','password':'password','database':'db1','connectionLimit':10}" node ./examples/readAllBlocksToADatabase
@@ -20,7 +20,7 @@ var _pool;
 var _masterConnection;
 
 const INFO_ID = "INFO_ID";
-const VERSION_ID = "VERSION_ID"
+const VERSION_ID = "VERSION_ID";
 
 let buildTheSystem = [
   {
@@ -34,6 +34,7 @@ let buildTheSystem = [
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  numberOfTransactions int,\n" +
       "  block json,\n" +
+      "  tickInfo json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
@@ -77,10 +78,10 @@ let buildTheSystem = [
       "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
       "INSERT  IGNORE INTO info( _id, lastHeightProcessed, recCreated, recEdited)\n" +
-      "VALUES "+
+      "VALUES " +
       "    ( 'INFO_ID', -1, NOW(), NOW()  ) \n" +
       "ON DUPLICATE KEY UPDATE recEdited = NOW();\n" +
-       "Commit;\n"
+      "Commit;\n"
   },
   {
     txt: "Build Current Balance Table",
@@ -90,6 +91,7 @@ let buildTheSystem = [
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  ticketsWon BIGINT(20),\n" +
       "  balanceInfo json,\n" +
       "  PRIMARY KEY (_id)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
@@ -157,7 +159,7 @@ function keepSQLAlive() {
         _masterConnection
           .query("select * from info where _id = '" + INFO_ID + "';")
           .then(rows => {
-            lastBlock = rows[0].lastheightProcessed + 1;
+            lastBlock = rows[0].lastheightProcessed; // redo last height to ensure no logic errors
             // console.log(rows)
             _isDBConnected = true;
             console.log("Databsase connected!");
@@ -222,24 +224,25 @@ function queryAddTagsForInsert(q, p) {
 }
 
 function updateLastBlockProcessed() {
-  let now = new Date()
+  let now = new Date();
   return _pool.getConnection().then(conn => {
     conn
       .query(
         "begin;" +
-        "update info set lastheightProcessed=" +
-          (lastBlock ) +
+          "update info set lastheightProcessed=" +
+          lastBlock +
           ", recEdited = ?, version = ? where _id = '" +
           INFO_ID +
-          "';"  +
-          "commit;" , [   now , version  ]
+          "';" +
+          "commit;",
+        [now, version]
       )
       .then(rows => {
         return { success: true };
       })
-      .catch( (err)=>{
-        console.log("UPDATET block error ")
-        throw err
+      .catch(err => {
+        console.log("UPDATET block error ");
+        throw err;
       })
       .finally(() => {
         conn.release();
@@ -249,7 +252,7 @@ function updateLastBlockProcessed() {
 
 // setup for database writing
 //
-function logBlock(block) {
+function logBlock(block, tkinfo) {
   return _pool.getConnection().then(conn => {
     let query = "Insert into blocks Values(";
     let now = new Date();
@@ -268,7 +271,8 @@ function logBlock(block) {
       now,
       block.timestamp,
       block.transactions.length,
-      JSON.stringify(block)
+      JSON.stringify(block),
+      JSON.stringify(tkinfo)
     ];
 
     query = queryAddTagsForInsert(query, params);
@@ -588,6 +592,18 @@ function logTransaction(block, transactions, index, resolve, reject) {
     });
 }
 
+function logTicketPurchased( tikinfo ) {
+  return _pool.getConnection().then(conn => {
+      let {selected} = tikinfo
+      let tkQuery =  "select * from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='"+selected+"';"
+      console.log(tkQuery)
+      return conn.query( tkQuery ).then( rows => {
+          console.log(rows)
+          debugger
+      })
+  })
+}
+
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
@@ -605,32 +621,41 @@ function resumeBlockScan() {
   }
 
   updateOnlinePrice();
+  if (lastBlock === -1) {
+    lastBlock = 0;
+  }
 
   return web3.eth
     .getBlock(lastBlock)
     .then(block => {
-      if (block) {
-        return logBlock(block).then(ret => {
-          return logTransactions(block).then(ret => {
-            console.log(lastBlock, block);
-            return updateLastBlockProcessed().then(ret => {
-              lastBlock += 1;
-              setTimeout(() => {
-                resumeBlockScan();
-              }, 10);
+      return web3.fsn
+        .getSnapshot(jt => {})
+        .then(jt => {
+          if (block) {
+            return logBlock(block, jt).then(ret => {
+              return logTransactions(block).then(ret => {
+                return logTicketPurchased(jt).then(ret => {
+                  console.log(lastBlock, block);
+                  return updateLastBlockProcessed().then(ret => {
+                    lastBlock += 1;
+                    setTimeout(() => {
+                      resumeBlockScan();
+                    }, 10);
+                  });
+                });
+              });
             });
-          });
-        });
-      } else {
-        // wait for block to update
-        console.log("Waiting for new block..." + new Date());
-        // lets update the database to show we alive
-        return updateLastBlockProcessed().then(ret => {
+          } else {
+            // wait for block to update
+            console.log("Waiting for new block..." + new Date());
+            // lets update the database to show we alive
+            return updateLastBlockProcessed().then(ret => {
               setTimeout(() => {
                 resumeBlockScan();
               }, 15000);
-            })
-      }
+            });
+          }
+        });
     })
     .catch(err => {
       console.log("error talking to server, try again ", err);

@@ -10,12 +10,12 @@ const optionDefinitions = [
   { name: "numberOfTickets", alias: "n", type: Number }
 ];
 
-console.log( `Example: 
+console.log(`Example: 
               node autoPurchaseTicket --c"wss://example.com" -p "./password.txt" -k "./keystore.key" -n 10\n
               -c --connectString web socket gateway to connect to
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
-              -n  --Number of tickets to purchase` )
+              -n  --Number of tickets to purchase`);
 
 const options = commandLineArgs(optionDefinitions);
 
@@ -116,11 +116,11 @@ function connectService() {
   provider.on("error", e => {
     console.log("connection error ", e);
     if (!data.reset) {
-        data.reset = true;
-        setTimeout(() => {
-          connectService();
-        }, 3000);
-      }
+      data.reset = true;
+      setTimeout(() => {
+        connectService();
+      }, 3000);
+    }
   });
 
   provider.on("end", e => {
@@ -160,13 +160,20 @@ function buyATicket(data) {
           let totalTickets = Object.keys(res).length;
           if (totalTickets < options.numberOfTickets) {
             console.log(
-              `${totalTickets} of ${options.numberOfTickets} purchasing one, action happening around block ${block.number} ` + (new Date())
+              `${totalTickets} of ${
+                options.numberOfTickets
+              } purchasing one, action happening around block ${
+                block.number
+              } ` + new Date()
             );
             return web3.fsntx
               .buildBuyTicketTx({ from: key.address })
               .then(tx => {
                 // console.log(tx);
                 // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
+                if (data.reset) {
+                    return;
+                  }
                 return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
               })
               .then(txHash => {
@@ -174,7 +181,7 @@ function buyATicket(data) {
                 if (data.reset) {
                   return true;
                 }
-                return waitForTransactionToComplete(txHash, data)
+                return waitForTransactionToComplete(txHash,data)
                   .then(r => {
                     if (data.reset) {
                       return;
@@ -216,6 +223,9 @@ function buyATicket(data) {
       }
     })
     .catch(err => {
+      if (data.reset) {
+        return;
+      }
       console.log("error ", err);
       console.log("will retry");
       setTimeout(() => {

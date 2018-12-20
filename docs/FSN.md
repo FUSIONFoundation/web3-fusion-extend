@@ -271,6 +271,10 @@ takeSwap            buy a quantum swap
 fsn.takeSwap({from:fsn.coinbase,SwapID:"0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",Size:"0x1"},"123456")
 ```
 
+```
+fsn.getSnapshot( blocknumber )
+fsn.getSnapshotHash(blockHas)
+```
 
 ```
   web3.fsn.getHexDate = function( d ) {
