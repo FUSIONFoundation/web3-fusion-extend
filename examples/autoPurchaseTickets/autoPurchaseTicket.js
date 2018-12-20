@@ -109,7 +109,7 @@ function connectService() {
   provider.__data = data;
 
   provider.on("connect", () => {
-    console.log("Connected buying ticket");
+    console.log("Connected buying ticket for "+key.address);
     buyATicket(data);
   });
 
@@ -164,7 +164,7 @@ function buyATicket(data) {
                 options.numberOfTickets
               } purchasing one, action happening around block ${
                 block.number
-              } ` + new Date()
+              } ` + key.address + " " + new Date()
             );
             return web3.fsntx
               .buildBuyTicketTx({ from: key.address })
@@ -207,7 +207,7 @@ function buyATicket(data) {
               "Tickets the same - " +
                 options.numberOfTickets +
                 ",  tb = " +
-                totalTicketsBought +
+                totalTicketsBought + " for " + key.address + " " +
                 " retrying " +
                 new Date()
             );
