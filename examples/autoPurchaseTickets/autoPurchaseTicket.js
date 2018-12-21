@@ -7,6 +7,7 @@ const optionDefinitions = [
   { name: "connectString", alias: "c", type: String },
   { name: "passPhraseFile", type: String, alias: "p" },
   { name: "keyStore", alias: "k", type: String },
+  { name: "gasPrice", alias: "g", type: Number },
   { name: "numberOfTickets", alias: "n", type: Number }
 ];
 
@@ -15,11 +16,23 @@ console.log(`Example:
               -c --connectString web socket gateway to connect to
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
+              -g  -- gasPrice gas price 1 - 100 (defaults to 2 gwei)
               -n  --Number of tickets to purchase`);
 
 const options = commandLineArgs(optionDefinitions);
 
 console.log(options);
+
+var gasPrice = 2;
+
+if (options.gasPrice) {
+  let val = parseInt(options.gasPrice);
+  if (isNaN(val) || val < 1 || val > 100) {
+    console.log("Invalid gas price");
+    process.exit(1);
+  }
+  gasPrice = val;
+}
 
 if (!options.connectString) {
   console.log("please set the argument --connectString or -c");
@@ -109,7 +122,7 @@ function connectService() {
   provider.__data = data;
 
   provider.on("connect", () => {
-    console.log("Connected buying ticket for "+key.address);
+    console.log("Connected buying ticket for " + key.address);
     buyATicket(data);
   });
 
@@ -164,7 +177,10 @@ function buyATicket(data) {
                 options.numberOfTickets
               } purchasing one, action happening around block ${
                 block.number
-              } ` + key.address + " " + new Date()
+              } ` +
+                key.address +
+                " " +
+                new Date()
             );
             return web3.fsntx
               .buildBuyTicketTx({ from: key.address })
@@ -172,8 +188,9 @@ function buyATicket(data) {
                 // console.log(tx);
                 // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
                 if (data.reset) {
-                    return;
-                  }
+                  return;
+                }
+                tx.gasPrice = web3.utils.toWei( new web3.utils.BN( gasPrice ), "gwei");
                 return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
               })
               .then(txHash => {
@@ -181,7 +198,7 @@ function buyATicket(data) {
                 if (data.reset) {
                   return true;
                 }
-                return waitForTransactionToComplete(txHash,data)
+                return waitForTransactionToComplete(txHash, data)
                   .then(r => {
                     if (data.reset) {
                       return;
@@ -207,7 +224,10 @@ function buyATicket(data) {
               "Tickets the same - " +
                 options.numberOfTickets +
                 ",  tb = " +
-                totalTicketsBought + " for " + key.address + " " +
+                totalTicketsBought +
+                " for " +
+                key.address +
+                " " +
                 " retrying " +
                 new Date()
             );
