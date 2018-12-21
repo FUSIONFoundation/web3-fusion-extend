@@ -33,9 +33,11 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  numberOfTransactions int,\n" +
+      "  ticketSelected VARCHAR(128),\n"  +
       "  block json,\n" +
       "  tickInfo json,\n" +
       "  PRIMARY KEY (hash),\n" +
+      "  INDEX `ticketSelected` (`ticketSelected`),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
       "  INDEX `numberOfTransactions` (`numberOfTransactions`)\n" +
@@ -52,8 +54,8 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  fromAddress VARCHAR(68),\n" +
       "  toAddress VARCHAR(68),\n" +
-      "  fusionCommand VARCHAR(68),\n" +
-      "  commandExtra VARCHAR(68),\n" +
+      "  fusionCommand VARCHAR(128),\n" +
+      "  commandExtra VARCHAR(128),\n" +
       "  data json,\n" +
       "  transaction json,\n" +
       "  PRIMARY KEY (hash),\n" +
@@ -91,7 +93,8 @@ let buildTheSystem = [
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-      "  ticketsWon BIGINT(20),\n" +
+      "  ticketsWon BIGINT(20) DEFAULT 0,\n" +
+      "  rewardEarn DOUBLE DEFAULT 0.0,\n" +
       "  balanceInfo json,\n" +
       "  PRIMARY KEY (_id)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
@@ -179,26 +182,25 @@ function keepSQLAlive() {
 }
 
 function keepWeb3Alive() {
+  //debugger
   provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING);
   provider.on("connect", function() {
+    //debugger
     web3._isConnected = true;
     resumeBlockScan();
   });
   provider.on("error", function(err) {
-    web3._isConnected = false;
-    console.log("web3 connection error ", err);
-    console.log("will try to reconnect");
-    setTimeout(() => {
-      keepWeb3Alive();
-    }, 5);
+    //debugger
+    provider.disconnect()
   });
   provider.on("end", function(err) {
+    //debugger
     web3._isConnected = false;
     console.log("web3 connection error ", err);
     console.log("will try to reconnect");
     setTimeout(() => {
       keepWeb3Alive();
-    }, 5);
+    }, 2);
   });
   web3 = new Web3(provider);
   web3 = web3FusionExtend.extend(web3);
@@ -271,6 +273,7 @@ function logBlock(block, tkinfo) {
       now,
       block.timestamp,
       block.transactions.length,
+      tkinfo.selected,
       JSON.stringify(block),
       JSON.stringify(tkinfo)
     ];
@@ -456,6 +459,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
               let now = new Date();
               let fusionCommand;
               let commandExtra;
+
               let logData = null;
               let jsonLogData;
 
@@ -592,15 +596,39 @@ function logTransaction(block, transactions, index, resolve, reject) {
     });
 }
 
-function logTicketPurchased( tikinfo ) {
+function calcReward(height) {
+  let i;
+  // initial reward 2.5
+  let reward = 2.5;
+  // every 4915200 blocks divide reward by 2
+  let segment = Math.floor(height / 4915200);
+  for (i = 0; i < segment; i++) {
+    reward = reward / 2;
+  }
+  return reward;
+}
+
+function logTicketPurchased( blockNumber, tikinfo ) {
   return _pool.getConnection().then(conn => {
       let {selected} = tikinfo
-      let tkQuery =  "select * from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='"+selected+"';"
+      let tkQuery =  "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='"+selected+"';"
       console.log(tkQuery)
       return conn.query( tkQuery ).then( rows => {
-          console.log(rows)
-          debugger
+          try {
+              let address = rows[0].fromAddress;
+              return conn.query( "UPDATE currentBalance set ticketsWon  = ticketsWon + 1, rewardEarn = rewardEarn + ? where _id = ?;", [ calcReward(blockNumber), address] )
+              .then( (rows) => {
+
+              })
+          } catch (e) {
+            //debugger
+          }
+          //console.log(rows)
+          //debugger
       })
+      .finally(() => {
+        conn.release();
+      });
   })
 }
 
@@ -629,12 +657,12 @@ function resumeBlockScan() {
     .getBlock(lastBlock)
     .then(block => {
       return web3.fsn
-        .getSnapshot(jt => {})
+        .getSnapshot( web3.utils.numberToHex( lastBlock )  )
         .then(jt => {
           if (block) {
             return logBlock(block, jt).then(ret => {
               return logTransactions(block).then(ret => {
-                return logTicketPurchased(jt).then(ret => {
+                return logTicketPurchased( lastBlock, jt).then(ret => {
                   console.log(lastBlock, block);
                   return updateLastBlockProcessed().then(ret => {
                     lastBlock += 1;
