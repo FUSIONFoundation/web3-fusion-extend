@@ -49,7 +49,7 @@ If running locally replace api.fusionnetwork.io with your own server link
 
 #Balance
 
-  http://api.fusionnetwork.io/balances/0x91db50f5c36ae7616009d4e94462dca4d4c7e833
+  http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94
   http://api.fusionnetwork.io/balances/all?page=0&size=2&sort=asc
 
 #Blocks
