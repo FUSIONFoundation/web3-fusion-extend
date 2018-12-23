@@ -69,6 +69,7 @@ router.get("/:hash", function(req, res, next) {
           conn.release();
         });
     });
+    return
   }
 
   if (hash === "all") {
