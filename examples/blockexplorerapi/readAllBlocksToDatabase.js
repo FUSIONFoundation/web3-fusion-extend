@@ -58,6 +58,7 @@ let buildTheSystem = [
       "  commandExtra VARCHAR(128),\n" +
       "  data json,\n" +
       "  transaction json,\n" +
+      "  receipt json,\n" +
       "  PRIMARY KEY (hash),\n" +
       "  INDEX `height` (`height`),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
@@ -555,7 +556,8 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 fusionCommand,
                 commandExtra,
                 logData,
-                JSON.stringify(transaction)
+                JSON.stringify(transaction),
+                JSON.stringify(receipt)
               ];
 
               query = queryAddTagsForInsert(query, params);
