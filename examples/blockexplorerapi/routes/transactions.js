@@ -27,6 +27,7 @@ router.get("/:hash", function(req, res, next) {
   let size = req.query.size || 100;
   let field = allowedFields[req.query.field] ? req.query.field : 'height'
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+  let index = parseInt( req.query.index || -1 )
 
   page = parseInt( page )
   size = parseInt( size )
@@ -38,6 +39,10 @@ router.get("/:hash", function(req, res, next) {
 
   if ( isNaN(page) ) {
     page = 0
+  }
+
+  if ( isNaN(index) ) {
+    index = -1
   }
 
   if ( field === 'block' ) {
@@ -75,7 +80,7 @@ router.get("/:hash", function(req, res, next) {
   if (hash === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
+        .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
         .then(rows => {
           res.json(rows)
         })

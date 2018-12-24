@@ -31,6 +31,7 @@ router.get("/:block", function(req, res, next) {
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
   let to =  parseInt( req.query.to || 0 )
   let from = parseInt( req.query.from || 20 )
+  let index = parseInt( req.query.index || -1 )
 
   if ( isNaN(to ) ) {
     to = 0
@@ -42,6 +43,10 @@ router.get("/:block", function(req, res, next) {
 
   if ( from - to > 50 ) {
     from = to + 50
+  }
+
+  if ( isNaN(index) ) {
+    index = -1
   }
 
   page = parseInt( page )
@@ -59,7 +64,7 @@ router.get("/:block", function(req, res, next) {
   if (blockNumber === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.blocks order by ${field} ${sort}  limit ?,?` , [ (page*size), size ] )
+        .query(`SELECT * FROM fusionblockdb.blocks order by ${field} ${sort}  limit ?,?` , [ (index >= 0 ? index : page*size), size ] )
         .then(rows => {
           res.json(rows)
         })
