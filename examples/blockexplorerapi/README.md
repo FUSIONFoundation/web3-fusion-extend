@@ -58,6 +58,7 @@ If running locally replace api.fusionnetwork.io with your own server link
   http://api.fusionnetwork.io/blocks/300
 
   http://api.fusionnetwork.io/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
+  http://api.fusionnetwork.io/blocks/range?to=10&from=100
 
   fields can be:  [ timestamp, hash , numberOfTransactions, height ]
 

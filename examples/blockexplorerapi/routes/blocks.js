@@ -10,6 +10,7 @@ var { getConnection } = require("../dbapi/dbapi.js");
  * 
  *   http://localhost:3000/blocks/latest
  *   http://localhost:3000/blocks/300
+ *   http://localhost:3000/blocks/range?to=10&from=100
  *
  *   http://localhost:3000/blocks/all?sort=asc&page=2&size=10&field=height&sort=desc
  * 
@@ -28,6 +29,20 @@ router.get("/:block", function(req, res, next) {
   let size = req.query.size || 1;
   let field = allowedFields[req.query.field] ? req.query.field : 'height'
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+  let to =  parseInt( req.query.to || 0 )
+  let from = parseInt( req.query.from || 20 )
+
+  if ( isNaN(to ) ) {
+    to = 0
+  }
+
+  if ( isNaN(from) ) {
+    from = 20
+  }
+
+  if ( from - to > 50 ) {
+    from = to + 50
+  }
 
   page = parseInt( page )
   size = parseInt( size )
@@ -56,6 +71,17 @@ router.get("/:block", function(req, res, next) {
     getConnection().then(conn => {
       conn
         .query("SELECT * FROM fusionblockdb.blocks order by height desc limit 1" )
+        .then(rows => {
+          res.json(rows)
+        })
+        .finally(() => {
+          conn.release();
+        });
+    });
+  } else  if (blockNumber === "range") {
+    getConnection().then(conn => {
+      conn
+        .query(`SELECT * FROM fusionblockdb.blocks where height >= ? and height <= ? order by height` , [ to, from  ] )
         .then(rows => {
           res.json(rows)
         })
