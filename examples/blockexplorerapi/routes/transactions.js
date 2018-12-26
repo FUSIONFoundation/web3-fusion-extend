@@ -51,7 +51,7 @@ router.get("/:hash", function(req, res, next) {
   }
 
   if ( field === 'type' ) {
-      type = 'fusionCommand'
+      field = 'fusionCommand'
   }
 
   if ( field === 'timestamp' ) {

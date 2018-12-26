@@ -16,6 +16,7 @@ router.get("/:asset", function(req, res, next) {
   let page = req.query.page || 0;
   let size = req.query.size || 1;
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+  let index = parseInt( req.query.index || -1 )
  
   page = parseInt(page);
   size = parseInt(size);
@@ -29,11 +30,15 @@ router.get("/:asset", function(req, res, next) {
     page = 0;
   }
 
+  if ( isNaN(index) ) {
+    index = -1
+  }
+
   if (req.params.asset === "all") {
     getConnection().then(conn => {
       conn
         .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by timeStamp ${sort} limit ?,?`, [
-          page * size,
+          (index>=0 ? index : page*size),
           size
         ])
         .then(rows => {
