@@ -32,6 +32,7 @@ let buildTheSystem = [
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  timeStamp BIGINT UNSIGNED,\n" +
+      "  miner VARCHAR(68),\n" +
       "  numberOfTransactions int,\n" +
       "  ticketSelected VARCHAR(128),\n"  +
       "  block json,\n" +
@@ -40,6 +41,7 @@ let buildTheSystem = [
       "  INDEX `ticketSelected` (`ticketSelected`),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
+      "  INDEX `miner` (`miner`),\n" +
       "  INDEX `numberOfTransactions` (`numberOfTransactions`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   },
@@ -273,6 +275,7 @@ function logBlock(block, tkinfo) {
       now,
       now,
       block.timestamp,
+      block.miner,
       block.transactions.length,
       tkinfo.selected,
       JSON.stringify(block),

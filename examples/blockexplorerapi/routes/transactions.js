@@ -20,6 +20,7 @@ router.get("/:hash", function(req, res, next) {
     hash: true,
     type: true,
     block: true,
+    height: true,
     asset: true
   };
   let hash = req.params.hash;

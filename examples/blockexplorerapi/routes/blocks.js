@@ -22,7 +22,8 @@ router.get("/:block", function(req, res, next) {
     timestamp: true,
     hash: true,
     numberOfTransactions: true,
-    height: true
+    height: true,
+    miner : true,
   };
   let blockNumber = req.params.block;
   let page =  req.query.page || 0;
