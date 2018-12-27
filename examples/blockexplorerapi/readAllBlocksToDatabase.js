@@ -34,7 +34,7 @@ let buildTheSystem = [
       "  timeStamp BIGINT UNSIGNED,\n" +
       "  miner VARCHAR(68),\n" +
       "  numberOfTransactions int,\n" +
-      "  ticketSelected VARCHAR(128),\n"  +
+      "  ticketSelected VARCHAR(128),\n" +
       "  block json,\n" +
       "  tickInfo json,\n" +
       "  PRIMARY KEY (hash),\n" +
@@ -58,6 +58,8 @@ let buildTheSystem = [
       "  toAddress VARCHAR(68),\n" +
       "  fusionCommand VARCHAR(128),\n" +
       "  commandExtra VARCHAR(128),\n" +
+      "  commandExtra2 VARCHAR(128),\n" +
+      "  commandExtra3 VARCHAR(128),\n" +
       "  data json,\n" +
       "  transaction json,\n" +
       "  receipt json,\n" +
@@ -66,6 +68,9 @@ let buildTheSystem = [
       "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
+      "  INDEX `commandExtra` (`commandExtra`),\n" +
+      "  INDEX `commandExtra2` (`commandExtra2`),\n" +
+      "  INDEX `commandExtra3` (`commandExtra3`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
@@ -98,8 +103,16 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  ticketsWon BIGINT(20) DEFAULT 0,\n" +
       "  rewardEarn DOUBLE DEFAULT 0.0,\n" +
+      "  fsnBalance varchar(68),\n" +
+      "  numberOfTransactions DOUBLE DEFAULT 0.0,\n" +
+      "  san VARCHAR(32),\n" +
+      "  assetsHeld DOUBLE DEFAULT 0.0,\n" +
       "  balanceInfo json,\n" +
-      "  PRIMARY KEY (_id)\n" +
+      "  PRIMARY KEY (_id),\n" +
+      "  INDEX `san` (`san`),\n" +
+      "  INDEX `assetsHeld` (`assetsHeld`),\n" +
+      "  INDEX `fsnBalance` (`fsnBalance`),\n" +
+      "  INDEX `ticketsWon` (`ticketsWon`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
       "Commit;\n"
   },
@@ -194,7 +207,7 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
-    provider.disconnect()
+    provider.disconnect();
   });
   provider.on("end", function(err) {
     //debugger
@@ -403,14 +416,28 @@ function getBalances(addrs, index, resolve, reject) {
                 notation
               });
               _pool.getConnection().then(conn => {
-                let sql =
-                  `INSERT INTO currentBalance( _id, recCreated, recEdited, balanceInfo )\n` +
-                  `VALUES(  "${address}", NOW(), NOW() ,  '${all}'  )\n` +
-                  `ON DUPLICATE KEY UPDATE recEdited = NOW(), balanceInfo =  '${all}' ;\n`;
                 conn
-                  .query(sql)
+                  .query(
+                    `select count(*) from transactions where toAddress="${address}" or fromAddress="${address}";`
+                  )
                   .then(rows => {
-                    getBalances(addrs, index + 1, resolve, reject);
+                    let count = rows[0]["count(*)"];
+                    let fsnBalance =
+                      balances[
+                        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                      ];
+                    if (!fsnBalance) {
+                      fsnBalance = "0";
+                    }
+                    let assetsHeld =  Object.keys( Object.assign( balances, timeLockBalances ) ).length
+                     
+                    let sql =
+                      `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
+                      `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
+                      `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
+                    conn.query(sql).then(rows => {
+                      getBalances(addrs, index + 1, resolve, reject);
+                    });
                   })
                   .finally(() => {
                     conn.release();
@@ -463,6 +490,9 @@ function logTransaction(block, transactions, index, resolve, reject) {
               let now = new Date();
               let fusionCommand;
               let commandExtra;
+              let commandExtra2;
+              let commandExtra3;
+              let getAssetBalance;
 
               let logData = null;
               let jsonLogData;
@@ -511,8 +541,18 @@ function logTransaction(block, transactions, index, resolve, reject) {
 
               if (jsonLogData) {
                 switch (fusionCommand) {
+                  case "AssetValueChangeFunc":
+                    commandExtra = jsonLogData.AssetID;
+                    getAssetBalance = jsonLogData.AssetID;
+                    break;
                   case "GenAssetFunc":
                     commandExtra = jsonLogData.AssetID;
+                    commandExtra2 =
+                      jsonLogData.Name +
+                      " (" +
+                      jsonLogData.Symbol.toUpperCase() +
+                      ")";
+                    getAssetBalance = jsonLogData.AssetID;
                     break;
                   case "SendAssetFunc":
                     commandExtra = jsonLogData.AssetID;
@@ -523,9 +563,6 @@ function logTransaction(block, transactions, index, resolve, reject) {
                     break;
                   case "BuyTicketFunc":
                     commandExtra = jsonLogData.Ticket;
-                    break;
-                  case "AssetValueChangeFunc":
-                    commandExtra = jsonLogData.AssetID;
                     break;
                   case "MakeSwapFunc":
                     commandExtra = jsonLogData.SwapID;
@@ -558,6 +595,8 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 transaction.to,
                 fusionCommand,
                 commandExtra,
+                commandExtra2,
+                commandExtra3,
                 logData,
                 JSON.stringify(transaction),
                 JSON.stringify(receipt)
@@ -570,7 +609,33 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 .then(okPacket => {
                   // if ( okPacket.affectedRows === 1 ) {
                   index += 1;
-                  logTransaction(block, transactions, index, resolve, reject);
+                  if (getAssetBalance) {
+                    web3.fsn.getAsset(getAssetBalance).then(asset => {
+                      let totalSupply = asset.Total
+                      conn
+                        .query(
+                          "UPDATE transactions set commandExtra3  = ? where hash = ?;",
+                          [totalSupply, transaction.hash.toLowerCase()]
+                        )
+                        .then(rows => {
+                          logTransaction(
+                            block,
+                            transactions,
+                            index,
+                            resolve,
+                            reject
+                          );
+                        });
+                    });
+                  } else {
+                    logTransaction(
+                      block,
+                      transactions,
+                      index,
+                      resolve,
+                      reject
+                    );
+                  }
                 })
                 .catch(err => {
                   if (err.code === "ER_DUP_ENTRY") {
@@ -613,28 +678,35 @@ function calcReward(height) {
   return reward;
 }
 
-function logTicketPurchased( blockNumber, tikinfo ) {
+function logTicketPurchased(blockNumber, tikinfo) {
   return _pool.getConnection().then(conn => {
-      let {selected} = tikinfo
-      let tkQuery =  "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='"+selected+"';"
-      console.log(tkQuery)
-      return conn.query( tkQuery ).then( rows => {
-          try {
-              let address = rows[0].fromAddress;
-              return conn.query( "UPDATE currentBalance set ticketsWon  = ticketsWon + 1, rewardEarn = rewardEarn + ? where _id = ?;", [ calcReward(blockNumber), address] )
-              .then( (rows) => {
-
-              })
-          } catch (e) {
-            //debugger
-          }
-          //console.log(rows)
+    let { selected } = tikinfo;
+    let tkQuery =
+      "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='" +
+      selected +
+      "';";
+    console.log(tkQuery);
+    return conn
+      .query(tkQuery)
+      .then(rows => {
+        try {
+          let address = rows[0].fromAddress;
+          return conn
+            .query(
+              "UPDATE currentBalance set ticketsWon  = ticketsWon + 1, rewardEarn = rewardEarn + ? where _id = ?;",
+              [calcReward(blockNumber), address]
+            )
+            .then(rows => {});
+        } catch (e) {
           //debugger
+        }
+        //console.log(rows)
+        //debugger
       })
       .finally(() => {
         conn.release();
       });
-  })
+  });
 }
 
 function resumeBlockScan() {
@@ -662,12 +734,12 @@ function resumeBlockScan() {
     .getBlock(lastBlock)
     .then(block => {
       return web3.fsn
-        .getSnapshot( web3.utils.numberToHex( lastBlock )  )
+        .getSnapshot(web3.utils.numberToHex(lastBlock))
         .then(jt => {
           if (block) {
             return logBlock(block, jt).then(ret => {
               return logTransactions(block).then(ret => {
-                return logTicketPurchased( lastBlock, jt).then(ret => {
+                return logTicketPurchased(lastBlock, jt).then(ret => {
                   console.log(lastBlock, block);
                   return updateLastBlockProcessed().then(ret => {
                     lastBlock += 1;
@@ -851,4 +923,21 @@ function updateOnlinePrice() {
       console.log("API call error:", err.message);
       inpriceget = false;
     });
+}
+
+function formatDecimals( val , decimals ) {
+  if ( typeof val === 'object') {
+    val = val.toString()
+  }
+  let len = val.length;
+  if ( len < decimals ) {
+    val = "0".repeat(decimals-len) + val
+    len = decimals
+  }
+  if ( len === decimals ) {
+    val = "0." + val
+  } else {
+    val = insert( val, val.length - decimals, "." )
+  }
+  return val;
 }
