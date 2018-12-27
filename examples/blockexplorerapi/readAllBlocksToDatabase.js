@@ -103,7 +103,7 @@ let buildTheSystem = [
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  ticketsWon BIGINT(20) DEFAULT 0,\n" +
       "  rewardEarn DOUBLE DEFAULT 0.0,\n" +
-      "  fsnBalance varchar(68),\n" +
+      "  fsnBalance VARCHAR(40) DEFAULT 0,\n" +
       "  numberOfTransactions DOUBLE DEFAULT 0.0,\n" +
       "  san VARCHAR(32),\n" +
       "  assetsHeld DOUBLE DEFAULT 0.0,\n" +
@@ -428,6 +428,9 @@ function getBalances(addrs, index, resolve, reject) {
                       ];
                     if (!fsnBalance) {
                       fsnBalance = "0";
+                    }
+                    if ( fsnBalance.length < 36 ) {
+                      fsnBalance = "0".repeat( 36 - fsnBalance.length ) + fsnBalance
                     }
                     let assetsHeld =  Object.keys( Object.assign( balances, timeLockBalances ) ).length
                      

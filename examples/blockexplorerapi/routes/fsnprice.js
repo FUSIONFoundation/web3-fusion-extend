@@ -35,6 +35,8 @@ getConnection().then(conn => {
     .query(`Begin;
            SELECT * FROM priceWatch order by last_updated ${sort}  limit ?,?;
            Select "TotalTransactions", count(*) from transactions;
+           Select "TotalAddresses", count(*) from currentBalance;
+           Select "TotalAssets", count(*) from transactions where fusioncommand='GenAssetFunc';
            select "LastBlock", MAX(height) from blocks;
            SELECT * FROM blocks order by timestamp desc  limit 0,2;
            Commit;`
@@ -47,8 +49,10 @@ getConnection().then(conn => {
             return res.json( {
                 priceInfo : JSON.parse( JSON.stringify( rows[1][0] ) ) ,
                 totalTransactions :  JSON.parse( JSON.stringify( rows[2][0]['count(*)'])),
-                maxBlock :  JSON.parse( JSON.stringify( rows[3][0]['MAX(height)'] )),
-                lastTwoBlocks :  JSON.parse( JSON.stringify( rows[4] )) 
+                totalAddresses :  JSON.parse( JSON.stringify( rows[3][0]['count(*)'])),
+                totalAssets :  JSON.parse( JSON.stringify( rows[4][0]['count(*)'])),
+                maxBlock :  JSON.parse( JSON.stringify( rows[5][0]['MAX(height)'] )),
+                lastTwoBlocks :  JSON.parse( JSON.stringify( rows[6] )) 
              } )
         }
         res.json(rows);
