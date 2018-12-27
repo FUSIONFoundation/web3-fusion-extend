@@ -48,12 +48,15 @@ router.get("/:hash", function(req, res, next) {
   if ( isNaN(index) ) {
     index = -1
   }
-  
+
   if ( hash === 'ts' ) {
     let tsA = req.query.ts ?  req.query.ts.split("-") : []
+    for ( let i = 0 ; i < tsA.length ; i++ ) {
+      tsA[i] = tsA[i].toLowerCase()
+    }
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM currentBalance where hash  in (?)` , [ tsA ] )
+        .query(`SELECT * FROM currentBalance where _id in (?)` , [ tsA ] )
         .then(rows => {
           res.json(rows)
         })
@@ -88,6 +91,7 @@ router.get("/:hash", function(req, res, next) {
     });
   } else {
     // else get one block
+    hash = hash.toLowerCase()
     getConnection().then(conn => {
       conn
         .query("select * from currentBalance where _id = ? or san = ?", [hash,hash])
