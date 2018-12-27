@@ -401,7 +401,7 @@ function getBalances(addrs, index, resolve, reject) {
 
   console.log("GETTTING BALANCE " + address);
 
-  web3.fsn
+  return web3.fsn
     .getAllBalances(address)
     .then(balances => {
       web3.fsn.getAllTimeLockBalances(address).then(timeLockBalances => {
@@ -415,8 +415,8 @@ function getBalances(addrs, index, resolve, reject) {
                 swaps,
                 notation
               });
-              _pool.getConnection().then(conn => {
-                conn
+              return _pool.getConnection().then(conn => {
+                return conn
                   .query(
                     `select count(*) from transactions where toAddress="${address}" or fromAddress="${address}";`
                   )
@@ -438,7 +438,7 @@ function getBalances(addrs, index, resolve, reject) {
                       `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
                       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
                       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
-                    conn.query(sql).then(rows => {
+                    return conn.query(sql).then(rows => {
                       getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
@@ -522,7 +522,6 @@ function logTransaction(block, transactions, index, resolve, reject) {
               transaction.to = transaction.to.toLowerCase();
               transaction.from = transaction.from.toLowerCase();
 
-              balancesToGet[transaction.to] = true;
               balancesToGet[transaction.from] = true;
 
               if (transaction.topics) {
@@ -539,10 +538,18 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 ) {
                   fusionCommand =
                     web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
+                    balancesToGet[transaction.to] = true;    
                 }
+              } else {
+                balancesToGet[transaction.to] = true;
               }
 
+
               if (jsonLogData) {
+                if ( jsonLogData.To ) {
+                  balancesToGet[jsonLogData.To.toLowerCase()] = true;
+                }
+
                 switch (fusionCommand) {
                   case "AssetValueChangeFunc":
                     commandExtra = jsonLogData.AssetID;
@@ -607,13 +614,13 @@ function logTransaction(block, transactions, index, resolve, reject) {
 
               query = queryAddTagsForInsert(query, params);
 
-              conn
+              return conn
                 .query(query, params)
                 .then(okPacket => {
                   // if ( okPacket.affectedRows === 1 ) {
                   index += 1;
                   if (getAssetBalance) {
-                    web3.fsn.getAsset(getAssetBalance).then(asset => {
+                    return web3.fsn.getAsset(getAssetBalance).then(asset => {
                       let totalSupply = asset.Total
                       conn
                         .query(

@@ -3,6 +3,10 @@ var router = express.Router();
 
 var { getConnection } = require("../dbapi/dbapi.js");
 
+//name,assetId,assetType,supply,numberOfTransactions
+
+
+
 /* GET assets listing. */
 // http://localhost:3000/assets/
 //
