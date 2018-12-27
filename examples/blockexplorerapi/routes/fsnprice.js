@@ -45,7 +45,7 @@ getConnection().then(conn => {
         size
     ])
     .then(rows => {
-        if ( rows.length === 6 ) {
+        if ( rows.length === 8 ) {
             return res.json( {
                 priceInfo : JSON.parse( JSON.stringify( rows[1][0] ) ) ,
                 totalTransactions :  JSON.parse( JSON.stringify( rows[2][0]['count(*)'])),

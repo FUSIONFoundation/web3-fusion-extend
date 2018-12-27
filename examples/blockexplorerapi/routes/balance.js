@@ -12,58 +12,6 @@ var { getConnection } = require("../dbapi/dbapi.js");
  *   http://localhost:3000/balances/all?page=0&size=2&sort=desc
  *
  */
-router.get("/:account", function(req, res, next) {
-  let page = req.query.page || 0;
-  let size = req.query.size || 100;
-  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
-  let index = parseInt( req.query.index || -1 )
-
-  page = parseInt(page);
-  size = parseInt(size);
-
-  if (size > 100 || size < 1 || isNaN(size)) {
-    console.log("size ", size);
-    size = 100;
-  }
-
-  if (isNaN(page)) {
-    page = 0;
-  }
-
-  if ( isNaN(index) ) {
-    index = -1
-  }
-
-  if (req.params.account === "all") {
-    getConnection().then(conn => {
-      conn
-        .query(`SELECT * FROM currentBalance order by _id ${sort} limit ?,?`, [
-          (index>=0 ? index : page*size),
-          size
-        ])
-        .then(rows => {
-          res.json(rows);
-        })
-        .finally(() => {
-          conn.release();
-        });
-    });
-  } else {
-    getConnection().then(conn => {
-      conn
-        .query("select * from currentBalance where _id = ?", [
-          req.params.account
-        ])
-        .then(rows => {
-          res.json(rows);
-        })
-        .finally(() => {
-          conn.release();
-        });
-    });
-  }
-});
-
 router.get("/:hash", function(req, res, next) {
   let allowedFields = {
     san: true,
@@ -100,7 +48,7 @@ router.get("/:hash", function(req, res, next) {
   if ( isNaN(index) ) {
     index = -1
   }
-
+  
   if ( hash === 'ts' ) {
     let tsA = req.query.ts ?  req.query.ts.split("-") : []
     getConnection().then(conn => {
