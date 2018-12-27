@@ -62,7 +62,6 @@ router.get("/:hash", function(req, res, next) {
       field = [`height  ${sort}`,'recCreated']
   }
 
-
   if ( hash === 'ts' ) {
     let tsA = req.query.ts ?  req.query.ts.split("-") : []
     getConnection().then(conn => {
@@ -79,16 +78,29 @@ router.get("/:hash", function(req, res, next) {
   }
 
   if (hash === "all") {
-    getConnection().then(conn => {
-      conn
-        .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
-        .then(rows => {
-          res.json(rows)
-        })
-        .finally(() => {
-          conn.release();
-        });
-    });
+    if ( req.query.address  ) {
+      getConnection().then(conn => {
+        conn
+          .query(`SELECT * FROM fusionblockdb.transactions where toAddress=? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .then(rows => {
+            res.json(rows)
+          })
+          .finally(() => {
+            conn.release();
+          });
+      });
+    } else {
+      getConnection().then(conn => {
+        conn
+          .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
+          .then(rows => {
+            res.json(rows)
+          })
+          .finally(() => {
+            conn.release();
+          });
+      });
+    }
   } else if ( hash === 'latest') {
     getConnection().then(conn => {
       conn
