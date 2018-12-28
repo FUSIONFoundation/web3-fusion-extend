@@ -156,11 +156,12 @@ function createTables(resolve, reject) {
       }
     })
     .catch(err => {
-      debugger;
       console.log("ERROR: " + buildTheSystem[buildIndex].txt, err);
       reject(err);
     });
 }
+
+let starttUp = true;
 
 function keepSQLAlive() {
   _isDBConnected = false;
@@ -178,7 +179,10 @@ function keepSQLAlive() {
         _masterConnection
           .query("select * from info where _id = '" + INFO_ID + "';")
           .then(rows => {
-            lastBlock = rows[0].lastheightProcessed; // redo last height to ensure no logic errors
+            if (starttUp) {
+              lastBlock = rows[0].lastheightProcessed; // redo last height to ensure no logic errors
+              starttUp = false;
+            }
             // console.log(rows)
             _isDBConnected = true;
             console.log("Databsase connected!");
@@ -187,13 +191,14 @@ function keepSQLAlive() {
       });
     })
     .catch(err => {
+      starttUp = true;
       console.error(
         "connect to database failed, trying again in five seconds",
         err
       );
       setTimeout(() => {
         keepSQLAlive();
-      }, 50000);
+      }, 60000);
     });
 }
 
@@ -429,11 +434,14 @@ function getBalances(addrs, index, resolve, reject) {
                     if (!fsnBalance) {
                       fsnBalance = "0";
                     }
-                    if ( fsnBalance.length < 36 ) {
-                      fsnBalance = "0".repeat( 36 - fsnBalance.length ) + fsnBalance
+                    if (fsnBalance.length < 36) {
+                      fsnBalance =
+                        "0".repeat(36 - fsnBalance.length) + fsnBalance;
                     }
-                    let assetsHeld =  Object.keys( Object.assign( balances, timeLockBalances ) ).length
-                     
+                    let assetsHeld = Object.keys(
+                      Object.assign(balances, timeLockBalances)
+                    ).length;
+
                     let sql =
                       `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
                       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
@@ -489,6 +497,8 @@ function logTransaction(block, transactions, index, resolve, reject) {
               transaction.topics =
                 log && log.topics && log.topics.length > 0 ? log.topics : null;
 
+              // debugger;
+
               let query = "Insert into transactions Values(";
               let now = new Date();
               let fusionCommand;
@@ -538,15 +548,14 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 ) {
                   fusionCommand =
                     web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
-                    balancesToGet[transaction.to] = true;    
+                  balancesToGet[transaction.to] = true;
                 }
               } else {
                 balancesToGet[transaction.to] = true;
               }
 
-
               if (jsonLogData) {
-                if ( jsonLogData.To ) {
+                if (jsonLogData.To) {
                   balancesToGet[jsonLogData.To.toLowerCase()] = true;
                 }
 
@@ -621,7 +630,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
                   index += 1;
                   if (getAssetBalance) {
                     return web3.fsn.getAsset(getAssetBalance).then(asset => {
-                      let totalSupply = asset.Total
+                      let totalSupply = asset.Total;
                       conn
                         .query(
                           "UPDATE transactions set commandExtra3  = ? where hash = ?;",
@@ -638,13 +647,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
                         });
                     });
                   } else {
-                    logTransaction(
-                      block,
-                      transactions,
-                      index,
-                      resolve,
-                      reject
-                    );
+                    logTransaction(block, transactions, index, resolve, reject);
                   }
                 })
                 .catch(err => {
@@ -764,11 +767,9 @@ function resumeBlockScan() {
             // wait for block to update
             console.log("Waiting for new block..." + new Date());
             // lets update the database to show we alive
-            return updateLastBlockProcessed().then(ret => {
-              setTimeout(() => {
-                resumeBlockScan();
-              }, 15000);
-            });
+            setTimeout(() => {
+              resumeBlockScan();
+            }, 15000);
           }
         });
     })
@@ -935,19 +936,19 @@ function updateOnlinePrice() {
     });
 }
 
-function formatDecimals( val , decimals ) {
-  if ( typeof val === 'object') {
-    val = val.toString()
+function formatDecimals(val, decimals) {
+  if (typeof val === "object") {
+    val = val.toString();
   }
   let len = val.length;
-  if ( len < decimals ) {
-    val = "0".repeat(decimals-len) + val
-    len = decimals
+  if (len < decimals) {
+    val = "0".repeat(decimals - len) + val;
+    len = decimals;
   }
-  if ( len === decimals ) {
-    val = "0." + val
+  if (len === decimals) {
+    val = "0." + val;
   } else {
-    val = insert( val, val.length - decimals, "." )
+    val = insert(val, val.length - decimals, ".");
   }
   return val;
 }
