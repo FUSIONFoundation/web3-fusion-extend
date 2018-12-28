@@ -60,7 +60,7 @@ let buildTheSystem = [
       "  commandExtra VARCHAR(128),\n" +
       "  commandExtra2 VARCHAR(128),\n" +
       "  commandExtra3 VARCHAR(128),\n" +
-      "  data json,\n" +
+      "  data text,\n"+
       "  transaction json,\n" +
       "  receipt json,\n" +
       "  PRIMARY KEY (hash),\n" +
@@ -509,15 +509,18 @@ function logTransaction(block, transactions, index, resolve, reject) {
 
               let logData = null;
               let jsonLogData;
+              let saveData = null
 
               if (receipt.logs.length) {
                 try {
+                  saveData = web3.fsn.hex2a(receipt.logs[0].data)
                   jsonLogData = JSON.parse(
-                    web3.fsn.hex2a(receipt.logs[0].data)
+                    saveData
                   );
                   logData = JSON.stringify(jsonLogData);
                 } catch (e) {
                   logData = null;
+                  saveData = null
                 }
               }
 
@@ -616,7 +619,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
                 commandExtra,
                 commandExtra2,
                 commandExtra3,
-                logData,
+                saveData,
                 JSON.stringify(transaction),
                 JSON.stringify(receipt)
               ];
