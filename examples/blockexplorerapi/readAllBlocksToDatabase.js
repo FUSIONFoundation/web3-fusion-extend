@@ -409,10 +409,10 @@ function getBalances(addrs, index, resolve, reject) {
   return web3.fsn
     .getAllBalances(address)
     .then(balances => {
-      web3.fsn.getAllTimeLockBalances(address).then(timeLockBalances => {
-        web3.fsn.allTicketsByAddress(address).then(tickets => {
-          web3.fsn.allSwapsByAddress(address).then(swaps => {
-            web3.fsn.getNotation(address).then(notation => {
+      return web3.fsn.getAllTimeLockBalances(address).then(timeLockBalances => {
+        return web3.fsn.allTicketsByAddress(address).then(tickets => {
+          return web3.fsn.allSwapsByAddress(address).then(swaps => {
+            return web3.fsn.getNotation(address).then(notation => {
               all = JSON.stringify({
                 balances,
                 timeLockBalances,
