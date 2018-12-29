@@ -447,7 +447,7 @@ function getBalances(addrs, index, resolve, reject) {
                       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
                       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
                     return conn.query(sql).then(rows => {
-                      return getBalances(addrs, index + 1, resolve, reject);
+                      getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
                   .finally(() => {
@@ -640,7 +640,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
                           [totalSupply, transaction.hash.toLowerCase()]
                         )
                         .then(rows => {
-                          return logTransaction(
+                          logTransaction(
                             block,
                             transactions,
                             index,
@@ -650,14 +650,14 @@ function logTransaction(block, transactions, index, resolve, reject) {
                         });
                     });
                   } else {
-                    return logTransaction(block, transactions, index, resolve, reject);
+                    logTransaction(block, transactions, index, resolve, reject);
                   }
                 })
                 .catch(err => {
                   if (err.code === "ER_DUP_ENTRY") {
                     // block was already written
                     // normal when we restart scan
-                    return logTransaction(
+                    logTransaction(
                       block,
                       transactions,
                       index + 1,
