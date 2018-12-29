@@ -202,8 +202,10 @@ function keepSQLAlive() {
     });
 }
 
+let lastConnectTimer
 function keepWeb3Alive() {
   //debugger
+  lastConnectTimer = null
   console.log("STARTING WEB3 connection")
   provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING);
   provider.on("connect", function() {
@@ -213,19 +215,37 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
-    if ( provider ) {
+    if ( provider && !provider.___disconnected ) {
+      provider.___disconnected = true
       provider.disconnect();
       provider = null
+      web3._isConnected = false;
+      console.log("web3 connection error ", err);
+      console.log("will try to reconnect");
+      lastConnectTimer = lastConnectTimer = setTimeout(() => {
+        keepWeb3Alive();
+      }, 1000  )
     }
   });
   provider.on("end", function(err) {
     //debugger
-    web3._isConnected = false;
-    console.log("web3 connection error ", err);
-    console.log("will try to reconnect");
-    setTimeout(() => {
-      keepWeb3Alive();
-    }, 500 );
+    if ( !lastConnectTimer ) {
+      if ( provider && !provider.___disconnected ) {
+          provider.___disconnected = true
+          try {
+            provider.disconnect();
+          } catch (e) {
+
+          }
+          provider = null
+          web3._isConnected = false;
+          console.log("web3 connection error ", err);
+          console.log("will try to reconnect");
+          lastConnectTimer = setTimeout(() => {
+            keepWeb3Alive();
+          }, 10000 );
+        }
+      }
   });
   web3 = new Web3(provider);
   web3 = web3FusionExtend.extend(web3);
