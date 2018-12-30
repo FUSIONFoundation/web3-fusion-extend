@@ -511,6 +511,10 @@ function logTransaction(block, transactions, index, resolve, reject) {
       return web3.eth
         .getTransactionReceipt(transactions[index])
         .then(receipt => {
+          if (!receipt) {
+            reject(new Error("transaction not complete, no receipt"));
+            return;
+          }
           return getTransactionLog(transaction).then(log => {
             console.log("transaction => ", receipt, transaction, log);
             return _pool.getConnection().then(conn => {
@@ -744,7 +748,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
       });
   });
 }
-let inHere
+let inHere;
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
@@ -766,62 +770,70 @@ function resumeBlockScan() {
     lastBlock = 0;
   }
 
-  if ( inHere ) {
-    console.log("...Already Processing Block")
-    return
+  if (inHere) {
+    console.log("...Already Processing Block");
+    return;
   }
 
-  inHere = true
+  inHere = true;
 
-  return web3.eth
-    .getBlockNumber()
-    .then(currentBlock => {
-      if ( currentBlock < lastBlock ) {
-        console.log("Really Waiting for new block..." + new Date());
-        setTimeout(() => {
-          inHere = false
-          resumeBlockScan();
-        }, 14000);
-        return true
-      }
-       return web3.eth.getBlock(lastBlock).then(block => {
-        return web3.fsn
-          .getSnapshot(web3.utils.numberToHex(lastBlock))
-          .then(jt => {
-            if (block) {
-              return logBlock(block, jt).then(ret => {
-                return logTransactions(block).then(ret => {
-                  return logTicketPurchased(lastBlock, jt).then(ret => {
-                    console.log(lastBlock, block);
-                    return updateLastBlockProcessed().then(ret => {
-                      lastBlock += 1;
-                      setTimeout(() => {
-                        inHere = false
-                        resumeBlockScan();
-                      }, 10);
+  try {
+    return web3.eth
+      .getBlockNumber()
+      .then(currentBlock => {
+        if (currentBlock < lastBlock) {
+          console.log("Really Waiting for new block..." + new Date());
+          setTimeout(() => {
+            inHere = false;
+            resumeBlockScan();
+          }, 14000);
+          return true;
+        }
+        return web3.eth.getBlock(lastBlock).then(block => {
+          return web3.fsn
+            .getSnapshot(web3.utils.numberToHex(lastBlock))
+            .then(jt => {
+              if (block) {
+                return logBlock(block, jt).then(ret => {
+                  return logTransactions(block).then(ret => {
+                    return logTicketPurchased(lastBlock, jt).then(ret => {
+                      console.log(lastBlock, block);
+                      return updateLastBlockProcessed().then(ret => {
+                        lastBlock += 1;
+                        setTimeout(() => {
+                          inHere = false;
+                          resumeBlockScan();
+                        }, 10);
+                      });
                     });
                   });
                 });
-              });
-            } else {
-              // wait for block to update
-              console.log("Waiting for new block..." + new Date());
-              // lets update the database to show we alive
-              setTimeout(() => {
-                inHere = false
-                resumeBlockScan();
-              }, 15000);
-            }
-          });
+              } else {
+                // wait for block to update
+                console.log("Waiting for new block..." + new Date());
+                // lets update the database to show we alive
+                setTimeout(() => {
+                  inHere = false;
+                  resumeBlockScan();
+                }, 15000);
+              }
+            });
+        });
+      })
+      .catch(err => {
+        console.log("error talking to server, try again ", err);
+        setTimeout(() => {
+          inHere = false;
+          resumeBlockScan();
+        }, 10000);
       });
-    })
-    .catch(err => {
-      console.log("error talking to server, try again ", err);
-      setTimeout(() => {
-        inHere = false
-        resumeBlockScan();
-      }, 10000);
-    })
+  } catch (e) {
+    console.log("uncaught error, try again ", err);
+    setTimeout(() => {
+      inHere = false;
+      resumeBlockScan();
+    }, 10000);
+  }
 }
 
 var lasttime = 0;
