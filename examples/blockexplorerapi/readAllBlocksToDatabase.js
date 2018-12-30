@@ -744,7 +744,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
       });
   });
 }
-
+let inHere
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
