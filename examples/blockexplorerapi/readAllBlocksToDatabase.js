@@ -60,7 +60,7 @@ let buildTheSystem = [
       "  commandExtra VARCHAR(128),\n" +
       "  commandExtra2 VARCHAR(128),\n" +
       "  commandExtra3 VARCHAR(128),\n" +
-      "  data text,\n"+
+      "  data text,\n" +
       "  transaction json,\n" +
       "  receipt json,\n" +
       "  PRIMARY KEY (hash),\n" +
@@ -202,11 +202,11 @@ function keepSQLAlive() {
     });
 }
 
-let lastConnectTimer
+let lastConnectTimer;
 function keepWeb3Alive() {
   //debugger
-  lastConnectTimer = null
-  console.log("STARTING WEB3 connection")
+  lastConnectTimer = null;
+  console.log("STARTING WEB3 connection");
   provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING);
   provider.on("connect", function() {
     //debugger
@@ -215,37 +215,35 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
-    if ( provider && !provider.___disconnected ) {
-      provider.___disconnected = true
+    if (provider && !provider.___disconnected) {
+      provider.___disconnected = true;
       provider.disconnect();
-      provider = null
+      provider = null;
       web3._isConnected = false;
       console.log("web3 connection error ", err);
       console.log("will try to reconnect");
       lastConnectTimer = lastConnectTimer = setTimeout(() => {
         keepWeb3Alive();
-      }, 1000  )
+      }, 1000);
     }
   });
   provider.on("end", function(err) {
     //debugger
-    if ( !lastConnectTimer ) {
-      if ( provider && !provider.___disconnected ) {
-          provider.___disconnected = true
-          try {
-            provider.disconnect();
-          } catch (e) {
-
-          }
-          provider = null
-          web3._isConnected = false;
-          console.log("web3 connection error ", err);
-          console.log("will try to reconnect");
-          lastConnectTimer = setTimeout(() => {
-            keepWeb3Alive();
-          }, 10000 );
-        }
+    if (!lastConnectTimer) {
+      if (provider && !provider.___disconnected) {
+        provider.___disconnected = true;
+        try {
+          provider.disconnect();
+        } catch (e) {}
+        provider = null;
+        web3._isConnected = false;
+        console.log("web3 connection error ", err);
+        console.log("will try to reconnect");
+        lastConnectTimer = setTimeout(() => {
+          keepWeb3Alive();
+        }, 10000);
       }
+    }
   });
   web3 = new Web3(provider);
   web3 = web3FusionExtend.extend(web3);
@@ -533,18 +531,16 @@ function logTransaction(block, transactions, index, resolve, reject) {
 
               let logData = null;
               let jsonLogData;
-              let saveData = null
+              let saveData = null;
 
               if (receipt.logs.length) {
                 try {
-                  saveData = web3.fsn.hex2a(receipt.logs[0].data)
-                  jsonLogData = JSON.parse(
-                    saveData
-                  );
+                  saveData = web3.fsn.hex2a(receipt.logs[0].data);
+                  jsonLogData = JSON.parse(saveData);
                   logData = JSON.stringify(jsonLogData);
                 } catch (e) {
                   logData = null;
-                  saveData = null
+                  saveData = null;
                 }
               }
 
@@ -770,42 +766,62 @@ function resumeBlockScan() {
     lastBlock = 0;
   }
 
+  if ( inHere ) {
+    console.log("...Already Processing Block")
+    return
+  }
+
+  inHere = true
+
   return web3.eth
-    .getBlock(lastBlock)
-    .then(block => {
-      return web3.fsn
-        .getSnapshot(web3.utils.numberToHex(lastBlock))
-        .then(jt => {
-          if (block) {
-            return logBlock(block, jt).then(ret => {
-              return logTransactions(block).then(ret => {
-                return logTicketPurchased(lastBlock, jt).then(ret => {
-                  console.log(lastBlock, block);
-                  return updateLastBlockProcessed().then(ret => {
-                    lastBlock += 1;
-                    setTimeout(() => {
-                      resumeBlockScan();
-                    }, 10);
+    .getBlockNumber()
+    .then(currentBlock => {
+      if ( currentBlock < lastBlock ) {
+        console.log("Really Waiting for new block..." + new Date());
+        setTimeout(() => {
+          inHere = false
+          resumeBlockScan();
+        }, 14000);
+        return true
+      }
+       return web3.eth.getBlock(lastBlock).then(block => {
+        return web3.fsn
+          .getSnapshot(web3.utils.numberToHex(lastBlock))
+          .then(jt => {
+            if (block) {
+              return logBlock(block, jt).then(ret => {
+                return logTransactions(block).then(ret => {
+                  return logTicketPurchased(lastBlock, jt).then(ret => {
+                    console.log(lastBlock, block);
+                    return updateLastBlockProcessed().then(ret => {
+                      lastBlock += 1;
+                      setTimeout(() => {
+                        inHere = false
+                        resumeBlockScan();
+                      }, 10);
+                    });
                   });
                 });
               });
-            });
-          } else {
-            // wait for block to update
-            console.log("Waiting for new block..." + new Date());
-            // lets update the database to show we alive
-            setTimeout(() => {
-              resumeBlockScan();
-            }, 15000);
-          }
-        });
+            } else {
+              // wait for block to update
+              console.log("Waiting for new block..." + new Date());
+              // lets update the database to show we alive
+              setTimeout(() => {
+                inHere = false
+                resumeBlockScan();
+              }, 15000);
+            }
+          });
+      });
     })
     .catch(err => {
       console.log("error talking to server, try again ", err);
       setTimeout(() => {
+        inHere = false
         resumeBlockScan();
       }, 10000);
-    });
+    })
 }
 
 var lasttime = 0;
