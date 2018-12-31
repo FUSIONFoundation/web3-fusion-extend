@@ -198,7 +198,7 @@ function buyATicket(data) {
                 if (data.reset) {
                   return true;
                 }
-                return waitForTransactionToComplete(txHash, data)
+                return waitForTransactionToComplete(txHash, data , (new Date()).getTime() + 120000)
                   .then(r => {
                     if (data.reset) {
                       return;
@@ -254,9 +254,13 @@ function buyATicket(data) {
     });
 }
 
-function waitForTransactionToComplete(transID, data) {
+function waitForTransactionToComplete(transID, data, maxTime) {
   if (data.reset) {
     return;
+  }
+  if ( maxTime < (new Date()).getTime()) {
+    console.log("timed out waiting returning ")
+    return { status: false }
   }
   return web3.eth
     .getTransactionReceipt(transID)
@@ -266,7 +270,7 @@ function waitForTransactionToComplete(transID, data) {
       }
       if (!receipt) {
         // assume not scheduled yet
-        return waitForTransactionToComplete(transID, data);
+        return waitForTransactionToComplete(transID, data, maxTime);
       }
       return receipt;
     })
