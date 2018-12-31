@@ -11,10 +11,10 @@ let signInfo;
 let wb = new Web3();
 let web3 = web3FusionExtend.extend(wb);
 var milli = new Date().getMilliseconds();
-var assetName = "TestAsset " + new Date().toString();
+var assetName = "BigTestAsset " + new Date().toString();
 var assetShortName = "T" + milli;
 var assetId;
-var numberToDo = 10;
+var numberToDo = 1000;
 var transactionList = [];
 
 function waitForTransactionToComplete(transID) {
@@ -32,26 +32,60 @@ function waitForTransactionToComplete(transID) {
     });
 }
 
+let subToDo = 5
+let totalSent = 0
+
+function pad(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+}
+
+function subInc( index , subindex ) {
+    let x = (index + 1 ) * subindex
+    let val = "10000000000000"+ pad(x,5);//   0 00 00",
+    return web3.fsntx
+      .buildIncAssetTx({
+        from: key.address,
+        to: key.address,
+        value: val,
+        asset: assetId
+      })
+      .then(tx => {
+        tx.gasPrice = web3.utils.toWei( new web3.utils.BN( "3" ), "gwei");
+        return web3.fsn.signAndTransmit(tx, signInfo.signTransaction).then(tx => {
+            totalSent +=1 
+          console.log("   total Sent  " + totalSent + "     ---- " + index +"."+subindex , tx);
+          transactionList.push(tx);
+        });
+      })
+      .catch(err => {
+        console.log("inc asset created the following error", err);
+      });
+  }
+
 function incAsset(index, numberToDo, done) {
   if (index === numberToDo) {
     done();
-    return;
   }
+
+//   for ( let i = 0 ; i < subToDo ; i++  ) {
+//         subInc( index, i+1 )
+//   }
   console.log(`Sending transaction #${index} of ${numberToDo}`);
   return web3.fsntx
     .buildIncAssetTx({
       from: key.address,
       to: key.address,
       value: "1000000000000000000",
-      asset: assetId,
+      asset: assetId
     })
     .then(tx => {
-        console.log(tx)
-      debugger;
+      tx.gasPrice = web3.utils.toWei( new web3.utils.BN( "3" ), "gwei");
       return web3.fsn.signAndTransmit(tx, signInfo.signTransaction).then(tx => {
-        debugger;
-        console.log(tx)
+        totalSent += 1
+        console.log( totalSent + "   " +  index * subToDo , tx);
         transactionList.push(tx);
+        incAsset(index + 1, numberToDo, done) 
       });
     })
     .catch(err => {
@@ -62,17 +96,21 @@ function incAsset(index, numberToDo, done) {
 
 provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING);
 provider.on("connect", function() {
-  debugger;
+
   testIt();
 });
 provider.on("error", function(err) {
-  debugger;
-  testIt();
+    console.log("link error", err )
 });
+provider.on("end", function(err) {
+    debugger;
+    console.log("link broken", err )
+    process.exit()
+  });
 web3 = new Web3(provider);
 web3 = web3FusionExtend.extend(web3);
 web3.setExtended = true;
-debugger;
+
 console.log(web3.version);
 
 function testIt() {
@@ -122,9 +160,6 @@ function testIt() {
   }
   console.log("we have everything to do signing");
 
-  console.log(web3.setExtended);
-
-  debugger;
   web3.fsntx
     .buildGenAssetTx({
       from: key.address,
@@ -135,7 +170,6 @@ function testIt() {
       CanChange: true
     })
     .then(tx => {
-      debugger;
       return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
     })
     .then(transactionReceipt => {
@@ -151,7 +185,9 @@ function testIt() {
           // console.log("json data => ", data);
           assetId = data.AssetID;
           assert(assetId, "there should be an asset id");
-          return incAsset(0, numberToDo);
+          return incAsset(0, numberToDo, ()=>{
+              console.log( `${numberToDo} has been sent for AssetID `,assetId)
+          });
         })
         .catch(err => {
           console.log(
