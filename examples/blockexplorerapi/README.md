@@ -88,6 +88,8 @@ http://api.fusionnetwork.io/fsnprice/?page=0&size=2&sort=asc
 last two prices
 http://api.fusionnetwork.io/fsnprice/?page=0&size=2&sort=desc
 
+# Search
+http://api.fusionnetwork.io/search/[block,blockhash,transaction,address]
 
 
 #Ticket purchase applicaton
