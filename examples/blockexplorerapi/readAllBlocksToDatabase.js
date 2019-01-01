@@ -750,7 +750,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
   });
 }
 let inHere;
-let counter
+let counter;
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
@@ -774,23 +774,74 @@ function resumeBlockScan() {
 
   if (inHere) {
     console.log("...Already Processing Block");
-    counter++
-    if ( counter === 5 ) {
-      inHere = false
+    counter++;
+    if (counter === 5) {
+      inHere = false;
     }
-    setTimeout( ()=>{ resumeBlockScan() } , 50000 )
+    setTimeout(() => {
+      resumeBlockScan();
+    }, 50000);
     return;
   }
 
-  counter = 0
+  counter = 0;
 
   inHere = true;
 
+  let query = `SELECT
+  CONCAT(z.expected, IF(z.got-1>z.expected, CONCAT(' thru ',z.got-1), '')) AS missing
+ FROM (
+  SELECT
+   @rownum:=@rownum+1 AS expected,
+   IF(@rownum=height, 0, @rownum:=height) AS got
+  FROM
+   (SELECT @rownum:=0) AS a
+   JOIN blocks
+   ORDER BY height
+  ) AS z
+ WHERE z.got!=0;`;
+
+  if (process.env.FILLIN==='true') {
+    return _pool.getConnection().then(conn => {
+      return conn
+        .query(query)
+        .then(rows => {
+            if (rows && rows.length > 0 ) {
+              let missing =   ((rows[0])["missing"]).split( " ")[0]
+              lastBlock = parseInt( missing )
+              console.log("filling in missing block " , lastBlock)
+              doBlockScan();
+            } else {
+              console.log("no missing blocks, trying again in 30 seconds")
+              setTimeout(() => {
+                inHere = false;
+                resumeBlockScan();
+              }, 30000);
+            }
+        })
+        .catch(err => {
+          // throw err;
+          console.log("database error ", err);
+          setTimeout(() => {
+            inHere = false;
+            resumeBlockScan();
+          }, 10);
+        })
+        .finally(() => {
+          conn.release();
+        });
+    });
+  } else {
+    doBlockScan();
+  }
+}
+
+function doBlockScan() {
   try {
     return web3.eth
       .getBlockNumber()
       .then(currentBlock => {
-        if (currentBlock < lastBlock) {
+        if ( process.env.FILLIN !== "true" && currentBlock < lastBlock) {
           console.log("Really Waiting for new block..." + new Date());
           setTimeout(() => {
             inHere = false;
@@ -807,6 +858,13 @@ function resumeBlockScan() {
                   return logTransactions(block).then(ret => {
                     return logTicketPurchased(lastBlock, jt).then(ret => {
                       console.log(lastBlock, block);
+                      if (process.env.FILLIN==="true") {
+                        setTimeout(() => {
+                          inHere = false;
+                          resumeBlockScan();
+                        }, 10);
+                        return true;
+                      }
                       return updateLastBlockProcessed().then(ret => {
                         lastBlock += 1;
                         setTimeout(() => {
