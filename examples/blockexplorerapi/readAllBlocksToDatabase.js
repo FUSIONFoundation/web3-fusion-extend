@@ -246,6 +246,7 @@ function keepWeb3Alive() {
     }
   });
   web3 = new Web3(provider);
+  web3._isConnected = false;
   web3 = web3FusionExtend.extend(web3);
 }
 
@@ -749,6 +750,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
   });
 }
 let inHere;
+let counter
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
@@ -772,8 +774,15 @@ function resumeBlockScan() {
 
   if (inHere) {
     console.log("...Already Processing Block");
+    counter++
+    if ( counter === 5 ) {
+      inHere = false
+    }
+    setTimeout( ()=>{ resumeBlockScan() } , 50000 )
     return;
   }
+
+  counter = 0
 
   inHere = true;
 
