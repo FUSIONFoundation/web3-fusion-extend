@@ -68,9 +68,10 @@ router.get("/:hash", function(req, res, next) {
   }
 
   if (hash === "all") {
+    let str = `SELECT * FROM currentBalance order by ${field} ${sort}, _id ${sort} limit ?,?` 
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM currentBalance order by ${field}, _id ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
+        .query(str, [ (index>=0 ? index : page*size), size ] )
         .then(rows => {
           res.json(rows)
         })
