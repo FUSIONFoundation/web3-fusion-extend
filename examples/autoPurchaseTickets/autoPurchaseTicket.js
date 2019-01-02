@@ -106,7 +106,7 @@ function connectService() {
   let provider;
 
   try {
-    provider = new web3.providers.WebsocketProvider(options.connectString);
+    provider = new web3.providers.WebsocketProvider(options.connectString,  {timeout : 10000 });
     web3.setProvider(provider);
   } catch (e) {
     console.log(
