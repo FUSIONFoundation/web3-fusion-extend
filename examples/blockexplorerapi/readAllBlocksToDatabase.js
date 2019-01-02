@@ -207,7 +207,7 @@ function keepWeb3Alive() {
   //debugger
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
-  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING);
+  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING,   {timeout : 10000 });
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
