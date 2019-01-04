@@ -132,6 +132,13 @@ function connectService() {
   let data = { lastblock: 0 };
   provider.__data = data;
 
+  function reconnect() {
+    if (!data.reset) {
+      data.reset = true;
+      setTimeout(connectService, 3000);
+    }
+  }
+
   provider.on("connect", () => {
     console.log("Connected buying ticket for " + key.address);
     buyATicket(data);
@@ -139,23 +146,13 @@ function connectService() {
 
   provider.on("error", e => {
     console.log("connection error ", e);
-    if (!data.reset) {
-      data.reset = true;
-      setTimeout(() => {
-        connectService();
-      }, 3000);
-    }
+    reconnect();
   });
 
   provider.on("end", e => {
     console.log("connection ended will try to reconnect in 5 seconds");
     provider.__reset = true;
-    if (!data.reset) {
-      data.reset = true;
-      setTimeout(() => {
-        connectService();
-      }, 3000);
-    }
+    reconnect();
   });
 }
 
