@@ -96,6 +96,7 @@ try {
   );
 } catch (e) {
   console.log("Unable to decrypt file", e);
+  process.exit();
 }
 
 console.log("ALL GOOD WITH PASSWORD AND KEYSTORE");
