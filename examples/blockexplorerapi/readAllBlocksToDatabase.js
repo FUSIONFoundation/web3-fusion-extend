@@ -22,6 +22,9 @@ var _masterConnection;
 const INFO_ID = "INFO_ID";
 const VERSION_ID = "VERSION_ID";
 
+let glb_highestBlockOnChain 
+let balancesReturned = {}
+
 let buildTheSystem = [
   {
     txt: "Build Blocks",
@@ -427,6 +430,12 @@ function getBalances(addrs, index, resolve, reject) {
 
   let all;
 
+  if( balancesReturned[address]  &&  balancesReturned[address] > lastBlock ) {
+    // we have this balance already
+    console.log("ALREADY HAVE BALANCE " + address);
+    return getBalances(addrs, index + 1, resolve, reject);
+  }
+
   console.log("GETTTING BALANCE " + address);
 
   return web3.fsn
@@ -470,6 +479,7 @@ function getBalances(addrs, index, resolve, reject) {
                       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
                       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
                     return conn.query(sql).then(rows => {
+                      balancesReturned[address] = glb_highestBlockOnChain 
                       getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
@@ -841,6 +851,7 @@ function doBlockScan() {
     return web3.eth
       .getBlockNumber()
       .then(currentBlock => {
+        glb_highestBlockOnChain = currentBlock
         if ( process.env.FILLIN !== "true" && currentBlock < lastBlock) {
           console.log("Really Waiting for new block..." + new Date());
           setTimeout(() => {
