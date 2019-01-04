@@ -210,7 +210,7 @@ function keepWeb3Alive() {
   //debugger
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
-  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING,   {timeout : 10000 });
+  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING,   {timeout : 60000 });
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
@@ -438,6 +438,7 @@ function getBalances(addrs, index, resolve, reject) {
 
   console.log("GETTTING BALANCE " + address);
 
+  let releaseConn = false
   return web3.fsn
     .getAllBalances(address)
     .then(balances => {
@@ -480,11 +481,15 @@ function getBalances(addrs, index, resolve, reject) {
                       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
                     return conn.query(sql).then(rows => {
                       balancesReturned[address] = glb_highestBlockOnChain 
-                      getBalances(addrs, index + 1, resolve, reject);
+                      conn.release()
+                      releaseConn = true
+                      return getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
                   .finally(() => {
-                    conn.release();
+                    if ( !releaseConn ) {
+                      conn.release();
+                    }
                   });
               });
             });
@@ -499,6 +504,7 @@ function getBalances(addrs, index, resolve, reject) {
 }
 
 function logTransaction(block, transactions, index, resolve, reject) {
+  console.log("   Transaction " + index + " being proceessed")
   if (index === 0) {
     balancesToGet = {};
   }
@@ -527,7 +533,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
             return;
           }
           return getTransactionLog(transaction).then(log => {
-            console.log("transaction => ", receipt, transaction, log);
+           // console.log("transaction => ", receipt, transaction, log);
             return _pool.getConnection().then(conn => {
               // merge receipt and transaction
               //debugger
@@ -660,7 +666,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
               ];
 
               query = queryAddTagsForInsert(query, params);
-
+              let releaseConn = false
               return conn
                 .query(query, params)
                 .then(okPacket => {
@@ -675,6 +681,8 @@ function logTransaction(block, transactions, index, resolve, reject) {
                           [totalSupply, transaction.hash.toLowerCase()]
                         )
                         .then(rows => {
+                          conn.release()
+                          releaseConn = true
                           logTransaction(
                             block,
                             transactions,
@@ -685,10 +693,14 @@ function logTransaction(block, transactions, index, resolve, reject) {
                         });
                     });
                   } else {
+                    conn.release()
+                    releaseConn = true
                     logTransaction(block, transactions, index, resolve, reject);
                   }
                 })
                 .catch(err => {
+                  conn.release()
+                  releaseConn = true
                   if (err.code === "ER_DUP_ENTRY") {
                     // block was already written
                     // normal when we restart scan
@@ -705,7 +717,9 @@ function logTransaction(block, transactions, index, resolve, reject) {
                   reject(err);
                 })
                 .finally(() => {
-                  conn.release();
+                  if ( !releaseConn) {
+                    conn.release();
+                  }
                 });
             });
           });
@@ -736,7 +750,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
       "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='" +
       selected +
       "';";
-    console.log(tkQuery);
+    // console.log(tkQuery);
     return conn
       .query(tkQuery)
       .then(rows => {
@@ -812,10 +826,13 @@ function resumeBlockScan() {
  WHERE z.got!=0;`;
 
   if (process.env.FILLIN==='true') {
+    let releaseConn = false
     return _pool.getConnection().then(conn => {
       return conn
         .query(query)
         .then(rows => {
+          conn.release()
+          releaseConn = true
             if (rows && rows.length > 0 ) {
               let missing =   ((rows[0])["missing"]).split( " ")[0]
               lastBlock = parseInt( missing )
@@ -838,7 +855,9 @@ function resumeBlockScan() {
           }, 10);
         })
         .finally(() => {
-          conn.release();
+          if ( !releaseConn ) {
+            conn.release();
+          }
         });
     });
   } else {
