@@ -7,6 +7,9 @@ const CryptoJS = require("crypto-js");
 const rp = require("request-promise");
 
 let version = 1.0;
+let inHere;
+let counter;
+let timerSet;
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="ws://3.16.110.25:9001" DB_CONNECT_STRING="{'host':'localhost','user':'root','password':'password','database':'db1','connectionLimit':10}" node ./examples/readAllBlocksToADatabase
@@ -783,9 +786,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
       });
   });
 }
-let inHere;
-let counter;
-let timerSet;
+
 
 function resumeBlockScan() {
   if (!web3._isConnected) {
