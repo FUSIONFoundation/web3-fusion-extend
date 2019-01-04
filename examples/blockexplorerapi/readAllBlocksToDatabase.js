@@ -496,7 +496,7 @@ function getBalances(addrs, index, resolve, reject) {
                       balancesReturned[address] = glb_highestBlockOnChain;
                       conn.release();
                       releaseConn = true;
-                      return getBalances(addrs, index + 1, resolve, reject);
+                      getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
                   .finally(() => {
