@@ -78,7 +78,7 @@ try {
 let password;
 try {
   var data = fs.readFileSync(options.passPhraseFile, "utf8");
-  password = data.toString();
+  password = data.toString().replace(/\n/g, "");
 } catch (e) {
   console.log("Error:", e.stack);
   RaiseErrorAndHalt({
@@ -188,7 +188,10 @@ async function buyATicket(data) {
           const tx = await web3.fsntx.buildBuyTicketTx({ from: key.address });
           tx.gasPrice = web3.utils.toWei(new web3.utils.BN(gasPrice), "gwei");
 
-          const txHash = web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
+          const txHash = await web3.fsn.signAndTransmit(
+            tx,
+            signInfo.signTransaction
+          );
           console.log("wait for buy ticket tx -> ", txHash);
 
           const response = await waitForTransactionToComplete(
