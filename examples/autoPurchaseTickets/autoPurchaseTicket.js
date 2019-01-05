@@ -21,42 +21,45 @@ console.log(`Example:
 
 const options = commandLineArgs(optionDefinitions);
 
-console.log(options);
+function RaiseErrorAndHalt({ condition, message }) {
+  if (condition) {
+    console.error(message);
+    process.exit(1);
+  }
+}
 
 var gasPrice = 2;
 
 if (options.gasPrice) {
   let val = parseInt(options.gasPrice);
-  if (isNaN(val) || val < 1 || val > 100) {
-    console.log("Invalid gas price");
-    process.exit(1);
-  }
+  const condition = isNaN(val) || val < 1 || val > 100;
+  RaiseErrorAndHalt({
+    condition,
+    message: "Invalid gas price"
+  });
   gasPrice = val;
 }
 
-if (!options.connectString) {
-  console.log("please set the argument --connectString or -c");
-  process.exit(1);
-}
-
-if (!options.passPhraseFile) {
-  console.log("please set the argument --passPhraseFile -p");
-  process.exit(1);
-}
-
-if (!options.keyStore) {
-  console.log("please set the argument --keyStore -k");
-  process.exit(1);
-}
-
-if (!options.numberOfTickets) {
-  console.log("please set --numberOfTickets -n");
-}
-
-if (options.numberOfTickets < 1) {
-  console.log("--numberOfTickets needs to be greater than zero");
-  process.exit(1);
-}
+RaiseErrorAndHalt({
+  condition: !options.connectString,
+  message: "please set the argument --connectString or -c"
+});
+RaiseErrorAndHalt({
+  condition: !options.keyStore,
+  message: "please set the argument --keyStore -k"
+});
+RaiseErrorAndHalt({
+  condition: !options.passPhraseFile,
+  message: "please set the argument --passPhraseFile -p"
+});
+RaiseErrorAndHalt({
+  condition: !options.numberOfTickets,
+  message: "please set --numberOfTickets -n"
+});
+RaiseErrorAndHalt({
+  condition: options.numberOfTickets < 1,
+  message: "--numberOfTickets needs to be greater than zero"
+});
 
 //lets open the key store file
 let key;
@@ -64,9 +67,11 @@ try {
   var data = fs.readFileSync(options.keyStore, "utf8");
   key = JSON.parse(data.toString());
 } catch (e) {
-  console.error("Error reading pass key file file " + options.keyStore);
   console.log("Error:", e.stack);
-  process.exit();
+  RaiseErrorAndHalt({
+    condition: true,
+    message: `Error reading pass key file file ${options.keyStore}`
+  });
 }
 
 // lets open the password file
@@ -75,9 +80,11 @@ try {
   var data = fs.readFileSync(options.passPhraseFile, "utf8");
   password = data.toString().replace(/\n/g, "");
 } catch (e) {
-  console.error("Error reading pass phrase file " + options.passPhraseFile);
   console.log("Error:", e.stack);
-  process.exit();
+  RaiseErrorAndHalt({
+    condition: true,
+    message: `Error reading pass phrase file ${options.passPhraseFile}`
+  });
 }
 
 // we now have the keystore and password
@@ -95,19 +102,22 @@ try {
     password
   );
 } catch (e) {
-  console.log("Unable to decrypt file", e);
-  process.exit();
+  RaiseErrorAndHalt({
+    condition: true,
+    message: `Unable to decrypt file ${e}`
+  });
 }
 
 console.log("ALL GOOD WITH PASSWORD AND KEYSTORE");
-
 console.log("Using personal address of ", key.address);
 
 function connectService() {
   let provider;
 
   try {
-    provider = new web3.providers.WebsocketProvider(options.connectString,  {timeout : 10000 });
+    provider = new web3.providers.WebsocketProvider(options.connectString, {
+      timeout: 10000
+    });
     web3.setProvider(provider);
   } catch (e) {
     console.log(
@@ -122,6 +132,13 @@ function connectService() {
   let data = { lastblock: 0 };
   provider.__data = data;
 
+  function reconnect() {
+    if (!data.reset) {
+      data.reset = true;
+      setTimeout(connectService, 3000);
+    }
+  }
+
   provider.on("connect", () => {
     console.log("Connected buying ticket for " + key.address);
     buyATicket(data);
@@ -129,23 +146,13 @@ function connectService() {
 
   provider.on("error", e => {
     console.log("connection error ", e);
-    if (!data.reset) {
-      data.reset = true;
-      setTimeout(() => {
-        connectService();
-      }, 3000);
-    }
+    reconnect();
   });
 
   provider.on("end", e => {
     console.log("connection ended will try to reconnect in 5 seconds");
     provider.__reset = true;
-    if (!data.reset) {
-      data.reset = true;
-      setTimeout(() => {
-        connectService();
-      }, 3000);
-    }
+    reconnect();
   });
 }
 
@@ -153,115 +160,98 @@ connectService();
 
 let totalTicketsBought = 0;
 
-function buyATicket(data) {
+async function buyATicket(data) {
   if (data.reset) {
     return;
   }
 
-  web3.eth
-    .getBlock("latest")
-    .then(block => {
-      // debugger
-      if (data.reset) {
-        return;
-      }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const block = await web3.eth.getBlock("latest");
+
       if (data.lastblock !== block.number) {
-        return web3.fsn.allTicketsByAddress(key.address).then(res => {
-          //  debugger
-          if (data.reset) {
-            return;
-          }
-          let totalTickets = Object.keys(res).length;
-          if (totalTickets < options.numberOfTickets) {
-            console.log(
-              `${totalTickets} of ${
-                options.numberOfTickets
-              } purchasing one, action happening around block ${
-                block.number
-              } ` +
-                key.address +
-                " " +
-                new Date()
-            );
-            return web3.fsntx
-              .buildBuyTicketTx({ from: key.address })
-              .then(tx => {
-                // console.log(tx);
-                // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
-                if (data.reset) {
-                  return;
-                }
-                tx.gasPrice = web3.utils.toWei( new web3.utils.BN( gasPrice ), "gwei");
-                return web3.fsn.signAndTransmit(tx, signInfo.signTransaction);
-              })
-              .then(txHash => {
-                console.log("wait for buy ticket tx -> ", txHash);
-                if (data.reset) {
-                  return true;
-                }
-                return waitForTransactionToComplete(txHash, data , (new Date()).getTime() + 120000)
-                  .then(r => {
-                    if (data.reset) {
-                      return;
-                    }
-                    if (r.status) {
-                      console.log("Ticket bought");
-                      totalTicketsBought += 1;
-                      data.lastblock = block.number;
-                      setTimeout(() => {
-                        buyATicket(data);
-                      }, 4000);
-                    } else {
-                      console.log("Ticket buy failed (? funds)");
-                      throw new Error("failed to buy");
-                    }
-                  })
-                  .catch(err => {
-                    throw err;
-                  });
-              });
+        const allTicketsByAddress = await web3.fsn.allTicketsByAddress(
+          key.address
+        );
+        let totalTickets = Object.keys(allTicketsByAddress).length;
+
+        if (totalTickets < options.numberOfTickets) {
+          console.log(
+            `${totalTickets} of ${
+              options.numberOfTickets
+            } purchasing one, action happening around block ${block.number} ` +
+              key.address +
+              " " +
+              new Date()
+          );
+
+          const tx = await web3.fsntx.buildBuyTicketTx({ from: key.address });
+          tx.gasPrice = web3.utils.toWei(new web3.utils.BN(gasPrice), "gwei");
+
+          const txHash = await web3.fsn.signAndTransmit(
+            tx,
+            signInfo.signTransaction
+          );
+          console.log("wait for buy ticket tx -> ", txHash);
+
+          const response = await waitForTransactionToComplete(
+            txHash,
+            data,
+            new Date().getTime() + 120000
+          );
+
+          if (response.status) {
+            console.log("Ticket bought");
+            totalTicketsBought += 1;
+            data.lastblock = block.number;
+            resolve();
           } else {
-            console.log(
-              "Tickets the same - " +
-                options.numberOfTickets +
-                ",  tb = " +
-                totalTicketsBought +
-                " for " +
-                key.address +
-                " " +
-                " retrying " +
-                new Date()
-            );
-            setTimeout(() => {
-              buyATicket(data);
-            }, 4000);
+            console.error("Ticket buy failed (? funds)");
+            reject("failed to buy");
           }
-        });
+        } else {
+          console.log(
+            "Tickets the same - " +
+              options.numberOfTickets +
+              ",  tb = " +
+              totalTicketsBought +
+              " for " +
+              key.address +
+              " " +
+              " retrying " +
+              new Date()
+          );
+          resolve();
+        }
       } else {
-        setTimeout(() => {
-          buyATicket(data);
-        }, 4000);
+        resolve();
       }
-    })
-    .catch(err => {
-      if (data.reset) {
-        return;
-      }
-      console.log("error ", err);
+    } catch (e) {
+      reject(e);
+    }
+  }).then(
+    success => {
+      setTimeout(() => {
+        buyATicket(data);
+      }, 4000);
+    },
+    error => {
+      console.log("error ", error);
       console.log("will retry");
       setTimeout(() => {
         buyATicket(data);
       }, 4000);
-    });
+    }
+  );
 }
 
 function waitForTransactionToComplete(transID, data, maxTime) {
   if (data.reset) {
     return;
   }
-  if ( maxTime < (new Date()).getTime()) {
-    console.log("timed out waiting returning ")
-    return { status: false }
+  if (maxTime < new Date().getTime()) {
+    console.log("timed out waiting returning ");
+    return { status: false };
   }
   return web3.eth
     .getTransactionReceipt(transID)
