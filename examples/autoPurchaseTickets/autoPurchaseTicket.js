@@ -73,7 +73,7 @@ try {
 let password;
 try {
   var data = fs.readFileSync(options.passPhraseFile, "utf8");
-  password = data.toString();
+  password = data.toString().replace(/\n/g, "");
 } catch (e) {
   console.error("Error reading pass phrase file " + options.passPhraseFile);
   console.log("Error:", e.stack);
