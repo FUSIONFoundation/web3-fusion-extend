@@ -7,6 +7,9 @@ const CryptoJS = require("crypto-js");
 const rp = require("request-promise");
 
 let version = 1.0;
+let inHere;
+let counter;
+let timerSet;
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="ws://3.16.110.25:9001" DB_CONNECT_STRING="{'host':'localhost','user':'root','password':'password','database':'db1','connectionLimit':10}" node ./examples/readAllBlocksToADatabase
@@ -21,6 +24,9 @@ var _masterConnection;
 
 const INFO_ID = "INFO_ID";
 const VERSION_ID = "VERSION_ID";
+
+let glb_highestBlockOnChain;
+let balancesReturned = {};
 
 let buildTheSystem = [
   {
@@ -199,7 +205,13 @@ function keepSQLAlive() {
       setTimeout(() => {
         keepSQLAlive();
       }, 60000);
-    });
+    }).finally(() => {
+      console.log("Connection setup finally called")
+      if ( _masterConnection  ) {
+        _masterConnection.release()
+        _masterConnection = null
+      }
+    } )
 }
 
 let lastConnectTimer;
@@ -207,11 +219,15 @@ function keepWeb3Alive() {
   //debugger
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
-  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING,   {timeout : 10000 });
+  provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING, {
+    timeout: 60000
+  });
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
-    resumeBlockScan();
+    if ( !timerSet ) {
+        resumeBlockScan();
+    }
   });
   provider.on("error", function(err) {
     //debugger
@@ -427,8 +443,15 @@ function getBalances(addrs, index, resolve, reject) {
 
   let all;
 
+  if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
+    // we have this balance already
+    console.log("ALREADY HAVE BALANCE " + address);
+    return getBalances(addrs, index + 1, resolve, reject);
+  }
+
   console.log("GETTTING BALANCE " + address);
 
+  let releaseConn = false;
   return web3.fsn
     .getAllBalances(address)
     .then(balances => {
@@ -470,11 +493,16 @@ function getBalances(addrs, index, resolve, reject) {
                       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
                       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
                     return conn.query(sql).then(rows => {
+                      balancesReturned[address] = glb_highestBlockOnChain;
+                      conn.release();
+                      releaseConn = true;
                       getBalances(addrs, index + 1, resolve, reject);
                     });
                   })
                   .finally(() => {
-                    conn.release();
+                    if (!releaseConn) {
+                      conn.release();
+                    }
                   });
               });
             });
@@ -489,6 +517,7 @@ function getBalances(addrs, index, resolve, reject) {
 }
 
 function logTransaction(block, transactions, index, resolve, reject) {
+  console.log("   Transaction " + index + " being proceessed");
   if (index === 0) {
     balancesToGet = {};
   }
@@ -517,7 +546,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
             return;
           }
           return getTransactionLog(transaction).then(log => {
-            console.log("transaction => ", receipt, transaction, log);
+            // console.log("transaction => ", receipt, transaction, log);
             return _pool.getConnection().then(conn => {
               // merge receipt and transaction
               //debugger
@@ -650,7 +679,7 @@ function logTransaction(block, transactions, index, resolve, reject) {
               ];
 
               query = queryAddTagsForInsert(query, params);
-
+              let releaseConn = false;
               return conn
                 .query(query, params)
                 .then(okPacket => {
@@ -665,6 +694,8 @@ function logTransaction(block, transactions, index, resolve, reject) {
                           [totalSupply, transaction.hash.toLowerCase()]
                         )
                         .then(rows => {
+                          conn.release();
+                          releaseConn = true;
                           logTransaction(
                             block,
                             transactions,
@@ -675,10 +706,14 @@ function logTransaction(block, transactions, index, resolve, reject) {
                         });
                     });
                   } else {
+                    conn.release();
+                    releaseConn = true;
                     logTransaction(block, transactions, index, resolve, reject);
                   }
                 })
                 .catch(err => {
+                  conn.release();
+                  releaseConn = true;
                   if (err.code === "ER_DUP_ENTRY") {
                     // block was already written
                     // normal when we restart scan
@@ -695,7 +730,9 @@ function logTransaction(block, transactions, index, resolve, reject) {
                   reject(err);
                 })
                 .finally(() => {
-                  conn.release();
+                  if (!releaseConn) {
+                    conn.release();
+                  }
                 });
             });
           });
@@ -726,7 +763,7 @@ function logTicketPurchased(blockNumber, tikinfo) {
       "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='" +
       selected +
       "';";
-    console.log(tkQuery);
+    // console.log(tkQuery);
     return conn
       .query(tkQuery)
       .then(rows => {
@@ -749,21 +786,27 @@ function logTicketPurchased(blockNumber, tikinfo) {
       });
   });
 }
-let inHere;
-let counter;
+
+
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
-    setTimeout(() => {
-      resumeBlockScan();
-    }, 2000);
+    if (!timerSet) {
+      setTimeout(() => {
+        timerSet = null;
+        resumeBlockScan();
+      }, 2000);
+    }
     return;
   }
   if (!_isDBConnected) {
     console.log("Database is not connected yet ");
-    setTimeout(() => {
-      resumeBlockScan();
-    }, 2000);
+    if (!timerSet) {
+      timerSet = setTimeout(() => {
+        timerSet = null;
+        resumeBlockScan();
+      }, 2000);
+    }
     return;
   }
 
@@ -775,12 +818,16 @@ function resumeBlockScan() {
   if (inHere) {
     console.log("...Already Processing Block");
     counter++;
-    if (counter === 5) {
+    if (counter === 15) {
+      counter = 0;
       inHere = false;
     }
-    setTimeout(() => {
-      resumeBlockScan();
-    }, 50000);
+    if (!timerSet) {
+      timeerSet = setTimeout(() => {
+        timerSet = null;
+        resumeBlockScan();
+      }, 50000);
+    }
     return;
   }
 
@@ -801,34 +848,45 @@ function resumeBlockScan() {
   ) AS z
  WHERE z.got!=0;`;
 
-  if (process.env.FILLIN==='true') {
+  if (process.env.FILLIN === "true") {
+    let releaseConn = false;
     return _pool.getConnection().then(conn => {
       return conn
         .query(query)
         .then(rows => {
-            if (rows && rows.length > 0 ) {
-              let missing =   ((rows[0])["missing"]).split( " ")[0]
-              lastBlock = parseInt( missing )
-              console.log("filling in missing block " , lastBlock)
-              doBlockScan();
-            } else {
-              console.log("no missing blocks, trying again in 30 seconds")
-              setTimeout(() => {
-                inHere = false;
+          conn.release();
+          releaseConn = true;
+          if (rows && rows.length > 0) {
+            let missing = rows[0]["missing"].split(" ")[0];
+            lastBlock = parseInt(missing);
+            console.log("filling in missing block ", lastBlock);
+            doBlockScan();
+          } else {
+            console.log("no missing blocks, trying again in 30 seconds");
+            inHere = false;
+            if (!timerSet) {
+              timerSet = setTimeout(() => {
+                timerSet = null;
                 resumeBlockScan();
               }, 30000);
             }
+          }
         })
         .catch(err => {
           // throw err;
           console.log("database error ", err);
-          setTimeout(() => {
-            inHere = false;
-            resumeBlockScan();
-          }, 10);
+          inHere = false;
+          if (!timerSet) {
+            timerSet = setTimeout(() => {
+              timerSet = null;
+              resumeBlockScan();
+            }, 10);
+          }
         })
         .finally(() => {
-          conn.release();
+          if (!releaseConn) {
+            conn.release();
+          }
         });
     });
   } else {
@@ -841,12 +899,16 @@ function doBlockScan() {
     return web3.eth
       .getBlockNumber()
       .then(currentBlock => {
-        if ( process.env.FILLIN !== "true" && currentBlock < lastBlock) {
+        glb_highestBlockOnChain = currentBlock;
+        if (process.env.FILLIN !== "true" && currentBlock < lastBlock) {
           console.log("Really Waiting for new block..." + new Date());
-          setTimeout(() => {
+          if (!timerSet) {
             inHere = false;
-            resumeBlockScan();
-          }, 14000);
+            timerSet = setTimeout(() => {
+              timerSet = null;
+              resumeBlockScan();
+            }, 14000);
+          }
           return true;
         }
         return web3.eth.getBlock(lastBlock).then(block => {
@@ -858,19 +920,25 @@ function doBlockScan() {
                   return logTransactions(block).then(ret => {
                     return logTicketPurchased(lastBlock, jt).then(ret => {
                       console.log(lastBlock, block);
-                      if (process.env.FILLIN==="true") {
-                        setTimeout(() => {
-                          inHere = false;
-                          resumeBlockScan();
-                        }, 10);
+                      if (process.env.FILLIN === "true") {
+                        inHere = false;
+                        if (!timerSet) {
+                          timerSet = setTimeout(() => {
+                            timerSet = null;
+                            resumeBlockScan();
+                          }, 10);
+                        }
                         return true;
                       }
                       return updateLastBlockProcessed().then(ret => {
                         lastBlock += 1;
-                        setTimeout(() => {
-                          inHere = false;
-                          resumeBlockScan();
-                        }, 10);
+                        inHere = false;
+                        if (!timerSet) {
+                          timerSet = setTimeout(() => {
+                            timerSet = null;
+                            resumeBlockScan();
+                          }, 10);
+                        }
                       });
                     });
                   });
@@ -879,27 +947,37 @@ function doBlockScan() {
                 // wait for block to update
                 console.log("Waiting for new block..." + new Date());
                 // lets update the database to show we alive
-                setTimeout(() => {
-                  inHere = false;
-                  resumeBlockScan();
-                }, 15000);
+                inHere = false;
+                if (!timerSet) {
+                  timerSet = setTimeout(() => {
+                    timerSet = null;
+                    resumeBlockScan();
+                  }, 15000);
+                }
               }
             });
         });
       })
       .catch(err => {
         console.log("error talking to server, try again ", err);
-        setTimeout(() => {
-          inHere = false;
-          resumeBlockScan();
-        }, 10000);
+        inHere = false;
+        if (!timerSet) {
+          timerSet = setTimeout(() => {
+            timerSet = false;
+            resumeBlockScan();
+          }, 10000);
+        }
       });
   } catch (e) {
+
     console.log("uncaught error, try again ", err);
-    setTimeout(() => {
-      inHere = false;
-      resumeBlockScan();
-    }, 10000);
+    inHere = false;
+    if (!timerSet) {
+      timerSet = setTimeout(() => {
+        timerSet = null;
+        resumeBlockScan();
+      }, 10000);
+    }
   }
 }
 
