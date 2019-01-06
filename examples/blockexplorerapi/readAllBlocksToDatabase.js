@@ -871,19 +871,20 @@ async function doBlockScan() {
       scheduleNewScan();
       return;
     }
+    console.log( "Start Block -> " , lastBlock, block.hash);
     let jt = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
     await logBlock(block, jt);
     await logTransactions(block);
     await logTicketPurchased(lastBlock, jt);
-    console.log( "Block -> " , lastBlock, block.hash);
+    console.log( "Did   Block -> " , lastBlock, block.hash);
     if (process.env.FILLIN === "true") {
       scheduleNewScan(10);
       return true;
     }
-    return updateLastBlockProcessed().then(ret => {
-      lastBlock += 1;
-      scheduleNewScan(10);
-    });
+    await updateLastBlockProcessed()
+    lastBlock += 1;
+    scheduleNewScan(10);
+
   } catch (err) {
     console.log("uncaught error, try again ", err);
     scheduleNewScan();
