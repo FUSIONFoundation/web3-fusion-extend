@@ -205,13 +205,14 @@ function keepSQLAlive() {
       setTimeout(() => {
         keepSQLAlive();
       }, 60000);
-    }).finally(() => {
-      console.log("Connection setup finally called")
-      if ( _masterConnection  ) {
-        _masterConnection.release()
-        _masterConnection = null
+    })
+    .finally(() => {
+      console.log("Connection setup finally called");
+      if (_masterConnection) {
+        _masterConnection.release();
+        _masterConnection = null;
       }
-    } )
+    });
 }
 
 let lastConnectTimer;
@@ -225,9 +226,7 @@ function keepWeb3Alive() {
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
-    if ( !timerSet ) {
-        resumeBlockScan();
-    }
+    scheduleNewScan(10);
   });
   provider.on("error", function(err) {
     //debugger
@@ -285,37 +284,38 @@ function queryAddTagsForInsert(q, p) {
   return q;
 }
 
-function updateLastBlockProcessed() {
-  let now = new Date();
-  return _pool.getConnection().then(conn => {
-    conn
-      .query(
-        "begin;" +
-          "update info set lastheightProcessed=" +
-          lastBlock +
-          ", recEdited = ?, version = ? where _id = '" +
-          INFO_ID +
-          "';" +
-          "commit;",
-        [now, version]
-      )
-      .then(rows => {
-        return { success: true };
-      })
-      .catch(err => {
-        console.log("UPDATET block error ");
-        throw err;
-      })
-      .finally(() => {
-        conn.release();
-      });
-  });
+async function updateLastBlockProcessed() {
+  let conn;
+  try {
+    let now = new Date();
+    conn = await _pool.getConnection();
+    await conn.query(
+      "begin;" +
+        "update info set lastheightProcessed=" +
+        lastBlock +
+        ", recEdited = ?, version = ? where _id = '" +
+        INFO_ID +
+        "';" +
+        "commit;",
+      [now, version]
+    );
+    return { success: true };
+  } catch (err ) {
+    console.log("UPDATET block error ", err );
+    throw err;
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
 // setup for database writing
 //
-function logBlock(block, tkinfo) {
-  return _pool.getConnection().then(conn => {
+async function logBlock(block, tkinfo) {
+  let conn;
+  try {
+    conn = await _pool.getConnection();
     let query = "Insert into blocks Values(";
     let now = new Date();
 
@@ -341,24 +341,21 @@ function logBlock(block, tkinfo) {
 
     query = queryAddTagsForInsert(query, params);
 
-    return conn
-      .query(query, params)
-      .then(okPacket => {
-        return okPacket.affectedRows === 1;
-      })
-      .catch(err => {
-        if (err.code === "ER_DUP_ENTRY") {
-          // block was already written
-          // normal when we restart scan
-          return true;
-        }
-        console.log("Block log error ", err);
-        throw err;
-      })
-      .finally(() => {
-        conn.release();
-      });
-  });
+    let okPacket = await conn.query(query, params);
+    return okPacket.affectedRows === 1;
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      // block was already written
+      // normal when we restart scan
+      return true;
+    }
+    console.log("Block log error ", err);
+    throw err;
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
 function logTransactions(block) {
@@ -425,7 +422,7 @@ function getTransactionLog(transaction) {
 
 let balancesToGet = {};
 
-function getBalances(addrs, index, resolve, reject) {
+async function getBalances(addrs, index, resolve, reject) {
   if (addrs.length === index) {
     resolve(true);
     return;
@@ -446,77 +443,66 @@ function getBalances(addrs, index, resolve, reject) {
   if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
     // we have this balance already
     console.log("ALREADY HAVE BALANCE " + address);
-    return getBalances(addrs, index + 1, resolve, reject);
+    getBalances(addrs, index + 1, resolve, reject);
+    return;
   }
 
   console.log("GETTTING BALANCE " + address);
 
   let releaseConn = false;
-  return web3.fsn
-    .getAllBalances(address)
-    .then(balances => {
-      return web3.fsn.getAllTimeLockBalances(address).then(timeLockBalances => {
-        return web3.fsn.allTicketsByAddress(address).then(tickets => {
-          return web3.fsn.allSwapsByAddress(address).then(swaps => {
-            return web3.fsn.getNotation(address).then(notation => {
-              all = JSON.stringify({
-                balances,
-                timeLockBalances,
-                tickets,
-                swaps,
-                notation
-              });
-              return _pool.getConnection().then(conn => {
-                return conn
-                  .query(
-                    `select count(*) from transactions where toAddress="${address}" or fromAddress="${address}";`
-                  )
-                  .then(rows => {
-                    let count = rows[0]["count(*)"];
-                    let fsnBalance =
-                      balances[
-                        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                      ];
-                    if (!fsnBalance) {
-                      fsnBalance = "0";
-                    }
-                    if (fsnBalance.length < 36) {
-                      fsnBalance =
-                        "0".repeat(36 - fsnBalance.length) + fsnBalance;
-                    }
-                    let assetsHeld = Object.keys(
-                      Object.assign(balances, timeLockBalances)
-                    ).length;
-
-                    let sql =
-                      `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
-                      `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
-                      `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
-                    return conn.query(sql).then(rows => {
-                      balancesReturned[address] = glb_highestBlockOnChain;
-                      conn.release();
-                      releaseConn = true;
-                      getBalances(addrs, index + 1, resolve, reject);
-                    });
-                  })
-                  .finally(() => {
-                    if (!releaseConn) {
-                      conn.release();
-                    }
-                  });
-              });
-            });
-          });
-        });
-      });
-    })
-    .catch(err => {
-      console.log(" getAllBalances error  ", err);
-      reject(err);
+  let conn;
+  try {
+    let balances = await web3.fsn.getAllBalances(address);
+    let timeLockBalances = await web3.fsn.getAllTimeLockBalances(address);
+    let tickets = await web3.fsn.allTicketsByAddress(address);
+    let swaps = await web3.fsn.allSwapsByAddress(address);
+    let notation = await web3.fsn.getNotation(address);
+    all = JSON.stringify({
+      balances,
+      timeLockBalances,
+      tickets,
+      swaps,
+      notation
     });
+    conn = await _pool.getConnection();
+    let rows = await conn.query(
+      `select count(*) from transactions where toAddress="${address}" or fromAddress="${address}";`
+    );
+    let count = rows[0]["count(*)"];
+    let fsnBalance =
+      balances[
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      ];
+    if (!fsnBalance) {
+      fsnBalance = "0";
+    }
+    if (fsnBalance.length < 36) {
+      fsnBalance = "0".repeat(36 - fsnBalance.length) + fsnBalance;
+    }
+    let assetsHeld = Object.keys(Object.assign(balances, timeLockBalances))
+      .length;
+
+    let sql =
+      `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
+      `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
+      `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
+
+    rows = await conn.query(sql);
+    balancesReturned[address] = glb_highestBlockOnChain;
+    conn.release();
+    conn = null;
+    getBalances(addrs, index + 1, resolve, reject);
+  } catch (err) {
+    console.log(" getAllBalances error  ", err);
+    reject(err);
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
-function logTransaction(block, transactions, index, resolve, reject) {
+async function logTransaction(block, transactions, index, resolve, reject) {
   console.log("   Transaction " + index + " being proceessed");
   if (index === 0) {
     balancesToGet = {};
@@ -535,213 +521,180 @@ function logTransaction(block, transactions, index, resolve, reject) {
     retturn;
   }
 
-  return web3.eth
-    .getTransaction(transactions[index])
-    .then(transaction => {
-      return web3.eth
-        .getTransactionReceipt(transactions[index])
-        .then(receipt => {
-          if (!receipt) {
-            reject(new Error("transaction not complete, no receipt"));
-            return;
-          }
-          return getTransactionLog(transaction).then(log => {
-            // console.log("transaction => ", receipt, transaction, log);
-            return _pool.getConnection().then(conn => {
-              // merge receipt and transaction
-              //debugger
-              transaction.topics =
-                log && log.topics && log.topics.length > 0 ? log.topics : null;
+  let conn;
+  try {
+    let transaction = await web3.eth.getTransaction(transactions[index]);
+    let receipt = await web3.eth.getTransactionReceipt(transactions[index]);
+    if (!receipt) {
+      reject(new Error("transaction not complete, no receipt"));
+      return;
+    }
+    let log = await getTransactionLog(transaction);
+    conn = await _pool.getConnection();
+    // merge receipt and transaction
+    //debugger
+    transaction.topics =
+      log && log.topics && log.topics.length > 0 ? log.topics : null;
 
-              // debugger;
+    // debugger;
 
-              let query = "Insert into transactions Values(";
-              let now = new Date();
-              let fusionCommand;
-              let commandExtra;
-              let commandExtra2;
-              let commandExtra3;
-              let getAssetBalance;
+    let query = "Insert into transactions Values(";
+    let now = new Date();
+    let fusionCommand;
+    let commandExtra;
+    let commandExtra2;
+    let commandExtra3;
+    let getAssetBalance;
 
-              let logData = null;
-              let jsonLogData;
-              let saveData = null;
+    let logData = null;
+    let jsonLogData;
+    let saveData = null;
 
-              if (receipt.logs.length) {
-                try {
-                  saveData = web3.fsn.hex2a(receipt.logs[0].data);
-                  jsonLogData = JSON.parse(saveData);
-                  logData = JSON.stringify(jsonLogData);
-                } catch (e) {
-                  logData = null;
-                  saveData = null;
-                }
-              }
+    if (receipt.logs.length) {
+      try {
+        saveData = web3.fsn.hex2a(receipt.logs[0].data);
+        jsonLogData = JSON.parse(saveData);
+        logData = JSON.stringify(jsonLogData);
+      } catch (e) {
+        logData = null;
+        saveData = null;
+      }
+    }
 
-              if (!logData && receipt.logs) {
-                try {
-                  logData = JSON.stringify({ data: receipt.logs[0].data });
-                } catch (e) {
-                  logData = null;
-                }
-              }
+    if (!logData && receipt.logs) {
+      try {
+        logData = JSON.stringify({ data: receipt.logs[0].data });
+      } catch (e) {
+        logData = null;
+      }
+    }
 
-              transaction.to = transaction.to.toLowerCase();
-              transaction.from = transaction.from.toLowerCase();
+    transaction.to = transaction.to ? transaction.to.toLowerCase() : "";
+    transaction.from = transaction.from.toLowerCase();
 
-              balancesToGet[transaction.from] = true;
+    balancesToGet[transaction.from] = true;
 
-              if (transaction.topics) {
-                let topic = parseInt(transaction.topics[0].substr(2));
-                if (
-                  transaction.to === web3.fsn.consts.FSNCallAddress ||
-                  transaction.from === web3.fsn.consts.FSNCallAddress
-                ) {
-                  fusionCommand =
-                    web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
-                } else if (
-                  transaction.to === web3.fsn.consts.TicketLogAddress ||
-                  transaction.from === web3.fsn.consts.TicketLogAddress
-                ) {
-                  fusionCommand =
-                    web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
-                  balancesToGet[transaction.to] = true;
-                }
-              } else {
-                balancesToGet[transaction.to] = true;
-              }
+    if (transaction.topics) {
+      let topic = parseInt(transaction.topics[0].substr(2));
+      if (
+        transaction.to === web3.fsn.consts.FSNCallAddress ||
+        transaction.from === web3.fsn.consts.FSNCallAddress
+      ) {
+        fusionCommand = web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
+      } else if (
+        transaction.to === web3.fsn.consts.TicketLogAddress ||
+        transaction.from === web3.fsn.consts.TicketLogAddress
+      ) {
+        fusionCommand =
+          web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
+        balancesToGet[transaction.to] = true;
+      }
+    } else {
+      balancesToGet[transaction.to] = true;
+    }
 
-              if (jsonLogData) {
-                if (jsonLogData.To) {
-                  balancesToGet[jsonLogData.To.toLowerCase()] = true;
-                }
+    if (jsonLogData) {
+      if (jsonLogData.To) {
+        balancesToGet[jsonLogData.To.toLowerCase()] = true;
+      }
 
-                switch (fusionCommand) {
-                  case "AssetValueChangeFunc":
-                    commandExtra = jsonLogData.AssetID;
-                    getAssetBalance = jsonLogData.AssetID;
-                    break;
-                  case "GenAssetFunc":
-                    commandExtra = jsonLogData.AssetID;
-                    commandExtra2 =
-                      jsonLogData.Name +
-                      " (" +
-                      jsonLogData.Symbol.toUpperCase() +
-                      ")";
-                    getAssetBalance = jsonLogData.AssetID;
-                    break;
-                  case "SendAssetFunc":
-                    commandExtra = jsonLogData.AssetID;
-                    break;
-                  case "TimeLockFunc":
-                    commandExtra = jsonLogData.AssetID;
-                    fusionCommand = jsonLogData.LockType;
-                    break;
-                  case "BuyTicketFunc":
-                    commandExtra = jsonLogData.Ticket;
-                    break;
-                  case "MakeSwapFunc":
-                    commandExtra = jsonLogData.SwapID;
-                    break;
-                  case "TakeSwapFunc":
-                    commandExtra = jsonLogData.SwapID;
-                    break;
-                  case "RecallSwapFunc":
-                    commandExtra = jsonLogData.SwapID;
-                    break;
-                }
-              }
+      switch (fusionCommand) {
+        case "AssetValueChangeFunc":
+          commandExtra = jsonLogData.AssetID;
+          getAssetBalance = jsonLogData.AssetID;
+          break;
+        case "GenAssetFunc":
+          commandExtra = jsonLogData.AssetID;
+          commandExtra2 =
+            jsonLogData.Name + " (" + jsonLogData.Symbol.toUpperCase() + ")";
+          getAssetBalance = jsonLogData.AssetID;
+          break;
+        case "SendAssetFunc":
+          commandExtra = jsonLogData.AssetID;
+          break;
+        case "TimeLockFunc":
+          commandExtra = jsonLogData.AssetID;
+          fusionCommand = jsonLogData.LockType;
+          break;
+        case "BuyTicketFunc":
+          commandExtra = jsonLogData.Ticket;
+          break;
+        case "MakeSwapFunc":
+          commandExtra = jsonLogData.SwapID;
+          break;
+        case "TakeSwapFunc":
+          commandExtra = jsonLogData.SwapID;
+          break;
+        case "RecallSwapFunc":
+          commandExtra = jsonLogData.SwapID;
+          break;
+      }
+    }
 
-              // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
-              // "  height BIGINT NOT NULL,\n" +
-              // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-              // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-              // "  fromAddress VARCHAR(68),\n" +
-              // "  toAddress VARCHAR(68),\n" +
-              // "  fusionCommand VARCHAR(68),\n" +
-              // "  data json,\n"+
-              // "  transaction json,\n" +
-              let params = [
-                transaction.hash.toLowerCase(),
-                transaction.blockNumber,
-                block.timestamp,
-                now,
-                now,
-                transaction.from,
-                transaction.to,
-                fusionCommand,
-                commandExtra,
-                commandExtra2,
-                commandExtra3,
-                saveData,
-                JSON.stringify(transaction),
-                JSON.stringify(receipt)
-              ];
+    // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+    // "  height BIGINT NOT NULL,\n" +
+    // "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+    // "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+    // "  fromAddress VARCHAR(68),\n" +
+    // "  toAddress VARCHAR(68),\n" +
+    // "  fusionCommand VARCHAR(68),\n" +
+    // "  data json,\n"+
+    // "  transaction json,\n" +
+    let params = [
+      transaction.hash.toLowerCase(),
+      transaction.blockNumber,
+      block.timestamp,
+      now,
+      now,
+      transaction.from,
+      transaction.to,
+      fusionCommand,
+      commandExtra,
+      commandExtra2,
+      commandExtra3,
+      saveData,
+      JSON.stringify(transaction),
+      JSON.stringify(receipt)
+    ];
 
-              query = queryAddTagsForInsert(query, params);
-              let releaseConn = false;
-              return conn
-                .query(query, params)
-                .then(okPacket => {
-                  // if ( okPacket.affectedRows === 1 ) {
-                  index += 1;
-                  if (getAssetBalance) {
-                    return web3.fsn.getAsset(getAssetBalance).then(asset => {
-                      let totalSupply = asset.Total;
-                      conn
-                        .query(
-                          "UPDATE transactions set commandExtra3  = ? where hash = ?;",
-                          [totalSupply, transaction.hash.toLowerCase()]
-                        )
-                        .then(rows => {
-                          conn.release();
-                          releaseConn = true;
-                          logTransaction(
-                            block,
-                            transactions,
-                            index,
-                            resolve,
-                            reject
-                          );
-                        });
-                    });
-                  } else {
-                    conn.release();
-                    releaseConn = true;
-                    logTransaction(block, transactions, index, resolve, reject);
-                  }
-                })
-                .catch(err => {
-                  conn.release();
-                  releaseConn = true;
-                  if (err.code === "ER_DUP_ENTRY") {
-                    // block was already written
-                    // normal when we restart scan
-                    logTransaction(
-                      block,
-                      transactions,
-                      index + 1,
-                      resolve,
-                      reject
-                    );
-                    return true;
-                  }
-                  console.log("transaction log error ", err);
-                  reject(err);
-                })
-                .finally(() => {
-                  if (!releaseConn) {
-                    conn.release();
-                  }
-                });
-            });
-          });
-        });
-    })
-    .catch(err => {
-      console.log("error getting transaction ", err);
-      reject(err);
-    });
+    query = queryAddTagsForInsert(query, params);
+    await conn.query(query, params);
+
+    index += 1;
+    if (getAssetBalance) {
+      let asset = await web3.fsn.getAsset(getAssetBalance);
+      let totalSupply = asset.Total;
+      await conn.query(
+        "UPDATE transactions set commandExtra3  = ? where hash = ?;",
+        [totalSupply, transaction.hash.toLowerCase()]
+      );
+      conn.release();
+      conn = null;
+      logTransaction(block, transactions, index, resolve, reject);
+    } else {
+      conn.release();
+      conn = null;
+      releaseConn = true;
+      logTransaction(block, transactions, index, resolve, reject);
+    }
+  } catch (err) {
+    if (conn) {
+      conn.release();
+      conn = null;
+    }
+    if (err.code === "ER_DUP_ENTRY") {
+      // block was already written
+      // normal when we restart scan
+      logTransaction(block, transactions, index + 1, resolve, reject);
+      return true;
+    }
+    console.log("transaction log error ", err);
+    reject(err);
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
 function calcReward(height) {
@@ -756,57 +709,53 @@ function calcReward(height) {
   return reward;
 }
 
-function logTicketPurchased(blockNumber, tikinfo) {
-  return _pool.getConnection().then(conn => {
+async function logTicketPurchased(blockNumber, tikinfo) {
+  let conn;
+  try {
+    conn = await _pool.getConnection();
     let { selected } = tikinfo;
     let tkQuery =
       "select fromAddress from transactions where fusionCommand='BuyTicketFunc' and commandExtra ='" +
       selected +
       "';";
     // console.log(tkQuery);
-    return conn
-      .query(tkQuery)
-      .then(rows => {
-        try {
-          let address = rows[0].fromAddress;
-          return conn
-            .query(
-              "UPDATE currentBalance set ticketsWon  = ticketsWon + 1, rewardEarn = rewardEarn + ? where _id = ?;",
-              [calcReward(blockNumber), address]
-            )
-            .then(rows => {});
-        } catch (e) {
-          //debugger
-        }
-        //console.log(rows)
-        //debugger
-      })
-      .finally(() => {
-        conn.release();
-      });
-  });
+    let rows = await conn.query(tkQuery);
+    try {
+      let address = rows[0].fromAddress;
+      await conn.query(
+        "UPDATE currentBalance set ticketsWon  = ticketsWon + 1, rewardEarn = rewardEarn + ? where _id = ?;",
+        [calcReward(blockNumber), address]
+      );
+    } catch (e) {
+      //debugger
+    }
+    conn.release();
+    conn = null;
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
+function callBlockScanAgain() {
+  if (!timerSet) {
+    setTimeout(() => {
+      timerSet = null;
+      resumeBlockScan();
+    }, 2000);
+  }
+}
 
 function resumeBlockScan() {
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
-    if (!timerSet) {
-      setTimeout(() => {
-        timerSet = null;
-        resumeBlockScan();
-      }, 2000);
-    }
+    callBlockScanAgain();
     return;
   }
   if (!_isDBConnected) {
     console.log("Database is not connected yet ");
-    if (!timerSet) {
-      timerSet = setTimeout(() => {
-        timerSet = null;
-        resumeBlockScan();
-      }, 2000);
-    }
+    callBlockScanAgain();
     return;
   }
 
@@ -818,7 +767,7 @@ function resumeBlockScan() {
   if (inHere) {
     console.log("...Already Processing Block");
     counter++;
-    if (counter === 15) {
+    if (counter === 10) {
       counter = 0;
       inHere = false;
     }
@@ -894,90 +843,49 @@ function resumeBlockScan() {
   }
 }
 
-function doBlockScan() {
-  try {
-    return web3.eth
-      .getBlockNumber()
-      .then(currentBlock => {
-        glb_highestBlockOnChain = currentBlock;
-        if (process.env.FILLIN !== "true" && currentBlock < lastBlock) {
-          console.log("Really Waiting for new block..." + new Date());
-          if (!timerSet) {
-            inHere = false;
-            timerSet = setTimeout(() => {
-              timerSet = null;
-              resumeBlockScan();
-            }, 14000);
-          }
-          return true;
-        }
-        return web3.eth.getBlock(lastBlock).then(block => {
-          return web3.fsn
-            .getSnapshot(web3.utils.numberToHex(lastBlock))
-            .then(jt => {
-              if (block) {
-                return logBlock(block, jt).then(ret => {
-                  return logTransactions(block).then(ret => {
-                    return logTicketPurchased(lastBlock, jt).then(ret => {
-                      console.log(lastBlock, block);
-                      if (process.env.FILLIN === "true") {
-                        inHere = false;
-                        if (!timerSet) {
-                          timerSet = setTimeout(() => {
-                            timerSet = null;
-                            resumeBlockScan();
-                          }, 10);
-                        }
-                        return true;
-                      }
-                      return updateLastBlockProcessed().then(ret => {
-                        lastBlock += 1;
-                        inHere = false;
-                        if (!timerSet) {
-                          timerSet = setTimeout(() => {
-                            timerSet = null;
-                            resumeBlockScan();
-                          }, 10);
-                        }
-                      });
-                    });
-                  });
-                });
-              } else {
-                // wait for block to update
-                console.log("Waiting for new block..." + new Date());
-                // lets update the database to show we alive
-                inHere = false;
-                if (!timerSet) {
-                  timerSet = setTimeout(() => {
-                    timerSet = null;
-                    resumeBlockScan();
-                  }, 15000);
-                }
-              }
-            });
-        });
-      })
-      .catch(err => {
-        console.log("error talking to server, try again ", err);
-        inHere = false;
-        if (!timerSet) {
-          timerSet = setTimeout(() => {
-            timerSet = false;
-            resumeBlockScan();
-          }, 10000);
-        }
-      });
-  } catch (e) {
+function scheduleNewScan(timeToSet) {
+  inHere = false;
+  if (!timerSet) {
+    timerSet = setTimeout(() => {
+      timerSet = null;
+      resumeBlockScan();
+    }, timeToSet || 14000);
+  }
+}
 
-    console.log("uncaught error, try again ", err);
-    inHere = false;
-    if (!timerSet) {
-      timerSet = setTimeout(() => {
-        timerSet = null;
-        resumeBlockScan();
-      }, 10000);
+async function doBlockScan() {
+  try {
+    let currentBlock = await web3.eth.getBlockNumber();
+    glb_highestBlockOnChain = currentBlock;
+    if (process.env.FILLIN !== "true" && currentBlock < lastBlock) {
+      console.log("Really Waiting for new block..." + new Date());
+      scheduleNewScan();
+      return true;
     }
+    let block = await web3.eth.getBlock(lastBlock);
+    if (!block) {
+      // wait for block to update
+      console.log("Waiting for new block..." + new Date());
+      // lets update the database to show we alive
+      scheduleNewScan();
+      return;
+    }
+    let jt = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
+    await logBlock(block, jt);
+    await logTransactions(block);
+    await logTicketPurchased(lastBlock, jt);
+    console.log( "Block -> " , lastBlock, block.hash);
+    if (process.env.FILLIN === "true") {
+      scheduleNewScan(10);
+      return true;
+    }
+    return updateLastBlockProcessed().then(ret => {
+      lastBlock += 1;
+      scheduleNewScan(10);
+    });
+  } catch (err) {
+    console.log("uncaught error, try again ", err);
+    scheduleNewScan();
   }
 }
 
