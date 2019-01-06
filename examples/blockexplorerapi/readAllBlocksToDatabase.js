@@ -431,9 +431,10 @@ async function getBalances(addrs, index, resolve, reject) {
   // debugger
   let address = addrs[index];
 
-  if (
+  if ( !address ||
     address === web3.fsn.consts.FSNCallAddress ||
-    address === web3.fsn.consts.TicketLogAddress
+    address === web3.fsn.consts.TicketLogAddress ||
+    address.length === 0
   ) {
     return getBalances(addrs, index + 1, resolve, reject);
   }
