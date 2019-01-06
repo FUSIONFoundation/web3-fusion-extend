@@ -858,7 +858,7 @@ async function doBlockScan() {
   try {
     let currentBlock = await web3.eth.getBlockNumber();
     glb_highestBlockOnChain = currentBlock;
-    if (process.env.FILLIN !== "true" && currentBlock < lastBlock) {
+    if (process.env.FILLIN !== "true" && (currentBlock +1 ) < lastBlock) { // wait for two blocks for data to fill in
       console.log("Really Waiting for new block..." + new Date());
       scheduleNewScan();
       return true;
