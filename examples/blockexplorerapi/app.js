@@ -34,13 +34,14 @@ app.use(helmet({
 // Sets "X-Content-Type-Options: nosniff".
 app.use(noSniff())
 
-var apiLimiter = new RateLimit({
-  windowMs: 15*60*1000, // 15 minutes
-  max: 5000,
-});
+// var apiLimiter = new RateLimit({
+//   windowMs: 15*60*1000, // 15 minutes
+//   max: 5000,
+// });
+// with nginx this becomes a problem
  
 // only apply to requests that begin with /user/
-app.use('/', apiLimiter);
+// app.use('/', apiLimiter);
 
 // enable cor support
 app.use(function(req, res, next) {
