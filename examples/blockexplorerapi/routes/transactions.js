@@ -55,11 +55,13 @@ router.get("/:hash", function(req, res, next) {
   }
 
   if ( field === 'timestamp' ) {
-      field = [`timestamp  ${sort}`,'recCreated']
+      //field = `timestamp  ${sort}, recCreated`
+      field = `timestamp `
   }
 
   if ( field === 'height' ) {
-      field = [`height  ${sort}`,'recCreated']
+      //field = `height  ${sort}, recCreated`
+      field = `height `
   }
 
   if ( hash === 'ts' ) {
