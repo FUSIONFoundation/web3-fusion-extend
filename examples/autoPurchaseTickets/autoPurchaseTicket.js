@@ -16,6 +16,7 @@ console.log(`Example:
               -c --connectString web socket gateway to connect to
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
+              -c  --chainId (defaults to 1)
               -g  -- gasPrice gas price 1 - 100 (defaults to 2 gwei)
               -n  --Number of tickets to purchase`);
 
@@ -27,6 +28,18 @@ function RaiseErrorAndHalt({ condition, message }) {
     process.exit(1);
   }
 }
+
+var chaindId = 1
+if (options.chainId) {
+  let val = parseInt(options.chainId);
+  const condition = isNaN(val) || val < 1 ;
+  RaiseErrorAndHalt({
+    condition,
+    message: "Invalid chain id "
+  });
+  chainId = val;
+}
+
 
 var gasPrice = 2;
 
@@ -187,6 +200,7 @@ async function buyATicket(data) {
 
           const tx = await web3.fsntx.buildBuyTicketTx({ from: key.address });
           tx.gasPrice = web3.utils.toWei(new web3.utils.BN(gasPrice), "gwei");
+          tx.chaindId = chaindId
 
           const txHash = await web3.fsn.signAndTransmit(
             tx,
