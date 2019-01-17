@@ -136,9 +136,7 @@ function connectService() {
     console.log(
       "Provider has a problem trying again in 10 seconds or check connect argument"
     );
-    setTimeout(() => {
-      connectService;
-    }, 10000);
+    setTimeout(connectService, 10000);
     return;
   }
 
