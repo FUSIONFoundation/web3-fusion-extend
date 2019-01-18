@@ -8,6 +8,7 @@ const optionDefinitions = [
   { name: "passPhraseFile", type: String, alias: "p" },
   { name: "keyStore", alias: "k", type: String },
   { name: "gasPrice", alias: "g", type: Number },
+  { name: "chainId", alias: "d", type: Number },
   { name: "numberOfTickets", alias: "n", type: Number }
 ];
 
@@ -16,7 +17,7 @@ console.log(`Example:
               -c --connectString web socket gateway to connect to
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
-              -c  --chainId (defaults to 1)
+              -d  --chainId (defaults to 1)
               -g  -- gasPrice gas price 1 - 100 (defaults to 2 gwei)
               -n  --Number of tickets to purchase`);
 
