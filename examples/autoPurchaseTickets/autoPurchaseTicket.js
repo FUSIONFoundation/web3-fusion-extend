@@ -18,7 +18,7 @@ console.log(`Example:
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
               -d  --chainId (defaults to 1)
-              -g  -- gasPrice gas price 1 - 100 (defaults to 2 gwei)
+              -g  --gasPrice gas price 1 - 100 (defaults to 2 gwei)
               -n  --Number of tickets to purchase`);
 
 const options = commandLineArgs(optionDefinitions);
@@ -39,8 +39,8 @@ if (options.chainId) {
     message: "Invalid chain id "
   });
   chainId = val;
+  console.log("Using chainId " + chaindId )
 }
-
 
 var gasPrice = 2;
 
@@ -174,6 +174,7 @@ let totalTicketsBought = 0;
 
 async function buyATicket(data) {
   if (data.reset) {
+    console.log("waiting for new connect")
     return;
   }
 
@@ -199,7 +200,7 @@ async function buyATicket(data) {
 
           const tx = await web3.fsntx.buildBuyTicketTx({ from: key.address });
           tx.gasPrice = web3.utils.toWei(new web3.utils.BN(gasPrice), "gwei");
-          tx.chaindId = chaindId
+          tx.chainId = chainId
 
           const txHash = await web3.fsn.signAndTransmit(
             tx,
@@ -242,20 +243,18 @@ async function buyATicket(data) {
     } catch (e) {
       reject(e);
     }
-  }).then(
-    success => {
+  }).then( ()=>{
       setTimeout(() => {
         buyATicket(data);
       }, 4000);
-    },
-    error => {
+    }).catch( (error) => {
       console.log("error ", error);
       console.log("will retry");
       setTimeout(() => {
         buyATicket(data);
       }, 4000);
-    }
-  );
+  })
+
 }
 
 function waitForTransactionToComplete(transID, data, maxTime) {
