@@ -16,6 +16,7 @@ var assetRouter = require('./routes/asset');
 var swapsRouter = require('./routes/swaps');
 var fsnpriceRouter = require('./routes/fsnprice');
 var searchRouter = require('./routes/search');
+var leaderboardRouter = require("./routes/leaderboard")
 
 var app = express();
 
@@ -65,6 +66,7 @@ app.use("/assets" , assetRouter)
 app.use("/swaps", swapsRouter ) 
 app.use("/fsnprice", fsnpriceRouter )
 app.use("/search", searchRouter )
+app.use("/leaderboard", leaderboardRouter )
 
 
 // catch 404 and forward to error handler

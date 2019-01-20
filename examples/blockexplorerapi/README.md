@@ -91,6 +91,8 @@ http://api.fusionnetwork.io/fsnprice/?page=0&size=2&sort=desc
 # Search
 http://api.fusionnetwork.io/search/[block,blockhash,transaction,address]
 
+#miner leaderboard
+http://api.fusionnetwork.io/leaderboard
 
 #Ticket purchase applicaton
   - [autoPurchaseTicket.js ](./autoPurchaseTicket.js)

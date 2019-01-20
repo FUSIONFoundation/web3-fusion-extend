@@ -20,71 +20,71 @@ router.get("/:hash", function(req, res, next) {
     fsnBalance: true,
     ticketsWon: true,
     rewardEarn: true,
-    address : true
+    address: true
   };
   let hash = req.params.hash;
-  let page =  req.query.page || 0;
+  let page = req.query.page || 0;
   let size = req.query.size || 100;
-  let field = allowedFields[req.query.field] ? req.query.field : 'address'
-  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
-  let index = parseInt( req.query.index || -1 )
+  let field = allowedFields[req.query.field] ? req.query.field : "address";
+  let sort = req.query.sort === "desc" ? "desc" : "asc";
+  let index = parseInt(req.query.index || -1);
 
-  if ( field === 'address' ) {
-    field = "_id"
+  if (field === "address") {
+    field = "_id";
   }
 
-  page = parseInt( page )
-  size = parseInt( size )
+  page = parseInt(page);
+  size = parseInt(size);
 
-  if ( size > 100 || size < 1  || isNaN(size) ) {
-    console.log( "size " , size )
-    size = 100
+  if (size > 100 || size < 1 || isNaN(size)) {
+    console.log("size ", size);
+    size = 100;
   }
 
-  if ( isNaN(page) ) {
-    page = 0
+  if (isNaN(page)) {
+    page = 0;
   }
 
-  if ( isNaN(index) ) {
-    index = -1
+  if (isNaN(index)) {
+    index = -1;
   }
 
-  if ( hash === 'ts' ) {
-    let tsA = req.query.ts ?  req.query.ts.split("-") : []
-    for ( let i = 0 ; i < tsA.length ; i++ ) {
-      tsA[i] = tsA[i].toLowerCase()
+  if (hash === "ts") {
+    let tsA = req.query.ts ? req.query.ts.split("-") : [];
+    for (let i = 0; i < tsA.length; i++) {
+      tsA[i] = tsA[i].toLowerCase();
     }
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM currentBalance where _id in (?)` , [ tsA ] )
+        .query(`SELECT * FROM currentBalance where _id in (?)`, [tsA])
         .then(rows => {
-          res.json(rows)
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
         });
     });
-    return
+    return;
   }
 
   if (hash === "all") {
-    let str = `SELECT * FROM currentBalance order by ${field} ${sort}, _id ${sort} limit ?,?` 
+    let str = `SELECT * FROM currentBalance order by ${field} ${sort}, _id ${sort} limit ?,?`;
     getConnection().then(conn => {
       conn
-        .query(str, [ (index>=0 ? index : page*size), size ] )
+        .query(str, [index >= 0 ? index : page * size, size])
         .then(rows => {
-          res.json(rows)
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
         });
     });
-  } else if ( hash === 'latest') {
+  } else if (hash === "latest") {
     getConnection().then(conn => {
       conn
-        .query("SELECT * FROM currentBalance order by recCreated desc limit 1" )
+        .query("SELECT * FROM currentBalance order by recCreated desc limit 1")
         .then(rows => {
-          res.json(rows)
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
@@ -92,12 +92,15 @@ router.get("/:hash", function(req, res, next) {
     });
   } else {
     // else get one block
-    hash = hash.toLowerCase()
+    hash = hash.toLowerCase();
     getConnection().then(conn => {
       conn
-        .query("select * from currentBalance where _id = ? or san = ?", [hash,hash])
+        .query("select * from currentBalance where _id = ? or san = ?", [
+          hash,
+          hash
+        ])
         .then(rows => {
-          res.json(rows)
+          res.json(rows);
         })
         .finally(() => {
           conn.release();
@@ -105,6 +108,5 @@ router.get("/:hash", function(req, res, next) {
     });
   }
 });
-
 
 module.exports = router;
