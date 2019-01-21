@@ -39,7 +39,7 @@ if (options.chainId) {
     message: "Invalid chain id "
   });
   chainId = val;
-  console.log("Using chainId " + chaindId )
+  console.log("Using chainId " + chainId )
 }
 
 var gasPrice = 2;
