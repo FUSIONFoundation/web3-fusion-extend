@@ -30,7 +30,7 @@ function RaiseErrorAndHalt({ condition, message }) {
   }
 }
 
-var chaindId = 1
+var chainId = 1
 if (options.chainId) {
   let val = parseInt(options.chainId);
   const condition = isNaN(val) || val < 1 ;
