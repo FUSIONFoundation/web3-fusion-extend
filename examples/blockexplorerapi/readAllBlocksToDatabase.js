@@ -622,6 +622,7 @@ async function logTransaction(block, transactions, index, resolve, reject) {
         case "BuyTicketFunc":
           commandExtra = jsonLogData.Ticket;
           break;
+        case "MakeSwapFuncExt":
         case "MakeSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
