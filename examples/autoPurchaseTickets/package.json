@@ -18,6 +18,6 @@
     "promise-mysql": "^3.3.1",
     "pug": "2.0.0-beta11",
     "request-promise": "^4.2.2",
-    "web3": "^1.0.0-beta.36"
+    "web3": "1.0.0-beta.36"
   }
 }
