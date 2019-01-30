@@ -106,7 +106,7 @@ try {
 let crypto = key.Crypto || key.crypto;
 let signInfo;
 
-let wb = new Web3( new web3.providers.WebsocketProvider(options.connectString, {
+let wb = new Web3( new Web3.providers.WebsocketProvider(options.connectString, {
   timeout: 10000
 }));
 let web3 = web3FusionExtend.extend(wb);
