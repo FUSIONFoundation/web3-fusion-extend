@@ -228,6 +228,7 @@ function keepWeb3Alive() {
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
+    web3.fsn.enableBigIntJSONParse()
     scheduleNewScan(10);
   });
   provider.on("error", function(err) {
