@@ -105,7 +105,7 @@ sudo apt-get install nodejs-legacy
 
 ### Testing (mocha)
 
-When testting a connect string to a local fusion node and a wallet address is needed as environment variables
+When testing a connect string to a local fusion node and a wallet address is needed as environment variables
 
 ```bash
 CONNECT_STRING="ws://3.16.110.25:9001" WALLET_ADDRESS="0x4A5a7Aa4130e407d3708dE56db9000F059200C62" npm test
