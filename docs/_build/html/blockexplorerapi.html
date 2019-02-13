@@ -1,0 +1,253 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>blockexplorerapi &#8212; web3-fusion-extend  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FSNConstants" href="constants.html" />
+    <link rel="prev" title="autoPurchaseTickets" href="autoPurchaseTickets.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="constants.html" title="FSNConstants"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autoPurchaseTickets.html" title="autoPurchaseTickets"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="blockexplorerapi">
+<h1>blockexplorerapi<a class="headerlink" href="#blockexplorerapi" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="web3-fusion-extend-js-fusion-javascript-api">
+<h2>web3-fusion-extend.js - Fusion JavaScript API<a class="headerlink" href="#web3-fusion-extend-js-fusion-javascript-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<p>This block explorer api section shows how to collect all information from the fusion block chain and update a mysql database.</p>
+<p>You will need a node for the application readAllBlocksToDatabase.js to communicate with as well as a mysql database to store the information.</p>
+<p>You will need an environment string called DB_CONNECT_STRING</p>
+<p>It can be passed on the command line.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">DB_CONNECT_STRING</span><span class="o">=</span><span class="s2">&quot;{&#39;host&#39;:&#39;mysqlserver,&#39;user&#39;:&#39;adminuser&#39;,&#39;password&#39;:&#39;password&#39;,&#39;database&#39;:&#39;fusionblockdb&#39;,&#39;connectionLimit&#39;:100}&quot;</span> <span class="nx">node</span> <span class="nx">readAllBlocksToDatabase</span><span class="p">.</span><span class="nx">js</span>
+</pre></div>
+</div>
+<p>You can then host the api server for the database via:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">DB_CONNECT_STRING</span><span class="o">=</span><span class="s2">&quot;{&#39;host&#39;:&#39;mysqlserver,&#39;user&#39;:&#39;adminuser&#39;,&#39;password&#39;:&#39;password&#39;,&#39;database&#39;:&#39;fusionblockdb&#39;,&#39;connectionLimit&#39;:100}&quot;</span> <span class="nx">nodemon</span>   <span class="nx">node</span> <span class="p">.</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">www</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fusion-org-and-its-public-explorer-api">
+<h3>Fusion Org and its public explorer api<a class="headerlink" href="#fusion-org-and-its-public-explorer-api" title="Permalink to this headline">¶</a></h3>
+<p>Fusion organization keeps an api endpoint open at <a class="reference external" href="https://api.fusionnetwork.io">https://api.fusionnetwork.io</a> to assist in application development</p>
+<p>You can try commands like <a class="reference external" href="https://api.fusionnetwork.io/blocks/latest">https://api.fusionnetwork.io/blocks/latest</a> or <a class="reference external" href="https://api.fusionnetwork.io/transactions/latest">https://api.fusionnetwork.io/transactions/latest</a></p>
+<p>Note if you are not a developer the results may look scary but they are the actual last block or transaction info</p>
+</div>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">npm</span> <span class="nx">install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api-commands">
+<h3>API Commands<a class="headerlink" href="#api-commands" title="Permalink to this headline">¶</a></h3>
+<p>If running locally replace api.fusionnetwork.io with your own server link</p>
+<div class="section" id="assets">
+<h4>Assets<a class="headerlink" href="#assets" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae">http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/assets/all?page=0&amp;size=2&amp;sort=desc">http://api.fusionnetwork.io/assets/all?page=0&amp;size=2&amp;sort=desc</a></li>
+</ul>
+</div>
+<div class="section" id="balance">
+<h4>Balance<a class="headerlink" href="#balance" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94">http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/balances/all?page=0&amp;size=2&amp;sort=asc">http://api.fusionnetwork.io/balances/all?page=0&amp;size=2&amp;sort=asc</a></li>
+</ul>
+</div>
+<div class="section" id="blocks">
+<h4>Blocks<a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/blocks/latest">http://api.fusionnetwork.io/blocks/latest</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/blocks/300">http://api.fusionnetwork.io/blocks/300</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/blocks/all?sort=asc&amp;page=2&amp;size=10&amp;field=height&amp;sort=desc">http://api.fusionnetwork.io/blocks/all?sort=asc&amp;page=2&amp;size=10&amp;field=height&amp;sort=desc</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/blocks/range?to=10&amp;from=100">http://api.fusionnetwork.io/blocks/range?to=10&amp;from=100</a></li>
+</ul>
+<p>fields can be: [ timestamp, hash , numberOfTransactions, height ]</p>
+</div>
+<div class="section" id="swaps">
+<h4>Swaps<a class="headerlink" href="#swaps" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae">http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/swaps/all?page=0&amp;size=2&amp;sort=asc">http://api.fusionnetwork.io/swaps/all?page=0&amp;size=2&amp;sort=asc</a></li>
+</ul>
+</div>
+<div class="section" id="transactions">
+<h4>Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/transactions/latest">http://api.fusionnetwork.io/transactions/latest</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa">http://api.fusionnetwork.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/transactions/all?sort=asc&amp;page=2&amp;size=10&amp;field=height">http://api.fusionnetwork.io/transactions/all?sort=asc&amp;page=2&amp;size=10&amp;field=height</a></li>
+</ul>
+<p>fields can be: [ timestamp, hash , type, block , asset ]</p>
+<p>Return an array of transactions from a - seperated array
+- <a class="reference external" href="http://api.fusionnetwork.io/transactions/ts?ts=address1-address2">http://api.fusionnetwork.io/transactions/ts?ts=address1-address2</a></p>
+</div>
+<div class="section" id="fusion-price">
+<h4>Fusion Price<a class="headerlink" href="#fusion-price" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>last price</dt>
+<dd><ul class="first last">
+<li><a class="reference external" href="http://api.fusionnetwork.io/fsnprice">http://api.fusionnetwork.io/fsnprice</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>historical prices</dt>
+<dd><ul class="first last">
+<li><a class="reference external" href="http://api.fusionnetwork.io/fsnprice/?page=0&amp;size=2&amp;sort=asc">http://api.fusionnetwork.io/fsnprice/?page=0&amp;size=2&amp;sort=asc</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>last two prices</dt>
+<dd><ul class="first last">
+<li><a class="reference external" href="http://api.fusionnetwork.io/fsnprice/?page=0&amp;size=2&amp;sort=desc">http://api.fusionnetwork.io/fsnprice/?page=0&amp;size=2&amp;sort=desc</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="search">
+<h3>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference external" href="http://api.fusionnetwork.io/search/[block,blockhash,transaction,address]">http://api.fusionnetwork.io/search/[block,blockhash,transaction,address]</a></li>
+<li><a class="reference external" href="http://api.fusionnetwork.io/leaderboard">miner leaderboard http://api.fusionnetwork.io/leaderboard</a></li>
+<li><dl class="first docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">`</span></a>Ticket purchase applicaton</dt>
+<dd><ul class="first last">
+<li><a class="reference external" href="https://github.com/FUSIONFoundation/web3-fusion-extend/blob/master/examples/autoPurchaseTickets/autoPurchaseTicket.js">autoPurchaseTicket.js</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Example: node autoPurchaseTicket –c”wss://example.com” -p “./password.txt” -k “./keystore.key” -n 10</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="nx">c</span> <span class="o">--</span><span class="nx">connectString</span> <span class="nx">web</span> <span class="nx">socket</span> <span class="nx">gateway</span> <span class="nx">to</span> <span class="nx">connect</span> <span class="nx">to</span>
+<span class="o">-</span><span class="nx">k</span>  <span class="o">--</span><span class="nx">keyStore</span> <span class="nx">keystore</span> <span class="nx">file</span> <span class="nx">to</span> <span class="nx">use</span>
+<span class="o">-</span><span class="nx">p</span>  <span class="o">--</span><span class="nx">passPharseFile</span> <span class="nx">key</span> <span class="nx">file</span>
+<span class="o">-</span><span class="nx">n</span>  <span class="o">--</span><span class="nb">Number</span> <span class="k">of</span> <span class="nx">tickets</span> <span class="nx">to</span> <span class="nx">purchase</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">blockexplorerapi</a><ul>
+<li><a class="reference internal" href="#web3-fusion-extend-js-fusion-javascript-api">web3-fusion-extend.js - Fusion JavaScript API</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#fusion-org-and-its-public-explorer-api">Fusion Org and its public explorer api</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#api-commands">API Commands</a><ul>
+<li><a class="reference internal" href="#assets">Assets</a></li>
+<li><a class="reference internal" href="#balance">Balance</a></li>
+<li><a class="reference internal" href="#blocks">Blocks</a></li>
+<li><a class="reference internal" href="#swaps">Swaps</a></li>
+<li><a class="reference internal" href="#transactions">Transactions</a></li>
+<li><a class="reference internal" href="#fusion-price">Fusion Price</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#search">Search</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="autoPurchaseTickets.html"
+                        title="previous chapter">autoPurchaseTickets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="constants.html"
+                        title="next chapter">FSNConstants</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/blockexplorerapi.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="constants.html" title="FSNConstants"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autoPurchaseTickets.html" title="autoPurchaseTickets"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Fusion.org.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

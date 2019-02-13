@@ -1,0 +1,418 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fsntx &#8212; web3-fusion-extend  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="fsn" href="fsn.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fsn.html" title="fsn"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This documentation is work in progress and web3-fusion-extend 1.0 stable is not yet released! You can find the current documentation for web3-fusion-extend 0.x.x at.</p>
+</div>
+<div class="section" id="fsntx">
+<h1>fsntx<a class="headerlink" href="#fsntx" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fsntx-commands">
+<h2>FSNTX commands<a class="headerlink" href="#fsntx-commands" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>personal.unlockAccount( eth.coinbase, “123456” ) var tx = fsntx.buildBuyTicketTx( {from:eth.coinbase} ) tx.from = eth.coinbase var tx2 = eth.signTransaction( tx ) fsntx.sendRawTransaction(tx2.tx)</div></blockquote>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// fsntx</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>web3._extend({</dt>
+<dd><p class="first">property: “fsntx”,
+methods: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>new web3._extend.Method({</dt>
+<dd>name: “sendRawTransaction”,
+call: “fsntx_sendRawTransaction”,
+params: 1</dd>
+</dl>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildGenNotationTx”,
+call: “fsntx_buildGenNotationTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “genNotation”,
+call: “fsntx_genNotation”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “buildGenAssetTx”,
+call: “fsntx_buildGenAssetTx”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd><dl class="first docutils">
+<dt>if (options.name === undefined || !options.name) {</dt>
+<dd>throw new Error(“invalid name”);</dd>
+</dl>
+<p>}
+if (options.symbol === undefined || !options.symbol) {</p>
+<blockquote>
+<div>throw new Error(“invalid symbol”);</div></blockquote>
+<p>}
+if (</p>
+<blockquote>
+<div>options.decimals === undefined ||
+options.decimals &lt;= 0 ||
+options.decimals &gt; 255</div></blockquote>
+<dl class="docutils">
+<dt>) {</dt>
+<dd>throw new Error(“invalid decimals”);</dd>
+</dl>
+<p>}
+if (options.total !== undefined) {</p>
+<blockquote>
+<div>options.total = web3.fromDecimal(options.total);</div></blockquote>
+<p class="last">}
+return web3._extend.formatters.inputTransactionFormatter(options);</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “genAsset”,
+call: “fsntx_genAsset”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd><dl class="first docutils">
+<dt>if (options.name === undefined || !options.name) {</dt>
+<dd>throw new Error(“invalid name”);</dd>
+</dl>
+<p>}
+if (options.symbol === undefined || !options.symbol) {</p>
+<blockquote>
+<div>throw new Error(“invalid symbol”);</div></blockquote>
+<p>}
+if (</p>
+<blockquote>
+<div>options.decimals === undefined ||
+options.decimals &lt;= 0 ||
+options.decimals &gt; 255</div></blockquote>
+<dl class="docutils">
+<dt>) {</dt>
+<dd>throw new Error(“invalid decimals”);</dd>
+</dl>
+<p>}
+if (options.total !== undefined) {</p>
+<blockquote>
+<div>options.total = web3.fromDecimal(options.total);</div></blockquote>
+<p class="last">}
+return web3._extend.formatters.inputTransactionFormatter(options);</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildSendAssetTx”,
+call: “fsntx_buildSendAssetTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “sendAsset”,
+call: “fsntx_sendAsset”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “buildAssetToTimeLockTx”,
+call: “fsntx_buildAssetToTimeLockTx”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “assetToTimeLock”,
+call: “fsntx_assetToTimeLock”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “buildTimeLockToTimeLockTx”,
+call: “fsntx_buildTimeLockToTimeLockTx”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “timeLockToTimeLock”,
+call: “fsntx_timeLockToTimeLock”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “buildTimeLockToAssetTx”,
+call: “fsntx_buildTimeLockToAssetTx”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div><p>name: “timeLockToAsset”,
+call: “fsntx_timeLockToAsset”,
+params: 1,
+inputFormatter: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function(options) {</dt>
+<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildBuyTicketTx”,
+call: “fsntx_buildBuyTicketTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buyTicket”,
+call: “fsntx_buyTicket”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildIncAssetTx”,
+call: “fsntx_buildIncAssetTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “incAsset”,
+call: “fsntx_incAsset”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildDecAssetTx”,
+call: “fsntx_buildDecAssetTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “decAsset”,
+call: “fsntx_decAsset”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildMakeSwapTx”,
+call: “fsntx_buildMakeSwapTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “makeSwap”,
+call: “fsntx_makeSwap”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildRecallSwapTx”,
+call: “fsntx_buildRecallSwapTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “recallSwap”,
+call: “fsntx_recallSwap”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “buildTakeSwapTx”,
+call: “fsntx_buildTakeSwapTx”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>}),
+new web3._extend.Method({</p>
+<blockquote>
+<div>name: “takeSwap”,
+call: “fsntx_takeSwap”,
+params: 1,
+inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
+<p>})</p>
+</div></blockquote>
+<p class="last">]</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fsntx</a><ul>
+<li><a class="reference internal" href="#fsntx-commands">FSNTX commands</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fsn.html"
+                        title="previous chapter">fsn</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fsntx.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fsn.html" title="fsn"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Fusion.org.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

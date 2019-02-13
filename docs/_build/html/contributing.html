@@ -1,0 +1,192 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Contributing &#8212; web3-fusion-extend  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting-started.html" />
+    <link rel="prev" title="Welcome to web3-fusion-extend’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="getting-started.html" title="Getting Started"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to web3-fusion-extend’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This documentation is work in progress and web3-fusion-extend 1.0 stable is not yet released! You can find the current documentation for web3-fusion-extend 0.x.x at.</p>
+</div>
+<div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>If you’re reading this, you’re awesome! Thank you for helping us make this project great and being a part of the web3-fusion-extend community. Here are a few guidelines that will help you along the way.</p>
+<div class="section" id="submitting-a-pull-request">
+<h2>Submitting a pull request<a class="headerlink" href="#submitting-a-pull-request" title="Permalink to this headline">¶</a></h2>
+<p>web3-fusion-extend is a community project, so pull requests are always welcome, but, before working on a large change, it is best to open an issue first to discuss it with the maintainers.</p>
+<p>When in doubt, keep your pull requests small. To give a PR the best chance of getting accepted, don’t bundle more than one feature or bug fix per pull request. It’s always best to create two smaller PRs than one big one.</p>
+<p>As with issues, please make sure your title clear explains the issue.</p>
+<p>When adding new features or modifying existing, please attempt to include tests to confirm the new behaviour. You can read more about our test setup <cite>here &lt;https://github.com/FUSIONFoundation/web3-fusion-extend/blob/master/test/README.md&gt;</cite>.</p>
+<div class="section" id="branch-structure">
+<h3>Branch Structure<a class="headerlink" href="#branch-structure" title="Permalink to this headline">¶</a></h3>
+<p>All stable releases are tagged <cite>(view tags) &lt;https://github.com/FUSIONFoundation/web3-fusion-extend/tags&gt;</cite>. At any given time, <code class="docutils literal notranslate"><span class="pre">master</span></code> represents the latest development version of the library. Patches or hotfix releases are prepared on an independent branch.</p>
+<p><code class="docutils literal notranslate"><span class="pre">master</span> <span class="pre">is</span> <span class="pre">unsafe</span></code></p>
+<p>We will do our best to keep <code class="docutils literal notranslate"><span class="pre">master</span></code> in good shape, with tests passing at all times. However, in order to move fast, we will make API changes that your application might not be compatible with.</p>
+</div>
+<div class="section" id="how-to-increase-the-chance-of-being-accepted">
+<h3>How to increase the chance of being accepted?<a class="headerlink" href="#how-to-increase-the-chance-of-being-accepted" title="Permalink to this headline">¶</a></h3>
+<p>We will only accept a pull request for which all tests pass. Make sure the following is true:</p>
+<ul class="simple">
+<li>The branch is not behind master.</li>
+<li><dl class="first docutils">
+<dt>If a feature is being added:</dt>
+<dd><ul class="first last">
+<li>If the result was already achievable with the core library, explain why this feature needs to be added to the core.</li>
+<li>It includes relevant tests.</li>
+<li>If this is a common use case, considered adding an example to the documentation.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>If a bug is being fixed, test cases that fail without the fix are included.</li>
+<li>The code is formatted (run <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">prettier</span></code>).</li>
+<li>The code is linted (run <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">lint</span></code>).</li>
+<li>If API documentation is being changed in the source, <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">docs:api</span></code> was run.</li>
+<li>If prop types were changed, the TypeScript declarations were updated.</li>
+<li>If TypeScript declarations were changed, <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">typescript</span></code> passed.</li>
+<li>The PR title follows the pattern <code class="docutils literal notranslate"><span class="pre">[Component]</span> <span class="pre">Imperative</span> <span class="pre">commit</span> <span class="pre">message</span></code>. (See: <cite>(How to Write a Git Commit Message) &lt;https://chris.beams.io/posts/git-commit/#imperative&gt;</cite> for a great explanation)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>Please create a new branch from an up to date master on your fork. (Note, urgent hotfixes should be branched off the latest stable release rather than master)</p>
+<ol class="arabic simple">
+<li>Fork the web3-fusion-extend repository on Github</li>
+<li>Clone your fork to your local machine <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:&lt;yourname&gt;/web3-fusion-extend.git</span></code></li>
+<li>Create a branch <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">-b</span> <span class="pre">my-topic-branch</span></code></li>
+<li>Make your changes, lint, then push to to GitHub with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span> <span class="pre">--set-upstream</span> <span class="pre">origin</span> <span class="pre">my-topic-branch</span></code>.</li>
+<li>Visit GitHub and make your pull request.</li>
+</ol>
+<p>If you have an existing local repository, please update it before you start, to minimise the chance of merge conflicts.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>git remote add upstream git@github.com:FusionFoundation/web3-fusion-extend.git
+git checkout master
+git pull upstream master
+git checkout -b my-topic-branch
+yarn
+</pre></div>
+</div>
+<div class="section" id="coding-style">
+<h3>Coding style<a class="headerlink" href="#coding-style" title="Permalink to this headline">¶</a></h3>
+<p>Please follow the coding style of the project. web3-fusion-extend uses eslint, so if possible, enable linting in your editor to get real-time feedback. The linting rules can be run manually with the following command <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">lint</span></code>.</p>
+<p>You can also run <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">prettier</span></code> to reformat the code.</p>
+<p>Finally, when you submit a pull request, they are run again by Circle CI, but hopefully by then your code is already clean!</p>
+</div>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>By contributing your code to the FusionFoundation/web3-fusion-extend GitHub repository, you agree to license your contribution under the MIT license.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Contributing</a><ul>
+<li><a class="reference internal" href="#submitting-a-pull-request">Submitting a pull request</a><ul>
+<li><a class="reference internal" href="#branch-structure">Branch Structure</a></li>
+<li><a class="reference internal" href="#how-to-increase-the-chance-of-being-accepted">How to increase the chance of being accepted?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-started">Getting started</a><ul>
+<li><a class="reference internal" href="#coding-style">Coding style</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to web3-fusion-extend’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="getting-started.html"
+                        title="next chapter">Getting Started</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/contributing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="getting-started.html" title="Getting Started"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to web3-fusion-extend’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">web3-fusion-extend  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Fusion.org.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>
