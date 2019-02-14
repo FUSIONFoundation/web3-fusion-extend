@@ -21,7 +21,7 @@ At the end of time lock period the rights of the asset are returned to the origi
 
 With the representation of assets, the need to exchange assets securely and simply becomes paramount.
 
-The Fusion protocol introduces quantumSwaps which are compposed of three functions:
+The Fusion protocol introduces quantumSwaps which are composed of three functions:
         makeSwap - tell others what you will exchange for your asset
         recallSwap - cancel the request for an exchange
         takeSwap - exchange your asset for the other parties asset listed in the make swap

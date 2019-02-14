@@ -5,6 +5,30 @@
 Getting Started
 ===============
 
+web3-fusion-extend is a collection of libraries which allow you to interact with a local or remote fusion node,
+using a HTTP or IPC connection.
+
+Fusion offers a radical approach to representing value within a block chain environment.
+
+A public address contain multiple assets and balances for these assets.
+
+An assetId is the id returned when an asset is created and actions can be performed on it.
+
+The asset creator also has the ability to increase and decrease supply.
+
+This enables cross chain and cross functional systems to be built that enable the interchange of assets.
+
+Assets can also be TimeLocked.  When an asset is time locked its ownership is leant for the period specified.
+At the end of time lock period the rights of the asset are returned to the original owner.
+
+With the representation of assets, the need to exchange assets securely and simply becomes paramount.
+
+The Fusion protocol introduces quantumSwaps which are composed of three functions:
+        makeSwap - tell others what you will exchange for your asset
+        recallSwap - cancel the request for an exchange
+        takeSwap - exchange your asset for the other parties asset listed in the make swap
+
+
 This package extends the Ethereum compatible JavaScript API which implements the Generic JSON RPC spec to support the Fusion protocol.
 
 It's available on npm as a node module.
