@@ -8,7 +8,11 @@ fsntx
 FSNTX commands
 ==============
 
-    personal.unlockAccount( eth.coinbase, "123456" ) var tx = fsntx.buildBuyTicketTx( {from:eth.coinbase} ) tx.from = eth.coinbase var tx2 = eth.signTransaction( tx ) fsntx.sendRawTransaction(tx2.tx)
+    personal.unlockAccount( eth.coinbase, "123456" ) 
+    var tx = fsntx.buildBuyTicketTx( {from:eth.coinbase} ) 
+    tx.from = eth.coinbase 
+    var tx2 = eth.signTransaction( tx ) 
+    fsntx.sendRawTransaction(tx2.tx)
 
 .. code-block:: javascript
 
