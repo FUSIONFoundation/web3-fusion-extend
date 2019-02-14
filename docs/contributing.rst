@@ -1,3 +1,5 @@
+.. _contribution:
+
 .. include:: include_announcement.rst
 
 
@@ -17,13 +19,13 @@ When in doubt, keep your pull requests small. To give a PR the best chance of ge
 
 As with issues, please make sure your title clear explains the issue.
 
-When adding new features or modifying existing, please attempt to include tests to confirm the new behaviour. You can read more about our test setup `here <https://github.com/FUSIONFoundation/web3-fusion-extend/blob/master/test/README.md>`.
+When adding new features or modifying existing, please attempt to include tests to confirm the new behaviour. You can read more about our test setup `here <https://github.com/FUSIONFoundation/web3-fusion-extend/blob/master/test/README.md>`_.
 
 
 Branch Structure
 ----------------
 
-All stable releases are tagged `(view tags) <https://github.com/FUSIONFoundation/web3-fusion-extend/tags>`. At any given time, ``master`` represents the latest development version of the library. Patches or hotfix releases are prepared on an independent branch.
+All stable releases are tagged `(view tags) <https://github.com/FUSIONFoundation/web3-fusion-extend/tags>`_. At any given time, ``master`` represents the latest development version of the library. Patches or hotfix releases are prepared on an independent branch.
 
 ``master is unsafe``
 
@@ -47,7 +49,7 @@ We will only accept a pull request for which all tests pass. Make sure the follo
 - If API documentation is being changed in the source, ``yarn docs:api`` was run.
 - If prop types were changed, the TypeScript declarations were updated.
 - If TypeScript declarations were changed, ``yarn typescript`` passed.
-- The PR title follows the pattern ``[Component] Imperative commit message``. (See: `(How to Write a Git Commit Message) <https://chris.beams.io/posts/git-commit/#imperative>` for a great explanation)
+- The PR title follows the pattern ``[Component] Imperative commit message``. (See: `(How to Write a Git Commit Message) <https://chris.beams.io/posts/git-commit/#imperative>`_ for a great explanation)
 
 
 

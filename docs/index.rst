@@ -1,3 +1,5 @@
+.. _fsn-index:
+
 .. web3-fusion-extend documentation master file, created by
    sphinx-quickstart on Wed Feb 13 17:43:14 2019.
    You can adapt this file completely to your liking, but it should at least

@@ -38,8 +38,52 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-web3-fusion-extend-s-documentation">
+  <span class="target" id="fsn-index"></span><div class="section" id="welcome-to-web3-fusion-extend-s-documentation">
 <h1>Welcome to web3-fusion-extend’s documentation!<a class="headerlink" href="#welcome-to-web3-fusion-extend-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Fusion is an enterprise financial infrastructure blockchain solution simplifying the full digital life of any asset.</p>
+<p>With the ethreum world users are familiar that they have a wallet and a balance.
+If user own ERC20 or ERC721 tokens wallets applications hide the technicalities of calling contracts to get their values.</p>
+<p>Fusion evolutionary approach moves the asset and its balance to the users ethereum wallet.</p>
+<p>No contracts are needed as multiple balances each with a unique asset Id can be contained on the chain in the wallet.</p>
+<p>Other inflationary practices to code such as creating escrows and atomic swaps are also eliminated by simply having the asset in the users account.</p>
+<p>Fusion allows all assets to have time periods, these time periods enable safe lending of an asset.</p>
+<p>So a balance of 1 Fusion Token can be Timelocked for 30 days, sent to another account.</p>
+<p>At the end of the 30 days that other account no longer can access that value in their wallet.</p>
+<p>All done natively on the chain without contracts.</p>
+<p>The goal of Fusion is to:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>make assets (tokens) a natural part of send and receive of value</dt>
+<dd><ul class="first last">
+<li>eliminate need for ERC20 contracts</li>
+<li>eliminate need for ERC721 contracts</li>
+<li>simply the familiar paridigm of from, to, value -&gt; from, to, assetId, value</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>introduce the concept of timelock of an asset as a natural wallet feature</dt>
+<dd><ul class="first last">
+<li>split the use of any asset into any sliver of time</li>
+<li>allow that time portion of that asset to be securely lent to someone</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>quantum swap - introduce a one transaction method to exchange assets between parties</dt>
+<dd><ul class="first last">
+<li>the ability to exchange assets between accounts in one transaction on the blockchain without chance of error</li>
+<li>assets that are timelocked can be exchanged</li>
+<li>swaps can be made public to all users or a targeted user.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The purpose of the web3-fusion-extend libary is to take the popular web3.js package and
+open it up to the extended functionallity of that the Fusion blockchain server provides.</p>
 <p>Contents:</p>
 <p><a class="reference internal" href="genindex.html"><span class="std std-ref">Keyword Index</span></a>, <a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p>
 <div class="toctree-wrapper compound">
@@ -55,10 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#usage">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#contribute">Contribute!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting-started.html#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#testing-mocha">Testing (mocha)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#community">Community</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#license">License</a></li>
 </ul>
 </li>
@@ -110,7 +154,31 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fsntx.html">fsntx</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="fsntx.html#fsntx-commands">FSNTX commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#sendrawtransaction">sendRawTransaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildgennotationtx">buildGenNotationTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#gennotation">genNotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildgenassettx">buildGenAssetTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#genasset">genAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildsendassettx">buildSendAssetTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#sendasset">sendAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildassettotimelocktx">buildAssetToTimeLockTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#assettotimelock">assetToTimeLock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildtimelocktotimelocktx">buildTimeLockToTimeLockTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#timelocktotimelock">timeLockToTimeLock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildtimelocktoassettx">buildTimeLockToAssetTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#timelocktoasset">timeLockToAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildbuytickettx">buildBuyTicketTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buyticket">buyTicket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildincassettx">buildIncAssetTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#incasset">incAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#builddecassettx">buildDecAssetTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#decasset">decAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildmakeswaptx">buildMakeSwapTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#makeswap">makeSwap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildrecallswaptx">buildRecallSwapTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#recallswap">recallSwap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#buildtakeswaptx">buildTakeSwapTx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsntx.html#takeswap">takeSwap</a></li>
 </ul>
 </li>
 </ul>

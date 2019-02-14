@@ -1,3 +1,4 @@
+.. _fsn-fsn:
 
 .. include:: include_announcement.rst
 
@@ -7,10 +8,10 @@ fsn
 
 FSN documentation
 
-Overview
-fsn
-fsntx
-Constants
+- :ref:`Overview <fsn-index>`
+- :ref:`fsn <fsn-fsn>`
+- :ref:`fsntx <fsn-fsntx>`
+- :ref:`Constants <fsn-constants>`
 
 .. code-block:: javascript
 

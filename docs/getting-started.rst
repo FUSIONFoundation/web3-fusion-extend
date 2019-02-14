@@ -29,15 +29,17 @@ The Fusion protocol introduces quantumSwaps which are composed of three function
         takeSwap - exchange your asset for the other parties asset listed in the make swap
 
 
-This package extends the Ethereum compatible JavaScript API which implements the Generic JSON RPC spec to support the Fusion protocol.
+This package extends the Ethereum compatible `JavaScript API <https://github.com/ethereum/wiki/wiki/JavaScript-API>`_ which implements the `Generic JSON RPC <https://github.com/ethereum/wiki/wiki/JSON-RPC>`_ spec to support the Fusion protocol.
 
 It's available on npm as a node module.
 
-NPM version
+.. image:: https://badge.fury.io/js/web3-fusion-extend.svg
+   :target: https://npmjs.org/package/web3-fusion-extend
 
+   
 You need to run a local Ethereum node to use this library.
 
-Documentation
+- :ref:`Documentation <fsn-index>`
 
 
 
@@ -89,26 +91,16 @@ There you go, now you can use it:
           done(err);
         });
 
-You can find more examples in the test directory.
+You can find more examples in the `test <https://github.com/FusionFoundation//web3-fusion-extend/tree/master/test>`_ directory.
 
 There is also a full block explorer api written as an example.
 
-    BlockExplorerApi
+- :ref:`BlockExplorerApi <blockexplorerapi>`
 
 Contribute!
 ===========
 
-We'd greatly appreciate any contribution you make.
-
-Documentation
-=============
-
-Documentation
-
-Overview
-fsn
-fsntx
-Constants
+We'd greatly appreciate any :ref:`contribution <contribution>` you make.
 
 Requirements
 ============
@@ -137,10 +129,22 @@ When testing a connect string to a local fusion node and a wallet address is nee
 Community
 =========
 
-Gitter
-Forum
+- `Gitter <https://gitter.im/ethereum/web3.js?source=orgpage>`_
+- `Forum <https://forum.ethereum.org/categories/ethereum-js>`_
+
+
+Documentation
+=============
+
+Documentation
+
+- :ref:`Overview <fsn-index>`
+- :ref:`fsn <fsn-fsn>`
+- :ref:`fsntx <fsn-fsntx>`
+- :ref:`Constants <fsn-constants>`
 
 License
 =======
 
-LGPL-3.0+ © 2015 Contributors
+:ref:`LGPL-3.0+ <fsn-license>` © 2015 Contributors
+

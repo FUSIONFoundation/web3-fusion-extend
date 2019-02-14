@@ -38,323 +38,299 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="admonition note">
+  <div class="admonition note" id="fsn-fsntx">
 <p class="first admonition-title">Note</p>
 <p class="last">This documentation is work in progress and web3-fusion-extend 1.0 stable is not yet released! You can find the current documentation for web3-fusion-extend 0.x.x at.</p>
 </div>
 <div class="section" id="fsntx">
 <h1>fsntx<a class="headerlink" href="#fsntx" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="fsntx-commands">
-<h2>FSNTX commands<a class="headerlink" href="#fsntx-commands" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>personal.unlockAccount( eth.coinbase, “123456” ) var tx = fsntx.buildBuyTicketTx( {from:eth.coinbase} ) tx.from = eth.coinbase var tx2 = eth.signTransaction( tx ) fsntx.sendRawTransaction(tx2.tx)</div></blockquote>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// fsntx</span>
+<p>FSNTX commands</p>
+<ul class="simple">
+<li><a class="reference internal" href="index.html#fsn-index"><span class="std std-ref">Overview</span></a></li>
+<li><a class="reference internal" href="fsn.html#fsn-fsn"><span class="std std-ref">fsn</span></a></li>
+<li><a class="reference internal" href="constants.html#fsn-constants"><span class="std std-ref">Constants</span></a></li>
+</ul>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">personal</span><span class="p">.</span><span class="nx">unlockAccount</span><span class="p">(</span> <span class="nx">eth</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">,</span> <span class="s2">&quot;123456&quot;</span> <span class="p">)</span>
+<span class="kd">var</span> <span class="nx">tx</span> <span class="o">=</span> <span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildBuyTicketTx</span><span class="p">(</span> <span class="p">{</span><span class="nx">from</span><span class="o">:</span><span class="nx">eth</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">}</span> <span class="p">)</span>
+<span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">eth</span><span class="p">.</span><span class="nx">coinbase</span>
+<span class="kd">var</span> <span class="nx">tx2</span> <span class="o">=</span> <span class="nx">eth</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">(</span> <span class="nx">tx</span> <span class="p">)</span>
+<span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">(</span><span class="nx">tx2</span><span class="p">.</span><span class="nx">tx</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>web3._extend({</dt>
-<dd><p class="first">property: “fsntx”,
-methods: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>new web3._extend.Method({</dt>
-<dd>name: “sendRawTransaction”,
-call: “fsntx_sendRawTransaction”,
-params: 1</dd>
-</dl>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildGenNotationTx”,
-call: “fsntx_buildGenNotationTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “genNotation”,
-call: “fsntx_genNotation”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “buildGenAssetTx”,
-call: “fsntx_buildGenAssetTx”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd><dl class="first docutils">
-<dt>if (options.name === undefined || !options.name) {</dt>
-<dd>throw new Error(“invalid name”);</dd>
-</dl>
-<p>}
-if (options.symbol === undefined || !options.symbol) {</p>
-<blockquote>
-<div>throw new Error(“invalid symbol”);</div></blockquote>
-<p>}
-if (</p>
-<blockquote>
-<div>options.decimals === undefined ||
-options.decimals &lt;= 0 ||
-options.decimals &gt; 255</div></blockquote>
-<dl class="docutils">
-<dt>) {</dt>
-<dd>throw new Error(“invalid decimals”);</dd>
-</dl>
-<p>}
-if (options.total !== undefined) {</p>
-<blockquote>
-<div>options.total = web3.fromDecimal(options.total);</div></blockquote>
-<p class="last">}
-return web3._extend.formatters.inputTransactionFormatter(options);</p>
-</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “genAsset”,
-call: “fsntx_genAsset”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd><dl class="first docutils">
-<dt>if (options.name === undefined || !options.name) {</dt>
-<dd>throw new Error(“invalid name”);</dd>
-</dl>
-<p>}
-if (options.symbol === undefined || !options.symbol) {</p>
-<blockquote>
-<div>throw new Error(“invalid symbol”);</div></blockquote>
-<p>}
-if (</p>
-<blockquote>
-<div>options.decimals === undefined ||
-options.decimals &lt;= 0 ||
-options.decimals &gt; 255</div></blockquote>
-<dl class="docutils">
-<dt>) {</dt>
-<dd>throw new Error(“invalid decimals”);</dd>
-</dl>
-<p>}
-if (options.total !== undefined) {</p>
-<blockquote>
-<div>options.total = web3.fromDecimal(options.total);</div></blockquote>
-<p class="last">}
-return web3._extend.formatters.inputTransactionFormatter(options);</p>
-</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildSendAssetTx”,
-call: “fsntx_buildSendAssetTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “sendAsset”,
-call: “fsntx_sendAsset”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “buildAssetToTimeLockTx”,
-call: “fsntx_buildAssetToTimeLockTx”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “assetToTimeLock”,
-call: “fsntx_assetToTimeLock”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “buildTimeLockToTimeLockTx”,
-call: “fsntx_buildTimeLockToTimeLockTx”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “timeLockToTimeLock”,
-call: “fsntx_timeLockToTimeLock”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “buildTimeLockToAssetTx”,
-call: “fsntx_buildTimeLockToAssetTx”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div><p>name: “timeLockToAsset”,
-call: “fsntx_timeLockToAsset”,
-params: 1,
-inputFormatter: [</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function(options) {</dt>
-<dd>return web3._extend.formatters.inputTransactionFormatter(options);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildBuyTicketTx”,
-call: “fsntx_buildBuyTicketTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buyTicket”,
-call: “fsntx_buyTicket”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildIncAssetTx”,
-call: “fsntx_buildIncAssetTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “incAsset”,
-call: “fsntx_incAsset”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildDecAssetTx”,
-call: “fsntx_buildDecAssetTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “decAsset”,
-call: “fsntx_decAsset”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildMakeSwapTx”,
-call: “fsntx_buildMakeSwapTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “makeSwap”,
-call: “fsntx_makeSwap”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildRecallSwapTx”,
-call: “fsntx_buildRecallSwapTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “recallSwap”,
-call: “fsntx_recallSwap”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “buildTakeSwapTx”,
-call: “fsntx_buildTakeSwapTx”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>}),
-new web3._extend.Method({</p>
-<blockquote>
-<div>name: “takeSwap”,
-call: “fsntx_takeSwap”,
-params: 1,
-inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></blockquote>
-<p>})</p>
-</div></blockquote>
-<p class="last">]</p>
-</dd>
-</dl>
+<div class="section" id="sendrawtransaction">
+<h2>sendRawTransaction<a class="headerlink" href="#sendrawtransaction" title="Permalink to this headline">¶</a></h2>
+<p>sendRawTransaction</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildgennotationtx">
+<h2>buildGenNotationTx<a class="headerlink" href="#buildgennotationtx" title="Permalink to this headline">¶</a></h2>
+<p>buildGenNotationTx</p>
+<div class="section" id="id1">
+<h3>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenNotationTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="gennotation">
+<h2>genNotation<a class="headerlink" href="#gennotation" title="Permalink to this headline">¶</a></h2>
+<p>genNotation</p>
+<div class="section" id="id2">
+<h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">genNotation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildgenassettx">
+<h2>buildGenAssetTx<a class="headerlink" href="#buildgenassettx" title="Permalink to this headline">¶</a></h2>
+<p>buildGenAssetTx</p>
+<div class="section" id="id3">
+<h3>Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="genasset">
+<h2>genAsset<a class="headerlink" href="#genasset" title="Permalink to this headline">¶</a></h2>
+<p>genAsset</p>
+<div class="section" id="id4">
+<h3>Example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">genAsset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildsendassettx">
+<h2>buildSendAssetTx<a class="headerlink" href="#buildsendassettx" title="Permalink to this headline">¶</a></h2>
+<p>buildSendAssetTx</p>
+<div class="section" id="id5">
+<h3>Example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildSendAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="sendasset">
+<h2>sendAsset<a class="headerlink" href="#sendasset" title="Permalink to this headline">¶</a></h2>
+<p>sendAsset</p>
+<div class="section" id="id6">
+<h3>Example<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildassettotimelocktx">
+<h2>buildAssetToTimeLockTx<a class="headerlink" href="#buildassettotimelocktx" title="Permalink to this headline">¶</a></h2>
+<p>buildAssetToTimeLockTx</p>
+<div class="section" id="id7">
+<h3>Example<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildAssetToTimeLockTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="assettotimelock">
+<h2>assetToTimeLock<a class="headerlink" href="#assettotimelock" title="Permalink to this headline">¶</a></h2>
+<p>assetToTimeLock</p>
+<div class="section" id="id8">
+<h3>Example<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">assetToTimeLock</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildtimelocktotimelocktx">
+<h2>buildTimeLockToTimeLockTx<a class="headerlink" href="#buildtimelocktotimelocktx" title="Permalink to this headline">¶</a></h2>
+<p>buildTimeLockToTimeLockTx</p>
+<div class="section" id="id9">
+<h3>Example<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToTimeLockTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="timelocktotimelock">
+<h2>timeLockToTimeLock<a class="headerlink" href="#timelocktotimelock" title="Permalink to this headline">¶</a></h2>
+<p>timeLockToTimeLock</p>
+<div class="section" id="id10">
+<h3>Example<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">timeLockToTimeLock</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildtimelocktoassettx">
+<h2>buildTimeLockToAssetTx<a class="headerlink" href="#buildtimelocktoassettx" title="Permalink to this headline">¶</a></h2>
+<p>buildTimeLockToAssetTx</p>
+<div class="section" id="id11">
+<h3>Example<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="timelocktoasset">
+<h2>timeLockToAsset<a class="headerlink" href="#timelocktoasset" title="Permalink to this headline">¶</a></h2>
+<p>timeLockToAsset</p>
+<div class="section" id="id12">
+<h3>Example<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">timeLockToAsset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildbuytickettx">
+<h2>buildBuyTicketTx<a class="headerlink" href="#buildbuytickettx" title="Permalink to this headline">¶</a></h2>
+<p>buildBuyTicketTx</p>
+<div class="section" id="id13">
+<h3>Example<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildBuyTicketTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buyticket">
+<h2>buyTicket<a class="headerlink" href="#buyticket" title="Permalink to this headline">¶</a></h2>
+<p>buyTicket</p>
+<div class="section" id="id14">
+<h3>Example<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buyTicket</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildincassettx">
+<h2>buildIncAssetTx<a class="headerlink" href="#buildincassettx" title="Permalink to this headline">¶</a></h2>
+<p>buildIncAssetTx</p>
+<div class="section" id="id15">
+<h3>Example<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildIncAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="incasset">
+<h2>incAsset<a class="headerlink" href="#incasset" title="Permalink to this headline">¶</a></h2>
+<p>incAsset</p>
+<div class="section" id="id16">
+<h3>Example<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">incAsset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="builddecassettx">
+<h2>buildDecAssetTx<a class="headerlink" href="#builddecassettx" title="Permalink to this headline">¶</a></h2>
+<p>buildDecAssetTx</p>
+<div class="section" id="id17">
+<h3>Example<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildDecAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="decasset">
+<h2>decAsset<a class="headerlink" href="#decasset" title="Permalink to this headline">¶</a></h2>
+<p>decAsset</p>
+<div class="section" id="id18">
+<h3>Example<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">decAsset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildmakeswaptx">
+<h2>buildMakeSwapTx<a class="headerlink" href="#buildmakeswaptx" title="Permalink to this headline">¶</a></h2>
+<p>buildMakeSwapTx</p>
+<div class="section" id="id19">
+<h3>Example<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildMakeSwapTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="makeswap">
+<h2>makeSwap<a class="headerlink" href="#makeswap" title="Permalink to this headline">¶</a></h2>
+<p>makeSwap</p>
+<div class="section" id="id20">
+<h3>Example<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">makeSwap</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildrecallswaptx">
+<h2>buildRecallSwapTx<a class="headerlink" href="#buildrecallswaptx" title="Permalink to this headline">¶</a></h2>
+<p>buildRecallSwapTx</p>
+<div class="section" id="id21">
+<h3>Example<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildRecallSwapTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="recallswap">
+<h2>recallSwap<a class="headerlink" href="#recallswap" title="Permalink to this headline">¶</a></h2>
+<p>recallSwap</p>
+<div class="section" id="id22">
+<h3>Example<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">recallSwap</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="buildtakeswaptx">
+<h2>buildTakeSwapTx<a class="headerlink" href="#buildtakeswaptx" title="Permalink to this headline">¶</a></h2>
+<p>buildTakeSwapTx</p>
+<div class="section" id="id23">
+<h3>Example<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTakeSwapTx</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="takeswap">
+<h2>takeSwap<a class="headerlink" href="#takeswap" title="Permalink to this headline">¶</a></h2>
+<p>takeSwap</p>
+<div class="section" id="id24">
+<h3>Example<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">takeSwap</span><span class="p">()</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
 </div>
 </div>
 
@@ -367,7 +343,106 @@ inputFormatter: [web3._extend.formatters.inputTransactionFormatter]</div></block
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fsntx</a><ul>
-<li><a class="reference internal" href="#fsntx-commands">FSNTX commands</a></li>
+<li><a class="reference internal" href="#sendrawtransaction">sendRawTransaction</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildgennotationtx">buildGenNotationTx</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gennotation">genNotation</a><ul>
+<li><a class="reference internal" href="#id2">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildgenassettx">buildGenAssetTx</a><ul>
+<li><a class="reference internal" href="#id3">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#genasset">genAsset</a><ul>
+<li><a class="reference internal" href="#id4">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildsendassettx">buildSendAssetTx</a><ul>
+<li><a class="reference internal" href="#id5">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sendasset">sendAsset</a><ul>
+<li><a class="reference internal" href="#id6">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildassettotimelocktx">buildAssetToTimeLockTx</a><ul>
+<li><a class="reference internal" href="#id7">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#assettotimelock">assetToTimeLock</a><ul>
+<li><a class="reference internal" href="#id8">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildtimelocktotimelocktx">buildTimeLockToTimeLockTx</a><ul>
+<li><a class="reference internal" href="#id9">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#timelocktotimelock">timeLockToTimeLock</a><ul>
+<li><a class="reference internal" href="#id10">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildtimelocktoassettx">buildTimeLockToAssetTx</a><ul>
+<li><a class="reference internal" href="#id11">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#timelocktoasset">timeLockToAsset</a><ul>
+<li><a class="reference internal" href="#id12">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildbuytickettx">buildBuyTicketTx</a><ul>
+<li><a class="reference internal" href="#id13">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buyticket">buyTicket</a><ul>
+<li><a class="reference internal" href="#id14">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildincassettx">buildIncAssetTx</a><ul>
+<li><a class="reference internal" href="#id15">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#incasset">incAsset</a><ul>
+<li><a class="reference internal" href="#id16">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#builddecassettx">buildDecAssetTx</a><ul>
+<li><a class="reference internal" href="#id17">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#decasset">decAsset</a><ul>
+<li><a class="reference internal" href="#id18">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildmakeswaptx">buildMakeSwapTx</a><ul>
+<li><a class="reference internal" href="#id19">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#makeswap">makeSwap</a><ul>
+<li><a class="reference internal" href="#id20">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildrecallswaptx">buildRecallSwapTx</a><ul>
+<li><a class="reference internal" href="#id21">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recallswap">recallSwap</a><ul>
+<li><a class="reference internal" href="#id22">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buildtakeswaptx">buildTakeSwapTx</a><ul>
+<li><a class="reference internal" href="#id23">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#takeswap">takeSwap</a><ul>
+<li><a class="reference internal" href="#id24">Example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -1,3 +1,5 @@
+.. _blockexplorerapi:
+
 ================
 blockexplorerapi
 ================
@@ -117,7 +119,7 @@ Search
 
 - `miner leaderboard http://api.fusionnetwork.io/leaderboard <http://api.fusionnetwork.io/leaderboard>`_
 
-- `Ticket purchase applicaton
+- Ticket purchase applicaton
     - `autoPurchaseTicket.js <https://github.com/FUSIONFoundation/web3-fusion-extend/blob/master/examples/autoPurchaseTickets/autoPurchaseTicket.js>`_
 
 Example: node autoPurchaseTicket --c"wss://example.com" -p "./password.txt" -k "./keystore.key" -n 10

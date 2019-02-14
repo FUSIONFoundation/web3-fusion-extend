@@ -48,11 +48,29 @@
 </div>
 <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<p>This package extends the Ethereum compatible JavaScript API which implements the Generic JSON RPC spec to support the Fusion protocol.</p>
+<p>web3-fusion-extend is a collection of libraries which allow you to interact with a local or remote fusion node,
+using a HTTP or IPC connection.</p>
+<p>Fusion offers a radical approach to representing value within a block chain environment.</p>
+<p>A public address contain multiple assets and balances for these assets.</p>
+<p>An assetId is the id returned when an asset is created and actions can be performed on it.</p>
+<p>The asset creator also has the ability to increase and decrease supply.</p>
+<p>This enables cross chain and cross functional systems to be built that enable the interchange of assets.</p>
+<p>Assets can also be TimeLocked.  When an asset is time locked its ownership is leant for the period specified.
+At the end of time lock period the rights of the asset are returned to the original owner.</p>
+<p>With the representation of assets, the need to exchange assets securely and simply becomes paramount.</p>
+<dl class="docutils">
+<dt>The Fusion protocol introduces quantumSwaps which are composed of three functions:</dt>
+<dd>makeSwap - tell others what you will exchange for your asset
+recallSwap - cancel the request for an exchange
+takeSwap - exchange your asset for the other parties asset listed in the make swap</dd>
+</dl>
+<p>This package extends the Ethereum compatible <a class="reference external" href="https://github.com/ethereum/wiki/wiki/JavaScript-API">JavaScript API</a> which implements the <a class="reference external" href="https://github.com/ethereum/wiki/wiki/JSON-RPC">Generic JSON RPC</a> spec to support the Fusion protocol.</p>
 <p>It’s available on npm as a node module.</p>
-<p>NPM version</p>
+<a class="reference external image-reference" href="https://npmjs.org/package/web3-fusion-extend"><img alt="https://badge.fury.io/js/web3-fusion-extend.svg" src="https://badge.fury.io/js/web3-fusion-extend.svg" /></a>
 <p>You need to run a local Ethereum node to use this library.</p>
-<p>Documentation</p>
+<ul class="simple">
+<li><a class="reference internal" href="index.html#fsn-index"><span class="std std-ref">Documentation</span></a></li>
+</ul>
 <div class="section" id="installation">
 <span id="adding-web3"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Node.js</p>
@@ -90,22 +108,15 @@
     <span class="p">});</span>
 </pre></div>
 </div>
-<p>You can find more examples in the test directory.</p>
+<p>You can find more examples in the <a class="reference external" href="https://github.com/FusionFoundation//web3-fusion-extend/tree/master/test">test</a> directory.</p>
 <p>There is also a full block explorer api written as an example.</p>
-<blockquote>
-<div>BlockExplorerApi</div></blockquote>
+<ul class="simple">
+<li><a class="reference internal" href="blockexplorerapi.html#blockexplorerapi"><span class="std std-ref">BlockExplorerApi</span></a></li>
+</ul>
 </div>
 <div class="section" id="contribute">
 <h2>Contribute!<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
-<p>We’d greatly appreciate any contribution you make.</p>
-</div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>Documentation</p>
-<p>Overview
-fsn
-fsntx
-Constants</p>
+<p>We’d greatly appreciate any <a class="reference internal" href="contributing.html#contribution"><span class="std std-ref">contribution</span></a> you make.</p>
 </div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
@@ -128,12 +139,24 @@ sudo apt-get install nodejs-legacy
 </div>
 <div class="section" id="community">
 <h2>Community<a class="headerlink" href="#community" title="Permalink to this headline">¶</a></h2>
-<p>Gitter
-Forum</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gitter.im/ethereum/web3.js?source=orgpage">Gitter</a></li>
+<li><a class="reference external" href="https://forum.ethereum.org/categories/ethereum-js">Forum</a></li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentation</p>
+<ul class="simple">
+<li><a class="reference internal" href="index.html#fsn-index"><span class="std std-ref">Overview</span></a></li>
+<li><a class="reference internal" href="fsn.html#fsn-fsn"><span class="std std-ref">fsn</span></a></li>
+<li><a class="reference internal" href="fsntx.html#fsn-fsntx"><span class="std std-ref">fsntx</span></a></li>
+<li><a class="reference internal" href="constants.html#fsn-constants"><span class="std std-ref">Constants</span></a></li>
+</ul>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
-<p>LGPL-3.0+ © 2015 Contributors</p>
+<p><a class="reference internal" href="license.html#fsn-license"><span class="std std-ref">LGPL-3.0+</span></a> © 2015 Contributors</p>
 </div>
 </div>
 
@@ -149,10 +172,10 @@ Forum</p>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 <li><a class="reference internal" href="#contribute">Contribute!</a></li>
-<li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#testing-mocha">Testing (mocha)</a></li>
 <li><a class="reference internal" href="#community">Community</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
