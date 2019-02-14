@@ -604,6 +604,7 @@ async function logTransaction(block, transactions, index, resolve, reject) {
 
       switch (fusionCommand) {
         case "AssetValueChangeFunc":
+        case "AssetValueChangeExtFunc":
           commandExtra = jsonLogData.AssetID;
           getAssetBalance = jsonLogData.AssetID;
           break;
@@ -625,9 +626,11 @@ async function logTransaction(block, transactions, index, resolve, reject) {
           break;
         case "MakeSwapFuncExt":
         case "MakeSwapFunc":
+        case "MakeSwapFuncExtOld":
           commandExtra = jsonLogData.SwapID;
           break;
         case "TakeSwapFunc":
+        case "TakeSwapFuncExt":
           commandExtra = jsonLogData.SwapID;
           break;
         case "RecallSwapFunc":
