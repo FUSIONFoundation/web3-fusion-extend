@@ -28,6 +28,8 @@ Contents:
     myFusionWallet
     PSNBlockExplorer <psnBlockExplorer>
     PurchaseTicket <purchaseTicket>
+    createAsset
+    getAllBalances
 
 .. toctree::
     :maxdepth: 2
