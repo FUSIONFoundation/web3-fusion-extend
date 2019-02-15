@@ -2,6 +2,8 @@
 autoPurchaseTickets
 ===================
 
+.. index:: autoPurchaseTickets
+
 Ticket purchase applicaton
 ==========================
 

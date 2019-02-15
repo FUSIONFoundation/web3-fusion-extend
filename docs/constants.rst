@@ -4,6 +4,8 @@
 FSNConstants
 ============
 
+.. index:: constants
+
 - :ref:`Overview <fsn-index>`
 - :ref:`fsn <fsn-fsn>`
 - :ref:`fsntx <fsn-fsntx>`

@@ -44,10 +44,8 @@
             
   <div class="section" id="blockexplorerapi">
 <span id="id1"></span><h1>blockexplorerapi<a class="headerlink" href="#blockexplorerapi" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="web3-fusion-extend-js-fusion-javascript-api">
-<h2>web3-fusion-extend.js - Fusion JavaScript API<a class="headerlink" href="#web3-fusion-extend-js-fusion-javascript-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="overview">
-<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<span id="index-0"></span><h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This block explorer api section shows how to collect all information from the fusion block chain and update a mysql database.</p>
 <p>You will need a node for the application readAllBlocksToDatabase.js to communicate with as well as a mysql database to store the information.</p>
 <p>You will need an environment string called DB_CONNECT_STRING</p>
@@ -61,36 +59,36 @@
 </div>
 </div>
 <div class="section" id="fusion-org-and-its-public-explorer-api">
-<h3>Fusion Org and its public explorer api<a class="headerlink" href="#fusion-org-and-its-public-explorer-api" title="Permalink to this headline">¶</a></h3>
+<h2>Fusion Org and its public explorer api<a class="headerlink" href="#fusion-org-and-its-public-explorer-api" title="Permalink to this headline">¶</a></h2>
 <p>Fusion organization keeps an api endpoint open at <a class="reference external" href="https://api.fusionnetwork.io">https://api.fusionnetwork.io</a> to assist in application development</p>
 <p>You can try commands like <a class="reference external" href="https://api.fusionnetwork.io/blocks/latest">https://api.fusionnetwork.io/blocks/latest</a> or <a class="reference external" href="https://api.fusionnetwork.io/transactions/latest">https://api.fusionnetwork.io/transactions/latest</a></p>
 <p>Note if you are not a developer the results may look scary but they are the actual last block or transaction info</p>
 </div>
 <div class="section" id="installation">
-<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">npm</span> <span class="nx">install</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="api-commands">
-<h3>API Commands<a class="headerlink" href="#api-commands" title="Permalink to this headline">¶</a></h3>
+<h2>API Commands<a class="headerlink" href="#api-commands" title="Permalink to this headline">¶</a></h2>
 <p>If running locally replace api.fusionnetwork.io with your own server link</p>
 <div class="section" id="assets">
-<h4>Assets<a class="headerlink" href="#assets" title="Permalink to this headline">¶</a></h4>
+<h3>Assets<a class="headerlink" href="#assets" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae">http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae</a></li>
 <li><a class="reference external" href="http://api.fusionnetwork.io/assets/all?page=0&amp;size=2&amp;sort=desc">http://api.fusionnetwork.io/assets/all?page=0&amp;size=2&amp;sort=desc</a></li>
 </ul>
 </div>
 <div class="section" id="balance">
-<h4>Balance<a class="headerlink" href="#balance" title="Permalink to this headline">¶</a></h4>
+<h3>Balance<a class="headerlink" href="#balance" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94">http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94</a></li>
 <li><a class="reference external" href="http://api.fusionnetwork.io/balances/all?page=0&amp;size=2&amp;sort=asc">http://api.fusionnetwork.io/balances/all?page=0&amp;size=2&amp;sort=asc</a></li>
 </ul>
 </div>
 <div class="section" id="blocks">
-<h4>Blocks<a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h4>
+<h3>Blocks<a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://api.fusionnetwork.io/blocks/latest">http://api.fusionnetwork.io/blocks/latest</a></li>
 <li><a class="reference external" href="http://api.fusionnetwork.io/blocks/300">http://api.fusionnetwork.io/blocks/300</a></li>
@@ -100,14 +98,14 @@
 <p>fields can be: [ timestamp, hash , numberOfTransactions, height ]</p>
 </div>
 <div class="section" id="swaps">
-<h4>Swaps<a class="headerlink" href="#swaps" title="Permalink to this headline">¶</a></h4>
+<h3>Swaps<a class="headerlink" href="#swaps" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae">http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae</a></li>
 <li><a class="reference external" href="http://api.fusionnetwork.io/swaps/all?page=0&amp;size=2&amp;sort=asc">http://api.fusionnetwork.io/swaps/all?page=0&amp;size=2&amp;sort=asc</a></li>
 </ul>
 </div>
 <div class="section" id="transactions">
-<h4>Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline">¶</a></h4>
+<h3>Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://api.fusionnetwork.io/transactions/latest">http://api.fusionnetwork.io/transactions/latest</a></li>
 <li><a class="reference external" href="http://api.fusionnetwork.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa">http://api.fusionnetwork.io/transactions/0x346aab726aa05808698ec9aba5da4e4c4574863e87951b5107d3fdabc290bbaa</a></li>
@@ -118,7 +116,7 @@
 - <a class="reference external" href="http://api.fusionnetwork.io/transactions/ts?ts=address1-address2">http://api.fusionnetwork.io/transactions/ts?ts=address1-address2</a></p>
 </div>
 <div class="section" id="fusion-price">
-<h4>Fusion Price<a class="headerlink" href="#fusion-price" title="Permalink to this headline">¶</a></h4>
+<h3>Fusion Price<a class="headerlink" href="#fusion-price" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt>last price</dt>
@@ -145,7 +143,6 @@
 </dl>
 </li>
 </ul>
-</div>
 </div>
 <div class="section" id="search">
 <h3>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h3>
@@ -181,7 +178,6 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">blockexplorerapi</a><ul>
-<li><a class="reference internal" href="#web3-fusion-extend-js-fusion-javascript-api">web3-fusion-extend.js - Fusion JavaScript API</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#fusion-org-and-its-public-explorer-api">Fusion Org and its public explorer api</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
@@ -192,8 +188,6 @@
 <li><a class="reference internal" href="#swaps">Swaps</a></li>
 <li><a class="reference internal" href="#transactions">Transactions</a></li>
 <li><a class="reference internal" href="#fusion-price">Fusion Price</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#search">Search</a></li>
 </ul>
 </li>

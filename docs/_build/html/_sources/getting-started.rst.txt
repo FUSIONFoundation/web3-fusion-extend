@@ -5,6 +5,8 @@
 Getting Started
 ===============
 
+.. index:: Getting Started
+
 web3-fusion-extend is a collection of libraries which allow you to interact with a local or remote fusion node,
 using a HTTP or IPC connection.
 

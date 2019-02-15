@@ -3,6 +3,7 @@
 =======
 license
 =======
+.. index:: License
 
 This file is part of web3-fusion-extend.js.
 

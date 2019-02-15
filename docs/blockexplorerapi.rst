@@ -4,11 +4,10 @@
 blockexplorerapi
 ================
 
-web3-fusion-extend.js - Fusion JavaScript API
-=============================================
+.. index:: blockexplorerapi
 
 Overview
---------
+========
 
 This block explorer api section shows how to collect all information from the fusion block chain and update a mysql database.
 
@@ -31,7 +30,7 @@ You can then host the api server for the database via:
 
 
 Fusion Org and its public explorer api
---------------------------------------
+======================================
 
 Fusion organization keeps an api endpoint open at `https://api.fusionnetwork.io <https://api.fusionnetwork.io>`_ to assist in application development
 
@@ -40,7 +39,7 @@ You can try commands like `https://api.fusionnetwork.io/blocks/latest <https://a
 Note if you are not a developer the results may look scary but they are the actual last block or transaction info
 
 Installation
-------------
+============
 
 .. code-block:: javascript
 
@@ -48,25 +47,22 @@ Installation
 
 
 API Commands
-------------
+============
 
 If running locally replace api.fusionnetwork.io with your own server link
 
-------
 Assets
 ------
 - `http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae <http://api.fusionnetwork.io/assets/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae>`_
 - `http://api.fusionnetwork.io/assets/all?page=0&size=2&sort=desc <http://api.fusionnetwork.io/assets/all?page=0&size=2&sort=desc>`_
 
 
--------
 Balance
 -------
 
 - `http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94 <http://api.fusionnetwork.io/balances/0xC4A9441afB052cB454240136CCe71Fb09316EA94>`_
 - `http://api.fusionnetwork.io/balances/all?page=0&size=2&sort=asc <http://api.fusionnetwork.io/balances/all?page=0&size=2&sort=asc>`_
 
-------
 Blocks
 ------
 
@@ -78,14 +74,12 @@ Blocks
 
 fields can be: [ timestamp, hash , numberOfTransactions, height ]
 
------
 Swaps
 -----
 
 - `http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae <http://api.fusionnetwork.io/swaps/0xbbd28ab973a7be78af3d8a3c3f1097c87fc020b2bd9270aa292518e8a93c32ae>`_
 - `http://api.fusionnetwork.io/swaps/all?page=0&size=2&sort=asc <http://api.fusionnetwork.io/swaps/all?page=0&size=2&sort=asc>`_
 
-------------
 Transactions
 ------------
 
@@ -98,7 +92,6 @@ fields can be: [ timestamp, hash , type, block , asset ]
 Return an array of transactions from a - seperated array 
 - `http://api.fusionnetwork.io/transactions/ts?ts=address1-address2 <http://api.fusionnetwork.io/transactions/ts?ts=address1-address2>`_
 
-------------
 Fusion Price
 ------------
 
