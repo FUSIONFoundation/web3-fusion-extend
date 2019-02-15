@@ -1,2 +1,2 @@
 
-.. note:: This documentation is work in progress and web3-fusion-extend 1.0 stable is not yet released! You can find the current documentation for web3-fusion-extend 0.x.x at.
+.. note:: This documentation is work in progress and web3-fusion-extend in currently in beta.   Please feel free to submit pull request or issues via the edit on github link in the upper right.

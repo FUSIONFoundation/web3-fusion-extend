@@ -56,15 +56,24 @@ Contents:
     :maxdepth: 2
     :caption: User Documentation
 
+    welcome <index>
     contributing
     getting-started
 
 .. toctree::
     :maxdepth: 2
-    :caption: API Reference
+    :caption: Samples
 
     autoPurchaseTickets
     blockexplorerapi
+    myFusionWallet
+    PSNBlockExplorer <psnBlockExplorer>
+    PurchaseTicket <purchaseTicket>
+
+.. toctree::
+    :maxdepth: 2
+    :caption: API Reference
+
     constants
     fsn
     fsntx

@@ -229,11 +229,45 @@ FSNCallAddress_Topic_TakeSwapFunc
 ---------------------------------
 
 
+
+FSNCallAddress_Topic_MakeSwapFuncExtOld
+---------------------------------------
+
+.. code-block:: javascript
+
     FSNCallAddress_Topic_MakeSwapFuncExtOld:
       "0x0000000000000000000000000000000000000000000000000000000000000009",
+
+----------------------------------------
+
+
+FSNCallAddress_Topic_MakeSwapFuncExt
+------------------------------------
+
+.. code-block:: javascript
+
     FSNCallAddress_Topic_MakeSwapFuncExt:
       "0x000000000000000000000000000000000000000000000000000000000000000a",
+
+------------------------------------
+
+FSNCallAddress_Topic_TakeSwapFuncExt
+------------------------------------
+
+.. code-block:: javascript
+
     FSNCallAddress_Topic_TakeSwapFuncExt:
       "0x000000000000000000000000000000000000000000000000000000000000000b",
+
+-------------------------------------
+
+
+FSNCallAddress_Topic_AssetValueChangeExtFunc
+--------------------------------------------
+
+.. code-block:: javascript
+
     FSNCallAddress_Topic_AssetValueChangeExtFunc:
       "0x000000000000000000000000000000000000000000000000000000000000000c"
+
+--------------------------------------------

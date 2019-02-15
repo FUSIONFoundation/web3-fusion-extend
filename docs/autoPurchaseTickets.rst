@@ -1,3 +1,5 @@
+.. _autoPurchaseTickets:
+
 ===================
 autoPurchaseTickets
 ===================
