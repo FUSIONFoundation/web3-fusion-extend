@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'web3-fusion-extend'
+project = 'fusionapi'
 copyright = '2019, Fusion.org'
 author = 'Fusion.org'
 
