@@ -17,6 +17,8 @@ web3.fsn.consts = {}
 FSNToken
 ========
 
+The asset ID representing the Fusion Token
+
 .. code-block:: javascript
 
     FSNToken: "0xffffffffffffffffffffffffffffffffffffffff"

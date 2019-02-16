@@ -10,7 +10,8 @@ which implements the [Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JS
 
 It's available on npm as a node module.
 
-[![NPM version][npm-image]][npm-url] 
+[![NPM version][npm-image]][npm-url] sudo port select --set python python36
+
 
 You need to run a local Ethereum node to use this library.
 
