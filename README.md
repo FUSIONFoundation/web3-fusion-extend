@@ -1,5 +1,10 @@
 # Fusion JavaScript API
 
+
+A version of the readme as online documentation can be found at:
+
+https://fusionapi.readthedocs.io
+
 This package extends the Ethereum compatible [JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
 which implements the [Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) spec to support the Fusion protocol.
 
