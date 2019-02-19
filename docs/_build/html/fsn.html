@@ -663,6 +663,42 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsn</span><span class="p">.</span><span class="nx">decAsset</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">,</span><span class="nx">to</span><span class="o">:</span><span class="s2">&quot;0x2b1a3eca81ba03a9a4c95f4a04679c90838d7165&quot;</span><span class="p">,</span><span class="nx">value</span><span class="o">:</span><span class="s2">&quot;0x1&quot;</span><span class="p">,</span><span class="nx">asset</span><span class="o">:</span><span class="s2">&quot;0x514a46f34e6eb0a98abb3595c4aec33ca8ddf69f135c8fed89e78d0808047965&quot;</span><span class="p">},</span><span class="s2">&quot;123456&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span>
+   <span class="p">.</span><span class="nx">decAsset</span><span class="p">(</span>
+     <span class="p">{</span>
+       <span class="nx">from</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">WALLET_ADDRESS</span><span class="p">,</span>
+       <span class="nx">to</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">WALLET_ADDRESS</span><span class="p">,</span>
+       <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;0000000000000000001&quot;</span><span class="p">,</span>
+       <span class="nx">asset</span><span class="o">:</span> <span class="nx">assetId</span>
+     <span class="p">},</span>
+     <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PASSPHRASE</span>
+   <span class="p">)</span>
+   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">transactionReceipt</span> <span class="p">=&gt;</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="nx">waitForTransactionToComplete</span><span class="p">(</span><span class="nx">transactionReceipt</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">transactionReceipt</span> <span class="p">=&gt;</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span><span class="nx">transactionReceipt</span><span class="p">.</span><span class="nx">status</span> <span class="o">!==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+           <span class="nx">done</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;transaction error &quot;</span> <span class="o">+</span> <span class="nx">transactionReceipt</span><span class="p">));</span>
+           <span class="k">return</span><span class="p">;</span>
+         <span class="p">}</span>
+         <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span>
+           <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">hex2a</span><span class="p">(</span><span class="nx">transactionReceipt</span><span class="p">.</span><span class="nx">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">)</span>
+         <span class="p">);</span>
+         <span class="c1">// console.log(&quot;json data =&gt; &quot;, data);</span>
+         <span class="nx">done</span><span class="p">();</span>
+       <span class="p">})</span>
+       <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
+           <span class="s2">&quot;dec asset (waitForTransactionToComplete) created the following error&quot;</span><span class="p">,</span>
+           <span class="nx">err</span>
+         <span class="p">);</span>
+         <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+       <span class="p">});</span>
+   <span class="p">})</span>
+   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;dec asset created the following error&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+   <span class="p">});</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="incasset">
@@ -800,11 +836,11 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAllBalances</span><span class="p">(</span><span class="s2">&quot;0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="p">{</span>
-  <span class="kd">let</span> <span class="nx">balances</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAllBalances</span><span class="p">(</span><span class="nx">address</span><span class="p">);</span>
-  <span class="nx">all</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
-    <span class="nx">balances</span>
-  <span class="p">});</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAllBalances</span><span class="p">(</span><span class="nx">walletAddress</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">contractaddress</span> <span class="k">in</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">myAssets</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">contractaddress</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">})</span>
 </pre></div>
 </div>
 </div>

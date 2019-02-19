@@ -190,7 +190,23 @@
 </div>
 <div class="section" id="id3">
 <h3>Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenNotationTx</span><span class="p">()</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenNotationTx</span><span class="p">({</span>
+    <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+    <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+    <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">){</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">requestedSAN</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">$apply</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">addressNotation</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;USAN Requested&#39;</span><span class="p">;</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">addressNotation</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;USAN Requested&#39;</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">})</span>
+<span class="p">});</span>
 </pre></div>
 </div>
 </div>
@@ -244,7 +260,25 @@
 </div>
 <div class="section" id="id9">
 <h3>Example<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenAssetTx</span><span class="p">()</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="p">{</span>
+    <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildGenAssetTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">tx</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetCreate</span><span class="p">.</span><span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetCreate</span><span class="p">.</span><span class="nx">assetHash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                <span class="p">});</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">createAssetFinal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

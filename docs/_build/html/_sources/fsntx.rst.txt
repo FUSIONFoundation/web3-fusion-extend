@@ -170,7 +170,23 @@ Example
 
 .. code-block:: javascript
 
-    fsntx.buildGenNotationTx()
+    await web3.fsntx.buildGenNotationTx({
+        from: walletAddress
+    }).then((tx) => {
+        tx.chainId = _CHAINID;
+        data = tx;
+        tx.from = walletAddress;
+        if ($scope.wallet.hwType == "ledger"){
+            return;
+        }
+        return web3.fsn.signAndTransmit(tx, $scope.account.signTransaction).then(txHash => {
+            $scope.requestedSAN = true;
+            $scope.$apply(function () {
+                $scope.addressNotation.value = 'USAN Requested';
+                $scope.addressNotation.value = 'USAN Requested';
+            });
+        })
+    });
 
 
 genNotation
@@ -236,7 +252,25 @@ Example
 
 .. code-block:: javascript
 
-    fsntx.buildGenAssetTx()
+    try {
+        await web3.fsntx.buildGenAssetTx(data).then(tx => {
+            tx.chainId = _CHAINID;
+            data = tx;
+            if ($scope.wallet.hwType == "ledger" || $scope.wallet.hwType == "trezor") {
+                return;
+            } else {
+                return web3.fsn.signAndTransmit(tx, $scope.account.signTransaction).then(txHash => {
+                    $scope.$eval(function () {
+                        $scope.assetCreate.errorMessage = '';
+                        $scope.assetCreate.assetHash = txHash;
+                    });
+                    $scope.createAssetFinal.open();
+                });
+            }
+        });
+    } catch (err) {
+        $scope.errorModal.open();
+    }
 
 
 genAsset

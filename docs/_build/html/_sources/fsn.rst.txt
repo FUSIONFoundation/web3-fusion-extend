@@ -731,6 +731,43 @@ Example
 
     fsn.decAsset({from:fsn.coinbase,to:"0x2b1a3eca81ba03a9a4c95f4a04679c90838d7165",value:"0x1",asset:"0x514a46f34e6eb0a98abb3595c4aec33ca8ddf69f135c8fed89e78d0808047965"},"123456")
 
+.. code-block:: javascript
+
+     web3.fsn
+        .decAsset(
+          {
+            from: process.env.WALLET_ADDRESS,
+            to: process.env.WALLET_ADDRESS,
+            value: "0000000000000000001",
+            asset: assetId
+          },
+          process.env.PASSPHRASE
+        )
+        .then(transactionReceipt => {
+          return waitForTransactionToComplete(transactionReceipt)
+            .then(transactionReceipt => {
+              if (transactionReceipt.status !== true) {
+                done(new Error("transaction error " + transactionReceipt));
+                return;
+              }
+              let data = JSON.parse(
+                web3.fsn.hex2a(transactionReceipt.logs[0].data)
+              );
+              // console.log("json data => ", data);
+              done();
+            })
+            .catch(err => {
+              console.log(
+                "dec asset (waitForTransactionToComplete) created the following error",
+                err
+              );
+              done(err);
+            });
+        })
+        .catch(err => {
+          console.log("dec asset created the following error", err);
+        });
+
 
 incAsset
 ========
@@ -890,11 +927,11 @@ Example
 
 .. code-block:: javascript
 
-  try {
-    let balances = await web3.fsn.getAllBalances(address);
-    all = JSON.stringify({
-      balances
-    });
+    await web3.fsn.getAllBalances(walletAddress).then(function (res) {
+        for (let contractaddress in res) {
+            $scope.myAssets.push(contractaddress);
+        }
+    })
 
 
 getAllTimeLockBalances
