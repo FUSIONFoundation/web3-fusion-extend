@@ -20,7 +20,7 @@ Example
 
 .. code-block:: javascript
 
-    node autoPurchaseTicket --c "wss://example.com" -p "./password.txt" -k "./keystore.key" -n 10
+    node autoPurchaseTicket --c "wss://example.com" -p "./password.txt" -k "./keystore.key" -n 10 -d 12345
 
 
 
@@ -31,3 +31,4 @@ Example
     -p  --passPharseFile key file
     -g  -- gasPrice gas price 1 - 100 (defaults to 2 gwei)
     -n  --Number of tickets to purchase
+    -d  --Chain Id

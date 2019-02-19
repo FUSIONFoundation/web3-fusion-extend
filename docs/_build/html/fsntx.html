@@ -82,6 +82,90 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">swap_id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">walletService</span><span class="p">.</span><span class="nx">wallet</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+        <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+        <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+
+        <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+            <span class="nx">SwapID</span><span class="o">:</span> <span class="nx">swap_id</span>
+        <span class="p">};</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildRecallSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                <span class="p">})</span>
+            <span class="p">})</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">ledgerConfig</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="nx">privKey</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">privKey</span> <span class="o">?</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKeyString</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="nx">path</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPath</span><span class="p">(),</span>
+                <span class="nx">hwType</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWType</span><span class="p">(),</span>
+                <span class="nx">hwTransport</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWTransport</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="kd">let</span> <span class="nx">rawTx</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">eTx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ethUtil</span><span class="p">.</span><span class="nx">Tx</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ledgerEth</span><span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwTransport</span><span class="p">);</span>
+                <span class="kd">var</span> <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="kd">var</span> <span class="nx">localCallback</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">error</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">callback</span><span class="p">({</span>
+                            <span class="nx">isError</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                            <span class="nx">error</span><span class="o">:</span> <span class="nx">error</span>
+                        <span class="p">});</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">splitVersion</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">oldTx</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">,</span> <span class="p">{});</span>
+                    <span class="kd">let</span> <span class="nx">input</span> <span class="o">=</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">signed</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">rawTx</span><span class="p">,</span> <span class="nx">ledgerConfig</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">r</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">r</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">s</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">s</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">v</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">v</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="nx">input</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="s2">&quot;0x1&quot;</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">isError</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">rawTx</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">signedTx</span><span class="p">;</span>
+                        <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">(</span><span class="nx">oldTx</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">txHash</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                        <span class="p">})</span>
+                    <span class="p">})</span>
+                <span class="p">}</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">notifier</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">&#39;Please, confirm transaction on Ledger.&#39;</span><span class="p">);</span>
+                <span class="nx">await</span> <span class="nx">app</span><span class="p">.</span><span class="nx">getAppConfiguration</span><span class="p">(</span><span class="nx">localCallback</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="buildgennotationtx">
@@ -219,6 +303,65 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildSendAssetTx</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">successMessagebool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">from</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">to</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">toAddress</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">decimals</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">asset</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToSend</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">hash</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">to</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAddressByNotation</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">to</span><span class="p">)).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">address</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">to</span> <span class="o">=</span> <span class="nx">address</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">asset</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">decimals</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">res</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]);</span>
+    <span class="p">});</span>
+
+    <span class="kd">let</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">amountToSend</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+
+    <span class="nx">amount</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeBigNumber</span><span class="p">(</span><span class="nx">amount</span><span class="p">,</span> <span class="nx">decimals</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">transactionType</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildSendAssetTx</span><span class="p">({</span>
+                <span class="nx">from</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+                <span class="nx">to</span><span class="o">:</span> <span class="nx">to</span><span class="p">,</span>
+                <span class="nx">value</span><span class="o">:</span> <span class="nx">amount</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                <span class="nx">asset</span><span class="o">:</span> <span class="nx">asset</span>
+            <span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">tx</span><span class="p">);</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                    <span class="nx">hash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAssetFinal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                    <span class="p">});</span>
+                <span class="p">})</span>
+            <span class="p">});</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="sendasset">
@@ -275,6 +418,109 @@
 <div class="section" id="id21">
 <h3>Example<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildAssetToTimeLockTx</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">successMessagebool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">from</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">to</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">toAddress</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">decimals</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">asset</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToSend</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">hash</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">to</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAddressByNotation</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">to</span><span class="p">)).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">address</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">to</span> <span class="o">=</span> <span class="nx">address</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">asset</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">decimals</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">res</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]);</span>
+    <span class="p">});</span>
+
+    <span class="kd">let</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">amountToSend</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+
+    <span class="nx">amount</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeBigNumber</span><span class="p">(</span><span class="nx">amount</span><span class="p">,</span> <span class="nx">decimals</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">transactionType</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildSendAssetTx</span><span class="p">({</span>
+                <span class="nx">from</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+                <span class="nx">to</span><span class="o">:</span> <span class="nx">to</span><span class="p">,</span>
+                <span class="nx">value</span><span class="o">:</span> <span class="nx">amount</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                <span class="nx">asset</span><span class="o">:</span> <span class="nx">asset</span>
+            <span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">tx</span><span class="p">);</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                    <span class="nx">hash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAssetFinal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                    <span class="p">});</span>
+                <span class="p">})</span>
+            <span class="p">});</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">$apply</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">transactionType</span> <span class="o">==</span> <span class="s2">&quot;daterange&quot;</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">fromTime</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">fromTime</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="kd">let</span> <span class="nx">fromTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">fromTime</span><span class="p">));</span>
+        <span class="kd">let</span> <span class="nx">tillTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAsset</span><span class="p">.</span><span class="nx">tillTime</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildAssetToTimeLockTx</span><span class="p">({</span>
+                <span class="nx">asset</span><span class="o">:</span> <span class="nx">asset</span><span class="p">,</span>
+                <span class="nx">from</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+                <span class="nx">to</span><span class="o">:</span> <span class="nx">to</span><span class="p">,</span>
+                <span class="nx">start</span><span class="o">:</span> <span class="nx">fromTime</span><span class="p">,</span>
+                <span class="nx">end</span><span class="o">:</span> <span class="nx">tillTime</span><span class="p">,</span>
+                <span class="nx">value</span><span class="o">:</span> <span class="nx">amount</span>
+            <span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAssetFinal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                    <span class="p">});</span>
+                <span class="p">})</span>
+            <span class="p">});</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -339,6 +585,38 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToTimeLockTx</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+<span class="p">}</span>
+
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToTimeLockTx</span><span class="p">({</span>
+        <span class="nx">asset</span><span class="o">:</span> <span class="nx">asset</span><span class="p">,</span>
+        <span class="nx">from</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+        <span class="nx">to</span><span class="o">:</span> <span class="nx">to</span><span class="p">,</span>
+        <span class="nx">start</span><span class="o">:</span> <span class="nx">fromTime</span><span class="p">,</span>
+        <span class="nx">end</span><span class="o">:</span> <span class="nx">tillTime</span><span class="p">,</span>
+        <span class="nx">value</span><span class="o">:</span> <span class="nx">amount</span>
+    <span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+        <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendAssetFinal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">successHash</span> <span class="o">=</span> <span class="nx">txHash</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">})</span>
+    <span class="p">});</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="timelocktotimelock">
@@ -393,6 +671,51 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToAssetTx</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendBackToAssetsFunction</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="nx">id</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">timeLockToAssetId</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">tlData</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">timeLockList</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+
+    <span class="kd">let</span> <span class="nx">from</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="kd">let</span> <span class="nx">startTime</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">numberToHex</span><span class="p">(</span><span class="nx">tlData</span><span class="p">.</span><span class="nx">posixStartTime</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">endTime</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">numberToHex</span><span class="p">(</span><span class="nx">tlData</span><span class="p">.</span><span class="nx">posixEndTime</span><span class="p">);</span>
+
+    <span class="c1">// JavaScript / Go incompatibility -1 error</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">tlData</span><span class="p">.</span><span class="nx">posixEndTime</span> <span class="o">===</span> <span class="mi">18446744073709552000</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">endTime</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">consts</span><span class="p">.</span><span class="nx">TimeForeverStr</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTimeLockToAssetTx</span><span class="p">({</span>
+            <span class="nx">asset</span><span class="o">:</span> <span class="nx">tlData</span><span class="p">.</span><span class="nx">asset</span><span class="p">,</span>
+            <span class="nx">from</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+            <span class="nx">to</span><span class="o">:</span> <span class="nx">from</span><span class="p">,</span>
+            <span class="nx">start</span><span class="o">:</span> <span class="nx">startTime</span><span class="p">,</span>
+            <span class="nx">end</span><span class="o">:</span> <span class="nx">endTime</span><span class="p">,</span>
+            <span class="nx">value</span><span class="o">:</span> <span class="nx">tlData</span><span class="p">.</span><span class="nx">rawValue</span>
+        <span class="p">}).</span><span class="nx">then</span><span class="p">((</span><span class="nx">tx</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+            <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;trezor&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">successModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+            <span class="p">})</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="timelocktoasset">
@@ -444,7 +767,51 @@
 </div>
 <div class="section" id="id39">
 <h3>Example<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildBuyTicketTx</span><span class="p">()</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">this</span><span class="p">.</span><span class="nx">_web3</span><span class="p">.</span><span class="nx">fsntx</span>
+  <span class="p">.</span><span class="nx">buildBuyTicketTx</span><span class="p">({</span> <span class="nx">from</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_walletAddress</span><span class="p">,</span> <span class="nx">end</span><span class="o">:</span> <span class="nx">dayHex</span> <span class="p">})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">tx</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">tx</span><span class="p">);</span>
+    <span class="c1">// tx.gasLimit =  this._web3.utils.toWei( 21000, &quot;gwei&quot; )</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_web3</span> <span class="o">||</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">provider</span> <span class="o">||</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">provider</span><span class="p">.</span><span class="nx">__connected</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// reconnecting need to wait</span>
+      <span class="nx">cb</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;reconnecting&quot;</span><span class="p">),</span> <span class="s2">&quot;reconnecting&quot;</span><span class="p">);</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span>
+      <span class="nx">tx</span><span class="p">,</span>
+      <span class="nx">currentDataState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">signInfo</span><span class="p">.</span><span class="nx">signTransaction</span>
+    <span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;buy ticket tx -&gt; &quot;</span><span class="p">,</span> <span class="nx">txHash</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">data</span><span class="p">.</span><span class="nx">activeTicketPurchase</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;asked to leave&quot;</span><span class="p">);</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">data</span><span class="p">.</span><span class="nx">lastStatus</span> <span class="o">=</span> <span class="s2">&quot;Pending Tx:&quot;</span> <span class="o">+</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">midHashDisplay</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+    <span class="nx">data</span><span class="p">.</span><span class="nx">lastCall</span> <span class="o">=</span> <span class="s2">&quot;purchaseSubmitTicket&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;purchaseSubmitTicket&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">checkConnection</span><span class="p">();</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">waitForTransactionToComplete</span><span class="p">(</span>
+      <span class="nx">txHash</span><span class="p">,</span>
+      <span class="nx">data</span><span class="p">,</span>
+      <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">120000</span>
+    <span class="p">)</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;Ticket bought&quot;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">cb</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;failed to buy&quot;</span><span class="p">),</span> <span class="s2">&quot;Failed to buy ticket will retry&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">})</span>
+      <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s2">&quot;Error waiting for ticket to complete&quot;</span><span class="p">);</span>
+      <span class="p">});</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s2">&quot;unknown err&quot;</span><span class="p">);</span>
+  <span class="p">});</span>
 </pre></div>
 </div>
 </div>
@@ -499,6 +866,28 @@
 <div class="section" id="id45">
 <h3>Example<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildIncAssetTx</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span>
+  <span class="p">.</span><span class="nx">buildIncAssetTx</span><span class="p">({</span>
+    <span class="nx">from</span><span class="o">:</span> <span class="nx">key</span><span class="p">.</span><span class="nx">address</span><span class="p">,</span>
+    <span class="nx">to</span><span class="o">:</span> <span class="nx">key</span><span class="p">.</span><span class="nx">address</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;1000000000000000000&quot;</span><span class="p">,</span>
+    <span class="nx">asset</span><span class="o">:</span> <span class="nx">assetId</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">tx</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">tx</span><span class="p">.</span><span class="nx">gasPrice</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">toWei</span><span class="p">(</span> <span class="k">new</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">BN</span><span class="p">(</span> <span class="s2">&quot;3&quot;</span> <span class="p">),</span> <span class="s2">&quot;gwei&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">signInfo</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">tx</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="nx">totalSent</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">totalSent</span> <span class="o">+</span> <span class="s2">&quot;   &quot;</span> <span class="o">+</span>  <span class="nx">index</span> <span class="o">*</span> <span class="nx">subToDo</span> <span class="p">,</span> <span class="nx">tx</span><span class="p">);</span>
+      <span class="nx">transactionList</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">tx</span><span class="p">);</span>
+      <span class="nx">incAsset</span><span class="p">(</span><span class="nx">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">numberToDo</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span>
+    <span class="p">});</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;inc asset created the following error&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+    <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">});</span>
 </pre></div>
 </div>
 </div>
@@ -609,6 +998,144 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildMakeSwapTx</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">targesArray</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+
+    <span class="kd">let</span> <span class="nx">fromAsset</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">let</span> <span class="nx">toAsset</span> <span class="o">=</span> <span class="p">[];</span>
+
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToSend</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">fromAsset</span> <span class="o">=</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToReceive</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">toAsset</span> <span class="o">=</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeTarges</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">targesArr</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeTarges</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+        <span class="nx">await</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">processAllTarges</span><span class="p">(</span><span class="nx">targesArr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">targesArray</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">targesArray</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeMinumumSwap</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">||</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeMinumumSwap</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeMinumumSwap</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//Global</span>
+    <span class="kd">let</span> <span class="nx">makeMinimumSwapBN</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigNumber</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeMinumumSwap</span><span class="p">);</span>
+
+    <span class="c1">//Receive Part</span>
+    <span class="nx">BigNumber</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span> <span class="nx">DECIMAL_PLACES</span><span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">toAsset</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">});</span>
+    <span class="kd">let</span> <span class="nx">makeReceiveAmountBN</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigNumber</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeReceiveAmount</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">makeReceiveAmountDiv</span> <span class="o">=</span> <span class="nx">makeReceiveAmountBN</span><span class="p">.</span><span class="nx">div</span><span class="p">(</span><span class="nx">makeMinimumSwapBN</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">makeReceiveString</span> <span class="o">=</span> <span class="nx">makeReceiveAmountDiv</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+    <span class="kd">let</span> <span class="nx">makeReceiveFinal</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeBigNumber</span><span class="p">(</span><span class="nx">makeReceiveString</span> <span class="p">,</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">toAsset</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]));</span>
+
+    <span class="c1">//Send Part</span>
+    <span class="nx">BigNumber</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span> <span class="nx">DECIMAL_PLACES</span><span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">fromAsset</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">});</span>
+    <span class="kd">let</span> <span class="nx">makeSendAmountBN</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigNumber</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeSendAmount</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">makeSendAmountDiv</span> <span class="o">=</span> <span class="nx">makeSendAmountBN</span><span class="p">.</span><span class="nx">div</span><span class="p">(</span><span class="nx">makeMinimumSwapBN</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">makeSendString</span> <span class="o">=</span> <span class="nx">makeSendAmountDiv</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+    <span class="kd">let</span> <span class="nx">makeSendFinal</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeBigNumber</span><span class="p">(</span><span class="nx">makeSendString</span> <span class="p">,</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">fromAsset</span><span class="p">[</span><span class="s2">&quot;Decimals&quot;</span><span class="p">]));</span>
+
+    <span class="c1">//Convert to Hex</span>
+
+    <span class="kd">let</span> <span class="nx">minToAmountHex</span> <span class="o">=</span> <span class="s2">&quot;0x&quot;</span> <span class="o">+</span> <span class="nx">makeReceiveFinal</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">minFromAmountHex</span> <span class="o">=</span> <span class="s2">&quot;0x&quot;</span> <span class="o">+</span> <span class="nx">makeSendFinal</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+
+
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+        <span class="nx">FromAssetID</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToSend</span><span class="p">,</span>
+        <span class="nx">ToAssetID</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">assetToReceive</span><span class="p">,</span>
+        <span class="nx">MinToAmount</span><span class="o">:</span> <span class="nx">minToAmountHex</span><span class="p">,</span>
+        <span class="nx">MinFromAmount</span><span class="o">:</span> <span class="nx">minFromAmountHex</span><span class="p">,</span>
+        <span class="nx">SwapSize</span><span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">makeMinumumSwap</span><span class="p">),</span>
+        <span class="nx">Targes</span><span class="o">:</span> <span class="nx">targesArray</span>
+    <span class="p">};</span>
+
+    <span class="c1">// Send part</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">showTimeLockSend</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendTimeLock</span> <span class="o">==</span> <span class="s1">&#39;scheduled&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">fromStartTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">fromStartTime</span><span class="p">));</span>
+            <span class="kd">let</span> <span class="nx">fromEndTime</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">consts</span><span class="p">.</span><span class="nx">TimeForeverStr</span><span class="p">;</span>
+
+            <span class="nx">data</span><span class="p">.</span><span class="nx">FromStartTime</span> <span class="o">=</span> <span class="nx">fromStartTime</span><span class="p">;</span>
+            <span class="nx">data</span><span class="p">.</span><span class="nx">FromEndTime</span> <span class="o">=</span> <span class="nx">fromEndTime</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sendTimeLock</span> <span class="o">==</span> <span class="s1">&#39;daterange&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">fromStartTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">todayDate</span><span class="p">));</span>
+            <span class="kd">let</span> <span class="nx">fromEndTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">fromEndTime</span><span class="p">));</span>
+
+            <span class="nx">data</span><span class="p">.</span><span class="nx">FromStartTime</span> <span class="o">=</span> <span class="nx">fromStartTime</span><span class="p">;</span>
+            <span class="nx">data</span><span class="p">.</span><span class="nx">FromEndTime</span> <span class="o">=</span> <span class="nx">fromEndTime</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Receive part</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">showTimeLockReceive</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">receiveTimeLock</span> <span class="o">==</span> <span class="s1">&#39;scheduled&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">toStartTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">ToStartTime</span><span class="p">));</span>
+            <span class="kd">let</span> <span class="nx">toEndTime</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">consts</span><span class="p">.</span><span class="nx">TimeForeverStr</span><span class="p">;</span>
+
+            <span class="nx">data</span><span class="p">.</span><span class="nx">ToStartTime</span> <span class="o">=</span> <span class="nx">toStartTime</span><span class="p">;</span>
+            <span class="nx">data</span><span class="p">.</span><span class="nx">ToEndTime</span> <span class="o">=</span> <span class="nx">toEndTime</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">receiveTimeLock</span> <span class="o">==</span> <span class="s1">&#39;daterange&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">toStartTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">todayDate</span><span class="p">));</span>
+            <span class="kd">let</span> <span class="nx">toEndTime</span> <span class="o">=</span> <span class="nx">getHexDate</span><span class="p">(</span><span class="nx">convertDate</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">ToEndTime</span><span class="p">));</span>
+
+            <span class="nx">data</span><span class="p">.</span><span class="nx">ToStartTime</span> <span class="o">=</span> <span class="nx">toStartTime</span><span class="p">;</span>
+            <span class="nx">data</span><span class="p">.</span><span class="nx">ToEndTime</span> <span class="o">=</span> <span class="nx">toEndTime</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildMakeSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">tx</span><span class="p">);</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+            <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">makeSwapConfirmation</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">);</span>
+            <span class="p">})</span>
+        <span class="p">})</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="makeswap">
@@ -665,6 +1192,90 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildRecallSwapTx</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">swap_id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">walletService</span><span class="p">.</span><span class="nx">wallet</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+        <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+        <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+
+        <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+            <span class="nx">SwapID</span><span class="o">:</span> <span class="nx">swap_id</span>
+        <span class="p">};</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildRecallSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+                <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+                    <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                <span class="p">})</span>
+            <span class="p">})</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">ledgerConfig</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="nx">privKey</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">privKey</span> <span class="o">?</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKeyString</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="nx">path</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPath</span><span class="p">(),</span>
+                <span class="nx">hwType</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWType</span><span class="p">(),</span>
+                <span class="nx">hwTransport</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWTransport</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="kd">let</span> <span class="nx">rawTx</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">eTx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ethUtil</span><span class="p">.</span><span class="nx">Tx</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ledgerEth</span><span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwTransport</span><span class="p">);</span>
+                <span class="kd">var</span> <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="kd">var</span> <span class="nx">localCallback</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">error</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">callback</span><span class="p">({</span>
+                            <span class="nx">isError</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                            <span class="nx">error</span><span class="o">:</span> <span class="nx">error</span>
+                        <span class="p">});</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">splitVersion</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">oldTx</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">,</span> <span class="p">{});</span>
+                    <span class="kd">let</span> <span class="nx">input</span> <span class="o">=</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">signed</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">rawTx</span><span class="p">,</span> <span class="nx">ledgerConfig</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">r</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">r</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">s</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">s</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">v</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">v</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="nx">input</span><span class="p">;</span>
+                        <span class="nx">oldTx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="s2">&quot;0x1&quot;</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">isError</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">rawTx</span><span class="p">;</span>
+                        <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">signedTx</span><span class="p">;</span>
+                        <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">(</span><span class="nx">oldTx</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">txHash</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                        <span class="p">})</span>
+                    <span class="p">})</span>
+                <span class="p">}</span>
+                <span class="nx">$scope</span><span class="p">.</span><span class="nx">notifier</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">&#39;Please, confirm transaction on Ledger.&#39;</span><span class="p">);</span>
+                <span class="nx">await</span> <span class="nx">app</span><span class="p">.</span><span class="nx">getAppConfiguration</span><span class="p">(</span><span class="nx">localCallback</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="recallswap">
@@ -690,7 +1301,92 @@ CP see the top SwapID the swap ID password the owner password</p>
 </div>
 <div class="section" id="id66">
 <h3>Example<a class="headerlink" href="#id66" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">recallSwap</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">,</span><span class="nx">SwapID</span><span class="o">:</span><span class="s2">&quot;0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&quot;</span><span class="p">},</span><span class="s2">&quot;123456&quot;</span><span class="p">)</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>   <span class="nx">fsntx</span><span class="p">.</span><span class="nx">recallSwap</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">,</span><span class="nx">SwapID</span><span class="o">:</span><span class="s2">&quot;0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&quot;</span><span class="p">},</span><span class="s2">&quot;123456&quot;</span><span class="p">)</span>
+
+<span class="p">..</span> <span class="nx">code</span><span class="o">-</span><span class="nx">block</span><span class="o">::</span> <span class="nx">javascript</span>
+
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">swap_id</span><span class="p">)</span> <span class="p">{</span>
+       <span class="k">if</span> <span class="p">(</span><span class="nx">walletService</span><span class="p">.</span><span class="nx">wallet</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+           <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+           <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+           <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+
+           <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+               <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+               <span class="nx">SwapID</span><span class="o">:</span> <span class="nx">swap_id</span>
+           <span class="p">};</span>
+
+           <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+               <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+           <span class="p">}</span>
+
+           <span class="k">try</span> <span class="p">{</span>
+               <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildRecallSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+                   <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+                   <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+                   <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+                   <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                       <span class="k">return</span><span class="p">;</span>
+                   <span class="p">}</span>
+                   <span class="k">return</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+                       <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                   <span class="p">})</span>
+               <span class="p">})</span>
+           <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+               <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+               <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+           <span class="p">}</span>
+           <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+               <span class="kd">let</span> <span class="nx">ledgerConfig</span> <span class="o">=</span> <span class="p">{</span>
+                   <span class="nx">privKey</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">privKey</span> <span class="o">?</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKeyString</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                   <span class="nx">path</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPath</span><span class="p">(),</span>
+                   <span class="nx">hwType</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWType</span><span class="p">(),</span>
+                   <span class="nx">hwTransport</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWTransport</span><span class="p">()</span>
+               <span class="p">}</span>
+               <span class="kd">let</span> <span class="nx">rawTx</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+               <span class="kd">var</span> <span class="nx">eTx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ethUtil</span><span class="p">.</span><span class="nx">Tx</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">);</span>
+               <span class="k">if</span> <span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                   <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ledgerEth</span><span class="p">(</span><span class="nx">ledgerConfig</span><span class="p">.</span><span class="nx">hwTransport</span><span class="p">);</span>
+                   <span class="kd">var</span> <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                   <span class="kd">var</span> <span class="nx">localCallback</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+                       <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">error</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+                           <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">callback</span><span class="p">({</span>
+                               <span class="nx">isError</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                               <span class="nx">error</span><span class="o">:</span> <span class="nx">error</span>
+                           <span class="p">});</span>
+                           <span class="k">return</span><span class="p">;</span>
+                       <span class="p">}</span>
+                       <span class="kd">var</span> <span class="nx">splitVersion</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+                       <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                           <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                       <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                           <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                       <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">splitVersion</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+                           <span class="nx">EIP155Supported</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                       <span class="p">}</span>
+                       <span class="kd">var</span> <span class="nx">oldTx</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">,</span> <span class="p">{});</span>
+                       <span class="kd">let</span> <span class="nx">input</span> <span class="o">=</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span><span class="p">;</span>
+                       <span class="k">return</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">signed</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">rawTx</span><span class="p">,</span> <span class="nx">ledgerConfig</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                           <span class="nx">oldTx</span><span class="p">.</span><span class="nx">r</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">r</span><span class="p">;</span>
+                           <span class="nx">oldTx</span><span class="p">.</span><span class="nx">s</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">s</span><span class="p">;</span>
+                           <span class="nx">oldTx</span><span class="p">.</span><span class="nx">v</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">v</span><span class="p">;</span>
+                           <span class="nx">oldTx</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="nx">input</span><span class="p">;</span>
+                           <span class="nx">oldTx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="s2">&quot;0x1&quot;</span><span class="p">;</span>
+                           <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">isError</span><span class="p">;</span>
+                           <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">rawTx</span><span class="p">;</span>
+                           <span class="k">delete</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">signedTx</span><span class="p">;</span>
+                           <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">sendRawTransaction</span><span class="p">(</span><span class="nx">oldTx</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">txHash</span><span class="p">)</span> <span class="p">{</span>
+                               <span class="nx">$scope</span><span class="p">.</span><span class="nx">recallSwapSuccess</span><span class="p">.</span><span class="nx">open</span><span class="p">()</span>
+                           <span class="p">})</span>
+                       <span class="p">})</span>
+                   <span class="p">}</span>
+                   <span class="nx">$scope</span><span class="p">.</span><span class="nx">notifier</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">&#39;Please, confirm transaction on Ledger.&#39;</span><span class="p">);</span>
+                   <span class="nx">await</span> <span class="nx">app</span><span class="p">.</span><span class="nx">getAppConfiguration</span><span class="p">(</span><span class="nx">localCallback</span><span class="p">);</span>
+               <span class="p">}</span>
+           <span class="p">}</span>
+       <span class="p">}</span>
+   <span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -717,7 +1413,59 @@ CP see the top SwapID the swap ID password the owner password</p>
 </div>
 <div class="section" id="id69">
 <h3>Example<a class="headerlink" href="#id69" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTakeSwapTx</span><span class="p">()</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">takeSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">asset_id</span><span class="p">,</span> <span class="nx">swap_id</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">toAsset</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">asset_id</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">toAsset</span> <span class="o">=</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+        <span class="nx">SwapID</span><span class="o">:</span> <span class="nx">swap_id</span><span class="p">.</span><span class="nx">swap_id</span><span class="p">,</span>
+        <span class="nx">Size</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">takeAmountSwap</span>
+    <span class="p">};</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTakeSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+            <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+            <span class="p">})</span>
+
+            <span class="k">return</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">takeSwapEndConfirm</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="p">})</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">ledgerConfig</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">privKey</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">privKey</span> <span class="o">?</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKeyString</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="nx">path</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPath</span><span class="p">(),</span>
+            <span class="nx">hwType</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWType</span><span class="p">(),</span>
+            <span class="nx">hwTransport</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWTransport</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="kd">let</span> <span class="nx">rawTx</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">eTx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ethUtil</span><span class="p">.</span><span class="nx">Tx</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -745,6 +1493,61 @@ CP see the top SwapID the swap ID password the owner password</p>
 <div class="section" id="id72">
 <h3>Example<a class="headerlink" href="#id72" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">takeSwap</span><span class="p">({</span><span class="nx">from</span><span class="o">:</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">coinbase</span><span class="p">,</span><span class="nx">SwapID</span><span class="o">:</span><span class="s2">&quot;0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&quot;</span><span class="p">,</span><span class="nx">Size</span><span class="o">:</span><span class="s2">&quot;0x1&quot;</span><span class="p">},</span><span class="s2">&quot;123456&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">takeSwap</span> <span class="o">=</span> <span class="nx">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">asset_id</span><span class="p">,</span> <span class="nx">swap_id</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">walletService</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">accountData</span> <span class="o">=</span> <span class="nx">uiFuncs</span><span class="p">.</span><span class="nx">getTxData</span><span class="p">(</span><span class="nx">$scope</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">walletAddress</span> <span class="o">=</span> <span class="nx">accountData</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">toAsset</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">getAsset</span><span class="p">(</span><span class="nx">asset_id</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">toAsset</span> <span class="o">=</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">let</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">from</span><span class="o">:</span> <span class="nx">walletAddress</span><span class="p">,</span>
+        <span class="nx">SwapID</span><span class="o">:</span> <span class="nx">swap_id</span><span class="p">.</span><span class="nx">swap_id</span><span class="p">,</span>
+        <span class="nx">Size</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">takeAmountSwap</span>
+    <span class="p">};</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">!==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">.</span><span class="nx">privateKeyToAccount</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKey</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">await</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fsntx</span><span class="p">.</span><span class="nx">buildTakeSwapTx</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">from</span> <span class="o">=</span> <span class="nx">walletAddress</span><span class="p">;</span>
+            <span class="nx">tx</span><span class="p">.</span><span class="nx">chainId</span> <span class="o">=</span> <span class="nx">_CHAINID</span><span class="p">;</span>
+            <span class="nx">data</span> <span class="o">=</span> <span class="nx">tx</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">web3</span><span class="p">.</span><span class="nx">fsn</span><span class="p">.</span><span class="nx">signAndTransmit</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nx">signTransaction</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">txHash</span> <span class="p">=&gt;</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">txHash</span><span class="p">);</span>
+            <span class="p">})</span>
+
+            <span class="k">return</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">takeSwapEndConfirm</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="p">})</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">errorModal</span><span class="p">.</span><span class="nx">open</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">hwType</span> <span class="o">==</span> <span class="s2">&quot;ledger&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">ledgerConfig</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">privKey</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">privKey</span> <span class="o">?</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPrivateKeyString</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="nx">path</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getPath</span><span class="p">(),</span>
+            <span class="nx">hwType</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWType</span><span class="p">(),</span>
+            <span class="nx">hwTransport</span><span class="o">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">getHWTransport</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="kd">let</span> <span class="nx">rawTx</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">eTx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ethUtil</span><span class="p">.</span><span class="nx">Tx</span><span class="p">(</span><span class="nx">rawTx</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

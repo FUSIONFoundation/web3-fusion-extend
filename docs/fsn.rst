@@ -68,6 +68,25 @@ Example
 
     fsn.allAssets()
 
+.. code-block:: javascript
+
+    await web3.fsn.allAssets().then(function (res) {
+        assetList = res;
+    });
+
+    for (let asset in assetList) {
+        let id = assetList[asset]["ID"];
+        let owner = assetList[asset]["Owner"];
+        let owned = false;
+        let assetBalance = '';
+
+        try {
+            await web3.fsn.getBalance(id, walletAddress).then(function (res) {
+                assetBalance = res;
+            });
+        } catch (err) {
+            console.log(err);
+        }
 
 allNotation
 ===========
@@ -132,7 +151,82 @@ Example
 
 .. code-block:: javascript
 
-    fsn.allSwaps()
+        try {
+            await web3.fsn.allSwaps().then(function (res) {
+                swapList = res;
+            });
+        } catch (err) {
+            console.log(err);
+        }
+
+        for (let asset in swapList) {
+            let id = swapList[asset]["ID"];
+            let owner = swapList[asset]["Owner"];
+            let owned = false;
+            let assetBalance = '';
+
+            try {
+                await web3.fsn.getBalance(id, walletAddress).then(function (res) {
+                    assetBalance = res;
+                });
+            } catch (err) {
+                console.log(err);
+            }
+
+            let fromAsset = [];
+            let toAsset = [];
+
+            try {
+                await web3.fsn.getAsset(swapList[asset]["FromAssetID"]).then(function (res) {
+                    fromAsset = res;
+                });
+            } catch (err) {
+
+            }
+
+            try {
+                await web3.fsn.getAsset(swapList[asset]["ToAssetID"]).then(function (res) {
+                    toAsset = res;
+                });
+            } catch (err) {
+
+            }
+
+            owner === walletAddress ? owned = true : owned = false;
+
+            let fromAmount = (swapList[asset].MinFromAmount / $scope.countDecimals(fromAsset.Decimals));
+
+            let toAmount = swapList[asset].MinToAmount / $scope.countDecimals(toAsset.Decimals);
+            let swapRate = fromAmount / toAmount;
+            let time = new Date(parseInt(swapList[asset]["Time"]) * 1000);
+
+            let tMonth = time.getUTCMonth();
+            let tDay = time.getUTCDate();
+            let tYear = time.getUTCFullYear();
+
+            let hours = time.getUTCHours();
+            let minutes = time.getUTCMinutes();
+
+            if (time.getUTCMinutes() < 10) {
+                minutes = "0" + time.getUTCMinutes();
+            }
+            // Global
+
+            time = $scope.months[tMonth] + ' ' + tDay + ', ' + tYear;
+            let timeHours = hours + ':' + minutes;
+
+            // Maker parts
+            let minimumswap = fromAmount / parseInt(swapList[asset]["SwapSize"]);
+
+            // Taker specific parts
+            let swapratetaker = toAmount / fromAmount;
+            let minimumswaptaker = fromAmount * swapratetaker;
+
+            // Targes section
+
+            let targes = '';
+
+            swapList[asset]["Targes"].length > 0 ? targes = 'Private' : targes = 'Public';
 
 
 allTickets
@@ -200,6 +294,16 @@ Example
 
     fsn.allTicketsByAddress(eth.coinbase)
 
+.. code-block:: javascript
+
+    this._web3.fsn.allTicketsByAddress(walletAddress)
+        .then(res => {
+            return {
+            allBalances,
+            allTickets: res,
+            timelockUsableBalance
+            };
+        });
 
 totalNumberOfTickets
 ====================
@@ -232,6 +336,17 @@ Example
 .. code-block:: javascript
 
     fsn.totalNumberOfTickets()
+    
+.. code-block:: javascript
+
+    this._web3.fsn
+        .totalNumberOfTickets()
+        .then(totalTickets => {
+            return Object.assign(loadsOfInfo, {
+            totalTickets,
+            latestBlock: block
+            });
+        });
 
 
 totalNumberOfTicketsByAddress
@@ -471,6 +586,48 @@ Example
     fsn.genAsset({from:fsn.coinbase,name:"FusionTest",symbol:"FST",decimals:1,total:"0x200"},"123456")
     fsn.genAsset({from:"0x91db50f5c36ae7616009d4e94462dca4d4c7e833",name:"JONESY",symbol:"JSY",decimals:1,total:"0x2000000000"},"123123123")
 
+.. code-block:: javascript
+
+      web3.fsn
+        .genAsset(
+          {
+            from: process.env.WALLET_ADDRESS,
+            name: assetName,
+            symbol: assetShortName,
+            decimals: 18,
+            total: "0x0",
+            CanChange: true
+          },
+          process.env.PASSPHRASE
+        )
+        .then(transactionReceipt => {
+          return waitForTransactionToComplete(transactionReceipt)
+            .then(transactionReceipt => {
+              if (transactionReceipt.status != "0x1") {
+                done(new Error("transaction error"));
+                return;
+              }
+              let data = JSON.parse(
+                web3.fsn.hex2a(transactionReceipt.logs[0].data)
+              );
+              // console.log("json data => ", data);
+              assetId = data.AssetID;
+              assert(assetId, "there should be an asset id");
+              done();
+            })
+            .catch(err => {
+              console.log(
+                "gen asset (waitForTransactionToComplete) created the following error",
+                err
+              );
+              done(err);
+            });
+        })
+        .catch(err => {
+          console.log("gen asset created the following error", err);
+          done(err);
+        });
+
 
 genNotation
 ===========
@@ -608,6 +765,43 @@ Example
     fsn.incAsset({from:fsn.coinbase,to:"0x2b1a3eca81ba03a9a4c95f4a04679c90838d7165",value:"0x1",asset:"0x514a46f34e6eb0a98abb3595c4aec33ca8ddf69f135c8fed89e78d0808047965"},"123456")
 
 
+.. code-block:: javascript
+
+      web3.fsn
+        .incAsset(
+          {
+            from: process.env.WALLET_ADDRESS,
+            to: process.env.WALLET_ADDRESS,
+            value: "1000000000000000000",
+            asset: assetId
+          },
+          process.env.PASSPHRASE
+        )
+        .then(transactionReceipt => {
+          return waitForTransactionToComplete(transactionReceipt)
+            .then(transactionReceipt => {
+              if (transactionReceipt.status !== true) {
+                done(new Error("transaction error " + transactionReceipt));
+                return;
+              }
+              let data = JSON.parse(
+                web3.fsn.hex2a(transactionReceipt.logs[0].data)
+              );
+              // console.log("json data => ", data);
+              done();
+            })
+            .catch(err => {
+              console.log(
+                "inc asset (waitForTransactionToComplete) created the following error",
+                err
+              );
+              done(err);
+            });
+        })
+        .catch(err => {
+          console.log("inc asset created the following error", err);
+        });
+
 getAddressByNotation
 ====================
 
@@ -639,6 +833,27 @@ Example
 .. code-block:: javascript
 
     fsn.getAddressByNotation(104)
+
+.. code-block:: javascript
+
+    try {
+        await web3.fsn.getAddressByNotation(parseInt(address)).then(function (res) {
+            console.log(res);
+        });
+        $scope.$eval(function () {
+            $scope.walletAddressError = false;
+            $scope.validWalletAddress = true;
+            $scope.checkingUSAN = false;
+        });
+        return;
+    } catch (err) {
+        $scope.$eval(function () {
+            $scope.walletAddressError = true;
+            $scope.validWalletAddress = false;
+            $scope.checkingUSAN = false;
+        });
+        return;
+    }
 
 
 getAllBalances
@@ -673,6 +888,14 @@ Example
 
     fsn.getAllBalances("0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c")
 
+.. code-block:: javascript
+
+  try {
+    let balances = await web3.fsn.getAllBalances(address);
+    all = JSON.stringify({
+      balances
+    });
+
 
 getAllTimeLockBalances
 ======================
@@ -705,6 +928,14 @@ Example
 .. code-block:: javascript
 
     fsn.getAllTimeLockBalances("0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c")
+
+.. code-block:: javascript
+
+  try {
+    let timeLockBalances = await web3.fsn.getAllTimeLockBalances(address);
+    all = JSON.stringify({
+      timeLockBalances
+    });
 
 
 getAsset
@@ -739,6 +970,16 @@ Example
 
     fsn.getAsset("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 
+.. code-block:: javascript
+
+    try {
+        await web3.fsn.getAsset(data["FromAssetID"]).then(function (res) {
+            fromAsset = res;
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
 
 getBalance
 ==========
@@ -772,6 +1013,15 @@ Example
 
     fsn.getBalance("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c")
 
+.. code-block:: javascript
+
+    try {
+        await web3.fsn.getBalance(id, walletAddress).then(function (res) {
+            assetBalance = res;
+        });
+    } catch (err) {
+        console.log(err);
+    }
 
 getNotation
 ===========
@@ -804,6 +1054,14 @@ Example
 .. code-block:: javascript
 
     fsn.getNotation("0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c")
+
+.. code-block:: javascript
+
+  try {
+    let notation = await web3.fsn.getNotation(address);
+    all = JSON.stringify({
+      notation
+    });
 
 
 getTimeLockBalance
