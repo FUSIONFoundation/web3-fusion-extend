@@ -83,7 +83,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM fusionblockdb.transactions where toAddress=? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions use index( toFromAddress) where toAddress=? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
@@ -94,7 +94,7 @@ router.get("/:hash", function(req, res, next) {
     } else {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM fusionblockdb.transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
@@ -106,7 +106,7 @@ router.get("/:hash", function(req, res, next) {
   } else if ( hash === 'latest') {
     getConnection().then(conn => {
       conn
-        .query("SELECT * FROM fusionblockdb.transactions order by height, recCreated desc limit 1" )
+        .query("SELECT * FROM transactions order by height, recCreated desc limit 1" )
         .then(rows => {
           res.json(rows)
         })

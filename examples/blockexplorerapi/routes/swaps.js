@@ -33,7 +33,7 @@ router.get("/:swap", function(req, res, next) {
   if (req.params.swap === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'MakeSwapFunc' order by timeStamp ${sort}  limit ?,?`, [
+        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt')  order by timeStamp ${sort}  limit ?,?`, [
           page * size,
           size
         ])
@@ -47,7 +47,7 @@ router.get("/:swap", function(req, res, next) {
   } else {
     getConnection().then(conn => {
       conn
-        .query("select * from transactions where fusionCommand = 'MakeSwapFunc' and commandExtra = ? ", [
+        .query("select * from transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt')  and commandExtra = ? ", [
           req.params.swap
         ])
         .then(rows => {

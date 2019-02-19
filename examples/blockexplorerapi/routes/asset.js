@@ -38,12 +38,12 @@ router.get("/:asset", function(req, res, next) {
     index = -1
   }
 
-  // SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by lower(commandExtra2)
+  // SELECT * FROM transactions where fusionCommand = 'GenAssetFunc' order by lower(commandExtra2)
 
   if (req.params.asset === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.transactions where fusionCommand = 'GenAssetFunc' order by lower(commandExtra2) ${sort}, timeStamp ${sort} limit ?,?`, [
+        .query(`SELECT * FROM transactions where fusionCommand = 'GenAssetFunc' order by lower(commandExtra2) ${sort}, timeStamp ${sort} limit ?,?`, [
           (index>=0 ? index : page*size),
           size
         ])

@@ -65,7 +65,7 @@ router.get("/:block", function(req, res, next) {
   if (blockNumber === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.blocks order by ${field} ${sort}  limit ?,?` , [ (index >= 0 ? index : page*size), size ] )
+        .query(`SELECT * FROM blocks order by ${field} ${sort}  limit ?,?` , [ (index >= 0 ? index : page*size), size ] )
         .then(rows => {
           res.json(rows)
         })
@@ -76,7 +76,7 @@ router.get("/:block", function(req, res, next) {
   } else if ( blockNumber === 'latest') {
     getConnection().then(conn => {
       conn
-        .query("SELECT * FROM fusionblockdb.blocks order by height desc limit 1" )
+        .query("SELECT * FROM blocks order by height desc limit 1" )
         .then(rows => {
           res.json(rows)
         })
@@ -87,7 +87,7 @@ router.get("/:block", function(req, res, next) {
   } else  if (blockNumber === "range") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM fusionblockdb.blocks where height >= ? and height <= ? order by height` , [ to, from  ] )
+        .query(`SELECT * FROM blocks where height >= ? and height <= ? order by height` , [ to, from  ] )
         .then(rows => {
           res.json(rows)
         })

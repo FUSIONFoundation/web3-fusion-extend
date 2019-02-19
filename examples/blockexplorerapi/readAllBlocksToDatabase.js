@@ -75,6 +75,7 @@ let buildTheSystem = [
       "  INDEX `height` (`height`),\n" +
       "  INDEX `heightDesc` (`height` DESC),\n" +
       "  INDEX `recCreated` (`recCreated`),\n" +
+      "  INDEX `toFromAddress` (`toAddress`,`fromAddress`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
       "  INDEX `timestamp` (`timeStamp`),\n" +
       "  INDEX `commandExtra` (`commandExtra`),\n" +
@@ -471,7 +472,7 @@ async function getBalances(addrs, index, resolve, reject) {
     });
     conn = await _pool.getConnection();
     let rows = await conn.query(
-      `select count(*) from transactions where toAddress="${address}" or fromAddress="${address}";`
+      `select count(*) from transactions use index( toFromAddress) where toAddress="${address}" or fromAddress="${address}";`
     );
     let count = rows[0]["count(*)"];
     let fsnBalance =
