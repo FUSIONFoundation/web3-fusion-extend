@@ -83,7 +83,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions use index( toFromAddress) where toAddress=? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions where toAddress=? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
