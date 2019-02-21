@@ -373,7 +373,7 @@ async function logBlock(block, tkinfo) {
   }
 }
 
-function logTransactions(block) {
+async function logTransactions(block) {
   if (block.transactions.length === 0) {
     return new Promise((resolve, reject) => {
       resolve(true);
@@ -388,7 +388,7 @@ function logTransactions(block) {
 
 let gtl = { blockNumber: 0 };
 
-function getTransactionLog(transaction) {
+async function getTransactionLog(transaction) {
   // if a fusion command go and get the log for this transaction
   if (transaction.blockNumber != gtl.blockNumber) {
     // reset gtl
