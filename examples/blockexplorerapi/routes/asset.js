@@ -6,6 +6,42 @@ var { getConnection } = require("../dbapi/dbapi.js");
 //name,assetId,assetType,supply,numberOfTransactions
 
 
+router.get("/verified", function(req, res, next) {
+  let page = req.query.page || 0;
+  let size = req.query.size || 100;
+  let index = parseInt( req.query.index || -1 )
+ 
+  page = parseInt(page);
+  size = parseInt(size);
+
+  if (size > 100 || size < 1 || isNaN(size)) {
+    console.log("size ", size);
+    size = 100;
+  }
+
+  if (isNaN(page)) {
+    page = 0;
+  }
+
+  if ( isNaN(index) ) {
+    index = -1
+  }
+
+  getConnection().then(conn => {
+    conn
+      .query(`SELECT * FROM fusionAssetLink.assets limit ?,?`, [
+        (index>=0 ? index : page*size),
+        size
+      ])
+      .then(rows => {
+        res.json(rows);
+      })
+      .finally(() => {
+        conn.release();
+      });
+  });
+
+});
 
 /* GET assets listing. */
 // http://localhost:3000/assets/
@@ -69,5 +105,7 @@ router.get("/:asset", function(req, res, next) {
     });
   }
 });
+
+
 
 module.exports = router;
