@@ -56,6 +56,7 @@ let buildTheSystem = [
   {
     txt: "Build Transactions",
     sql:
+      "BEGIN;\n"
       "CREATE TABLE IF NOT EXISTS transactions (\n" +
       "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  height BIGINT NOT NULL,\n" +
@@ -83,7 +84,16 @@ let buildTheSystem = [
       "  INDEX `commandExtra3` (`commandExtra3`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci\n"+
+      "drop trigger IF EXISTS transactionTriggerAfterInsert;\n"+
+      `DELIMITER $$
+      CREATE TRIGGER transactionTriggerAfterInsert AFTER INSERT ON transactions
+      FOR EACH ROW
+      BEGIN
+      UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';
+      END$$
+      DELIMITER ;\n` +
+      "COMMIT;"
   },
   {
     txt: "Build Info Table",
@@ -92,6 +102,7 @@ let buildTheSystem = [
       "CREATE TABLE IF NOT EXISTS info (\n" +
       "  _id varchar(68) NOT NULL UNIQUE,\n" +
       "  lastheightProcessed BIGINT NOT NULL,\n" +
+      "  transactionCount BIGINT NOT NULL,\n" +
       "  version BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
