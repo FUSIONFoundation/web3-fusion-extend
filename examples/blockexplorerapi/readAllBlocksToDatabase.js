@@ -56,7 +56,7 @@ let buildTheSystem = [
   {
     txt: "Build Transactions",
     sql:
-      "BEGIN;\n"
+      "BEGIN;\n"+
       "CREATE TABLE IF NOT EXISTS transactions (\n" +
       "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  height BIGINT NOT NULL,\n" +
@@ -84,15 +84,14 @@ let buildTheSystem = [
       "  INDEX `commandExtra3` (`commandExtra3`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci\n"+
-      "drop trigger IF EXISTS transactionTriggerAfterInsert;\n"+
-      `DELIMITER $$
-      CREATE TRIGGER transactionTriggerAfterInsert AFTER INSERT ON transactions
-      FOR EACH ROW
-      BEGIN
-      UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';
-      END$$
-      DELIMITER ;\n` +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n"+
+      // `DELIMITER $$\n
+      // CREATE TRIGGER if not exists transactionTriggerAfterInsert AFTER INSERT ON transactions\n
+      // FOR EACH ROW\n
+      // BEGIN\n
+      // UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';\n
+      // END$$\n
+      // DELIMITER ;\n` +
       "COMMIT;"
   },
   {
@@ -483,7 +482,8 @@ async function getBalances(addrs, index, resolve, reject) {
     });
     conn = await _pool.getConnection();
     let rows = await conn.query(
-      `select count(*) from transactions use index( toFromAddress) where toAddress="${address}" or fromAddress="${address}";`
+      `select ((select count(*) from transactions where toAddress="${address}")+
+      (select count(*) from transactions where  fromAddress="${address}")) as 'count(*)';`
     );
     let count = rows[0]["count(*)"];
     let fsnBalance =
