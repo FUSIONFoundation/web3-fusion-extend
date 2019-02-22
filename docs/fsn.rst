@@ -276,7 +276,9 @@ allTicketsByAddress get all tickets by address address the user's address
 Parameters
 ----------
 
-none
+.. code-block:: javascript
+
+    address common.Address
 
 -------
 Returns
@@ -363,7 +365,9 @@ totalNumberOfTicketsByAddress return number of tickets an address controls addre
 Parameters
 ----------
 
-none
+.. code-block:: javascript
+
+    address common.Address
 
 -------
 Returns
@@ -396,7 +400,46 @@ assetToTimeLock send the asset to time lock CSP see the top startTime the start 
 Parameters
 ----------
 
-none
+1. ``TimeLockArgs`` - ``Object``: Description 
+  - ``SendAssetArgs`` - ``Object``: Description
+
+    - ``FusionBaseArgs`` - ``Object``: Description
+
+      - ``From`` - ``common.Address`` - ``json:"from"``: Description
+      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+    - ``To`` - ``common.Address`` - ``json:"to"``: Description
+    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+    
+  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
+  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+2. ``passwd`` - ``string``: Description
+
+
+.. note:: Note text.
+
+.. code-block:: javascript
+
+    TimeLockArgs {
+        SendAssetArgs {
+            FusionBaseArgs {
+                From     common.Address  `json:"from"`
+                Gas      *hexutil.Uint64 `json:"gas"`
+                GasPrice *hexutil.Big    `json:"gasPrice"`
+                Nonce    *hexutil.Uint64 `json:"nonce"`
+
+            }
+            AssetID common.Hash    `json:"asset"`
+            To      common.Address `json:"to"`
+            Value   *hexutil.Big   `json:"value"`
+        }
+        StartTime *hexutil.Uint64 `json:"start"`
+        EndTime   *hexutil.Uint64 `json:"end"`
+    }
+    passwd string
 
 -------
 Returns
@@ -467,7 +510,44 @@ timeLockToAsset send the time lock to asset CSP see the top startTime the start 
 Parameters
 ----------
 
-none
+1. ``TimeLockArgs`` - ``Object``: Description 
+  - ``SendAssetArgs`` - ``Object``: Description
+
+    - ``FusionBaseArgs`` - ``Object``: Description
+
+      - ``From`` - ``common.Address`` - ``json:"from"``: Description
+      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+    - ``To`` - ``common.Address`` - ``json:"to"``: Description
+    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+    
+  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
+  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+2. ``passwd`` - ``string``: Description
+
+
+.. code-block:: javascript
+
+    TimeLockArgs {
+        SendAssetArgs {
+            FusionBaseArgs {
+                From     common.Address  `json:"from"`
+                Gas      *hexutil.Uint64 `json:"gas"`
+                GasPrice *hexutil.Big    `json:"gasPrice"`
+                Nonce    *hexutil.Uint64 `json:"nonce"`
+
+            }
+            AssetID common.Hash    `json:"asset"`
+            To      common.Address `json:"to"`
+            Value   *hexutil.Big   `json:"value"`
+        }
+        StartTime *hexutil.Uint64 `json:"start"`
+        EndTime   *hexutil.Uint64 `json:"end"`
+    }
+    passwd string
 
 -------
 Returns
@@ -500,7 +580,45 @@ timeLockToTimeLock send the time lock CSP see the top startTime the start time o
 Parameters
 ----------
 
-none
+1. ``TimeLockArgs`` - ``Object``: Description 
+  - ``SendAssetArgs`` - ``Object``: Description
+
+    - ``FusionBaseArgs`` - ``Object``: Description
+
+      - ``From`` - ``common.Address`` - ``json:"from"``: Description
+      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+    - ``To`` - ``common.Address`` - ``json:"to"``: Description
+    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+    
+  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
+  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+2. ``passwd`` - ``string``: Description
+
+
+.. code-block:: javascript
+
+    TimeLockArgs {
+        SendAssetArgs {
+            FusionBaseArgs {
+                From     common.Address  `json:"from"`
+                Gas      *hexutil.Uint64 `json:"gas"`
+                GasPrice *hexutil.Big    `json:"gasPrice"`
+                Nonce    *hexutil.Uint64 `json:"nonce"`
+
+            }
+            AssetID common.Hash    `json:"asset"`
+            To      common.Address `json:"to"`
+            Value   *hexutil.Big   `json:"value"`
+        }
+        StartTime *hexutil.Uint64 `json:"start"`
+        EndTime   *hexutil.Uint64 `json:"end"`
+    }
+    passwd string
+
 
 -------
 Returns
@@ -533,7 +651,32 @@ buyTicket buy the ticket CP see the top and the "from" ignore from who buy the t
 Parameters
 ----------
 
-none
+1. ``BuyTicketArgs`` - ``Object``: Description
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
+  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+2. ``passwd`` - ``string``: Description
+
+
+.. code-block:: javascript
+
+    BuyTicketArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+
+        }
+        Start *hexutil.Uint64 `json:"start"`
+        End   *hexutil.Uint64 `json:"end"`
+    }
+    passwd string
 
 -------
 Returns
@@ -567,7 +710,36 @@ genAsset generate a asset CP see the top and the "from" ignore from who gen the 
 Parameters
 ----------
 
-none
+1. ``GenAssetArgs`` - ``Object``: Description
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+  - ``Name`` - ``string`` - ``json:"name"``: Description
+  - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
+  - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
+  - ``Total`` - ``*hexutil.Big`` - ``json:"total"``: Description
+  - ``CanChange`` - ``bool`` - ``json:"canChange"``: Description
+
+
+.. code-block:: javascript
+
+    GenAssetArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+
+        }
+        Name      string       `json:"name"`
+        Symbol    string       `json:"symbol"`
+        Decimals  uint8        `json:"decimals"`
+        Total     *hexutil.Big `json:"total"`
+        CanChange bool         `json:"canChange"`
+    }
 
 -------
 Returns
@@ -643,7 +815,21 @@ genNotation gen a notation for a account CP see the top and the "from" ignore fr
 Parameters
 ----------
 
-none
+1. ``FusionBaseArgs`` - ``Object``: Description
+
+  - ``From`` - ``common.Address`` - ``json:"from"``: Description
+  - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+  - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+  - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+.. code-block:: javascript
+
+    FusionBaseArgs {
+        From     common.Address  `json:"from"`
+        Gas      *hexutil.Uint64 `json:"gas"`
+        GasPrice *hexutil.Big    `json:"gasPrice"`
+        Nonce    *hexutil.Uint64 `json:"nonce"`
+    }
 
 -------
 Returns
@@ -678,7 +864,35 @@ sendAsset send asset to other account CSP see the top
 Parameters
 ----------
 
-none
+1. ``SendAssetArgs`` - ``Object``: Description
+
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+
+
+.. code-block:: javascript
+
+    SendAssetArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+
+        }
+        AssetID common.Hash    `json:"asset"`
+        To      common.Address `json:"to"`
+        Value   *hexutil.Big   `json:"value"`
+    }
+
 
 -------
 Returns
@@ -713,7 +927,39 @@ decAsset decrease account asset balance CSP see the top and the "from","to" igno
 Parameters
 ----------
 
-none
+1. ``AssetValueChangeExArgs`` - ``Object``: Description
+
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
+  - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
+2. ``passwd`` - ``string``: Description
+
+.. code-block:: javascript
+
+    AssetValueChangeExArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+
+        }
+        AssetID     common.Hash    `json:"asset"`
+        To          common.Address `json:"to"`
+        Value       *hexutil.Big   `json:"value"`
+        IsInc       bool           `json:"isInc"`
+        TransacData string         `json:"transacData"`
+    }
+    passwd string
 
 -------
 Returns
@@ -783,7 +1029,39 @@ incAsset increase account asset balance CSP see the top and the "from","to" igno
 Parameters
 ----------
 
-none
+1. ``AssetValueChangeExArgs`` - ``Object``: Description
+
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
+  - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
+2. ``passwd`` - ``string``: Description
+
+.. code-block:: javascript
+
+    AssetValueChangeExArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+
+        }
+        AssetID     common.Hash    `json:"asset"`
+        To          common.Address `json:"to"`
+        Value       *hexutil.Big   `json:"value"`
+        IsInc       bool           `json:"isInc"`
+        TransacData string         `json:"transacData"`
+    }
+    passwd string
 
 -------
 Returns
@@ -853,7 +1131,8 @@ getAddressByNotation get the notation of the address notation account notation
 Parameters
 ----------
 
-none
+1. ``notation`` - ``uint64``: Description
+2. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -907,7 +1186,8 @@ getAllBalances get all assets balances address the user's address blockNumber de
 Parameters
 ----------
 
-none
+1. ``address`` - ``common.Address``: Description
+2. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -948,7 +1228,8 @@ getAllTimeLockBalances get all time lock balances address the user's address blo
 Parameters
 ----------
 
-none
+1. ``address`` - ``common.Address``: Description
+2. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -989,7 +1270,8 @@ getAsset get the asset info assetID the asset ID
 Parameters
 ----------
 
-none
+1. ``assetID`` - ``common.Hash``: Description
+2. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -1032,7 +1314,9 @@ getBalance like name assetID the asset ID address the user's address blockNumber
 Parameters
 ----------
 
-none
+1. ``assetID`` - ``common.Hash``: Description
+2. ``address`` - ``common.Address``: Description
+3. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -1074,7 +1358,8 @@ getNotation get the notation of address address the account address
 Parameters
 ----------
 
-none
+1. ``address`` - ``common.Address``: Description
+2. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -1115,7 +1400,9 @@ getTimeLockBalance like name assetID the asset ID address the user's address blo
 Parameters
 ----------
 
-none
+1. ``assetID`` - ``common.Hash``: Description
+2. ``address`` - ``common.Address``: Description
+3. ``blockNr`` - ``rpc.BlockNumber``: Description
 
 -------
 Returns
@@ -1149,7 +1436,53 @@ makeSwap create a quantum swap CP see the top FromAssetID sell asset id MinFromA
 Parameters
 ----------
 
-none
+1. ``MakeSwapArgs`` - ``Object``: Description 
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``FromAssetID`` - ``common.Hash``: Description
+  - ``FromStartTime`` - ``*hexutil.Uint64``: Description
+  - ``FromEndTime`` - ``*hexutil.Uint64``: Description
+  - ``MinFromAmount`` - ``*hexutil.Big``: Description
+  - ``ToAssetID`` - ``common.Hash``: Description
+  - ``ToStartTime`` - ``*hexutil.Uint64``: Description
+  - ``ToEndTime`` - ``*hexutil.Uint64``: Description
+  - ``MinToAmount`` - ``*hexutil.Big``: Description
+  - ``SwapSize`` - ``*big.Int``: Description
+  - ``Targes`` - ``[]common.Address``: Description
+  - ``Time`` - ``*big.Int``: Description
+
+2. ``passwd`` - ``string``: Description
+
+
+.. note:: Note text.
+
+.. code-block:: javascript
+
+    MakeSwapArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+        }
+        FromAssetID   common.Hash
+        FromStartTime *hexutil.Uint64
+        FromEndTime   *hexutil.Uint64
+        MinFromAmount *hexutil.Big
+        ToAssetID     common.Hash
+        ToStartTime   *hexutil.Uint64
+        ToEndTime     *hexutil.Uint64
+        MinToAmount   *hexutil.Big
+        SwapSize      *big.Int
+        Targes        []common.Address
+        Time          *big.Int
+    }
+    passwd string
 
 -------
 Returns
@@ -1184,7 +1517,30 @@ CP see the top SwapID the swap ID password the owner password
 Parameters
 ----------
 
-none
+1. ``RecallSwapArgs`` - ``Object``: Description 
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``SwapID`` - ``common.Hash``: Description
+
+.. note:: Note text.
+
+.. code-block:: javascript
+
+    RecallSwapArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+        }
+    	SwapID common.Hash
+    }
+
 
 -------
 Returns
@@ -1217,7 +1573,36 @@ takeSwap buy a quantum swap CP see the top SwapID the swap ID Size the package s
 Parameters
 ----------
 
-none
+1. ``TakeSwapArgs`` - ``Object``: Description 
+  - ``FusionBaseArgs`` - ``Object``: Description
+
+    - ``From`` - ``common.Address`` - ``json:"from"``: Description
+    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
+    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
+    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+
+  - ``SwapID`` - ``common.Hash``: Description
+  - ``Size`` - ``*big.Int``: Description
+
+2. ``passwd`` - ``string``: Description
+
+
+.. note:: Note text.
+
+.. code-block:: javascript
+
+    TakeSwapArgs {
+        FusionBaseArgs {
+            From     common.Address  `json:"from"`
+            Gas      *hexutil.Uint64 `json:"gas"`
+            GasPrice *hexutil.Big    `json:"gasPrice"`
+            Nonce    *hexutil.Uint64 `json:"nonce"`
+        }
+    	SwapID common.Hash
+        Size   *big.Int
+    }
+    passwd string
+
 
 -------
 Returns

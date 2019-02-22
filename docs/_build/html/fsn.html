@@ -278,7 +278,9 @@
 <p>allTicketsByAddress get all tickets by address address the user’s address</p>
 <div class="section" id="id10">
 <h3>Parameters<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">address</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id11">
 <h3>Returns<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
@@ -352,7 +354,9 @@
 <p>totalNumberOfTicketsByAddress return number of tickets an address controls address address that bought tickets</p>
 <div class="section" id="id16">
 <h3>Parameters<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">address</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id17">
 <h3>Returns<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
@@ -379,7 +383,54 @@
 <p>assetToTimeLock send the asset to time lock CSP see the top startTime the start time of the time lock endTime the end time of the time lock password the account password</p>
 <div class="section" id="id19">
 <h3>Parameters<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">StartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;start&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">EndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;end&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note text.</p>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">TimeLockArgs</span> <span class="p">{</span>
+    <span class="nx">SendAssetArgs</span> <span class="p">{</span>
+        <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+            <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+            <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+            <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+            <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+        <span class="p">}</span>
+        <span class="nx">AssetID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+        <span class="nx">To</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+        <span class="nx">Value</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">StartTime</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;start&quot;`</span>
+    <span class="nx">EndTime</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;end&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id20">
 <h3>Returns<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
@@ -438,7 +489,50 @@
 <p>timeLockToAsset send the time lock to asset CSP see the top startTime the start time of the time lock endTime the end time of the time lock password the account password</p>
 <div class="section" id="id25">
 <h3>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">StartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;start&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">EndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;end&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">TimeLockArgs</span> <span class="p">{</span>
+    <span class="nx">SendAssetArgs</span> <span class="p">{</span>
+        <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+            <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+            <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+            <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+            <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+        <span class="p">}</span>
+        <span class="nx">AssetID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+        <span class="nx">To</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+        <span class="nx">Value</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">StartTime</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;start&quot;`</span>
+    <span class="nx">EndTime</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;end&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id26">
 <h3>Returns<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
@@ -465,7 +559,50 @@
 <p>timeLockToTimeLock send the time lock CSP see the top startTime the start time of the time lock endTime the end time of the time lock password the account password</p>
 <div class="section" id="id28">
 <h3>Parameters<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">StartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;start&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">EndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;end&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">TimeLockArgs</span> <span class="p">{</span>
+    <span class="nx">SendAssetArgs</span> <span class="p">{</span>
+        <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+            <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+            <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+            <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+            <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+        <span class="p">}</span>
+        <span class="nx">AssetID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+        <span class="nx">To</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+        <span class="nx">Value</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">StartTime</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;start&quot;`</span>
+    <span class="nx">EndTime</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;end&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id29">
 <h3>Returns<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
@@ -492,7 +629,39 @@
 <p>buyTicket buy the ticket CP see the top and the “from” ignore from who buy the ticket password the account password</p>
 <div class="section" id="id31">
 <h3>Parameters<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">BuyTicketArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">StartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;start&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">EndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;end&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">BuyTicketArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+    <span class="p">}</span>
+    <span class="nx">Start</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;start&quot;`</span>
+    <span class="nx">End</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;end&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id32">
 <h3>Returns<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
@@ -520,7 +689,41 @@
 <p>genAsset generate a asset CP see the top and the “from” ignore from who gen the asset and the owner of the asset name the name of asset symbol the symbol of asset decimals the asset decimal digit total the total number of the asset and the owner will be get same number asset CanChange whether asset can be incremented or decremented by the owner [optional] password the account password</p>
 <div class="section" id="id34">
 <h3>Parameters<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">GenAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">Name</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;name&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;symbol&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Decimals</span></code> - <code class="docutils literal notranslate"><span class="pre">uint8</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;decimals&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Total</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;total&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">CanChange</span></code> - <code class="docutils literal notranslate"><span class="pre">bool</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;canChange&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">GenAssetArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+    <span class="p">}</span>
+    <span class="nx">Name</span>      <span class="nx">string</span>       <span class="sb">`json:&quot;name&quot;`</span>
+    <span class="nx">Symbol</span>    <span class="nx">string</span>       <span class="sb">`json:&quot;symbol&quot;`</span>
+    <span class="nx">Decimals</span>  <span class="nx">uint8</span>        <span class="sb">`json:&quot;decimals&quot;`</span>
+    <span class="nx">Total</span>     <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span> <span class="sb">`json:&quot;total&quot;`</span>
+    <span class="nx">CanChange</span> <span class="nx">bool</span>         <span class="sb">`json:&quot;canChange&quot;`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id35">
 <h3>Returns<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h3>
@@ -589,7 +792,25 @@
 <p>genNotation gen a notation for a account CP see the top and the “from” ignore from who gen the notation password the account password</p>
 <div class="section" id="id37">
 <h3>Parameters<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+    <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+    <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+    <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+    <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id38">
 <h3>Returns<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h3>
@@ -618,7 +839,37 @@
 <p>sendAsset send asset to other account CSP see the top</p>
 <div class="section" id="id40">
 <h3>Parameters<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">SendAssetArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+    <span class="p">}</span>
+    <span class="nx">AssetID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+    <span class="nx">To</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+    <span class="nx">Value</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id41">
 <h3>Returns<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
@@ -647,7 +898,45 @@
 <p>decAsset decrease account asset balance CSP see the top and the “from”,”to” ignore from the asset owner to the dec account password the account password</p>
 <div class="section" id="id43">
 <h3>Parameters<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">AssetValueChangeExArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">IsInc</span></code> - <code class="docutils literal notranslate"><span class="pre">bool</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;isInc&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">TransacData</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>-  <code class="docutils literal notranslate"><span class="pre">json:&quot;transacData&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">AssetValueChangeExArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+    <span class="p">}</span>
+    <span class="nx">AssetID</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+    <span class="nx">To</span>          <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+    <span class="nx">Value</span>       <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+    <span class="nx">IsInc</span>       <span class="nx">bool</span>           <span class="sb">`json:&quot;isInc&quot;`</span>
+    <span class="nx">TransacData</span> <span class="nx">string</span>         <span class="sb">`json:&quot;transacData&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id44">
 <h3>Returns<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
@@ -710,7 +999,45 @@
 <p>incAsset increase account asset balance CSP see the top and the “from”,”to” ignore from the asset owner to the inc account password the account password</p>
 <div class="section" id="id46">
 <h3>Parameters<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">AssetValueChangeExArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">IsInc</span></code> - <code class="docutils literal notranslate"><span class="pre">bool</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;isInc&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">TransacData</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>-  <code class="docutils literal notranslate"><span class="pre">json:&quot;transacData&quot;</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">AssetValueChangeExArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+
+    <span class="p">}</span>
+    <span class="nx">AssetID</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="sb">`json:&quot;asset&quot;`</span>
+    <span class="nx">To</span>          <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
+    <span class="nx">Value</span>       <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
+    <span class="nx">IsInc</span>       <span class="nx">bool</span>           <span class="sb">`json:&quot;isInc&quot;`</span>
+    <span class="nx">TransacData</span> <span class="nx">string</span>         <span class="sb">`json:&quot;transacData&quot;`</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id47">
 <h3>Returns<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h3>
@@ -773,7 +1100,10 @@
 <p>getAddressByNotation get the notation of the address notation account notation</p>
 <div class="section" id="id49">
 <h3>Parameters<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">notation</span></code> - <code class="docutils literal notranslate"><span class="pre">uint64</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id50">
 <h3>Returns<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h3>
@@ -820,7 +1150,10 @@
 <p>getAllBalances get all assets balances address the user’s address blockNumber default now block number</p>
 <div class="section" id="id52">
 <h3>Parameters<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id53">
 <h3>Returns<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h3>
@@ -854,7 +1187,10 @@
 <p>getAllTimeLockBalances get all time lock balances address the user’s address blockNumber default now block number</p>
 <div class="section" id="id55">
 <h3>Parameters<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id56">
 <h3>Returns<a class="headerlink" href="#id56" title="Permalink to this headline">¶</a></h3>
@@ -888,7 +1224,10 @@
 <p>getAsset get the asset info assetID the asset ID</p>
 <div class="section" id="id58">
 <h3>Parameters<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">assetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id59">
 <h3>Returns<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h3>
@@ -924,7 +1263,11 @@
 <p>getBalance like name assetID the asset ID address the user’s address blockNumber default now block number</p>
 <div class="section" id="id61">
 <h3>Parameters<a class="headerlink" href="#id61" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">assetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id62">
 <h3>Returns<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h3>
@@ -960,7 +1303,10 @@
 <p>getNotation get the notation of address address the account address</p>
 <div class="section" id="id64">
 <h3>Parameters<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id65">
 <h3>Returns<a class="headerlink" href="#id65" title="Permalink to this headline">¶</a></h3>
@@ -994,7 +1340,11 @@
 <p>getTimeLockBalance like name assetID the asset ID address the user’s address blockNumber default now block number</p>
 <div class="section" id="id67">
 <h3>Parameters<a class="headerlink" href="#id67" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">assetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">blockNr</span></code> - <code class="docutils literal notranslate"><span class="pre">rpc.BlockNumber</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id68">
 <h3>Returns<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h3>
@@ -1022,7 +1372,60 @@
 <p>makeSwap create a quantum swap CP see the top FromAssetID sell asset id MinFromAmount the min amount of the sell asset ToAssetID buy asset id MinToAmount the min amount of the buy asset SwapSize the max sell package size Targes the address list of the “who can buy” can be null password the owner password</p>
 <div class="section" id="id70">
 <h3>Parameters<a class="headerlink" href="#id70" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">MakeSwapArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">FromAssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">FromStartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">FromEndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">MinFromAmount</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">ToAssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">ToStartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">ToEndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">MinToAmount</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">SwapSize</span></code> - <code class="docutils literal notranslate"><span class="pre">*big.Int</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Targes</span></code> - <code class="docutils literal notranslate"><span class="pre">[]common.Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Time</span></code> - <code class="docutils literal notranslate"><span class="pre">*big.Int</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note text.</p>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">MakeSwapArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">FromAssetID</span>   <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>
+    <span class="nx">FromStartTime</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span>
+    <span class="nx">FromEndTime</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span>
+    <span class="nx">MinFromAmount</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>
+    <span class="nx">ToAssetID</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>
+    <span class="nx">ToStartTime</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span>
+    <span class="nx">ToEndTime</span>     <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span>
+    <span class="nx">MinToAmount</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>
+    <span class="nx">SwapSize</span>      <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>
+    <span class="nx">Targes</span>        <span class="p">[]</span><span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>
+    <span class="nx">Time</span>          <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id71">
 <h3>Returns<a class="headerlink" href="#id71" title="Permalink to this headline">¶</a></h3>
@@ -1051,7 +1454,36 @@
 CP see the top SwapID the swap ID password the owner password</p>
 <div class="section" id="id73">
 <h3>Parameters<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">RecallSwapArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">SwapID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note text.</p>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">RecallSwapArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">SwapID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id74">
 <h3>Returns<a class="headerlink" href="#id74" title="Permalink to this headline">¶</a></h3>
@@ -1078,7 +1510,42 @@ CP see the top SwapID the swap ID password the owner password</p>
 <p>takeSwap buy a quantum swap CP see the top SwapID the swap ID Size the package size password the owner password</p>
 <div class="section" id="id76">
 <h3>Parameters<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
-<p>none</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">TakeSwapArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
+<li><code class="docutils literal notranslate"><span class="pre">From</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;from&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gas</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gas&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">GasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;gasPrice&quot;</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">SwapID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Size</span></code> - <code class="docutils literal notranslate"><span class="pre">*big.Int</span></code>: Description</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note text.</p>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">TakeSwapArgs</span> <span class="p">{</span>
+    <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
+        <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
+        <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
+        <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
+        <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
+    <span class="p">}</span>
+    <span class="nx">SwapID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>
+    <span class="nx">Size</span>   <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>
+<span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="id77">
 <h3>Returns<a class="headerlink" href="#id77" title="Permalink to this headline">¶</a></h3>
