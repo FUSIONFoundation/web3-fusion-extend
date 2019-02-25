@@ -1,0 +1,39 @@
+{
+  "name": "web3-fusion-extend",
+  "version": "1.0.0-beta.27",
+  "description": "A web3 layer with functions for FUSON's protocol",
+  "main": "./index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --exit test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FUSIONFoundation/web3-fusion-extend.git"
+  },
+  "keywords": [
+    "Fusion",
+    "web3",
+    "quantumswap",
+    "assets"
+  ],
+  "author": "Fusion Foundation",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FUSIONFoundation/web3-fusion-extend/issues"
+  },
+  "homepage": "https://github.com/FUSIONFoundation/web3-fusion-extend#readme",
+  "devDependencies": {
+    "crypto-js": "^3.1.9-1",
+    "mocha": "^5.2.0",
+    "node-fetch": "^2.3.0",
+    "request-promise": "^4.2.2",
+    "web3": "1.0.0-beta.36"
+  },
+  "dependencies": {
+    "command-line-args": "^5.0.2",
+    "web3": "1.0.0-beta.36"
+  }
+}
