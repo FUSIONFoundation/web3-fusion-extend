@@ -722,7 +722,7 @@ Parameters
   - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
   - ``Total`` - ``*hexutil.Big`` - ``json:"total"``: Description
   - ``CanChange`` - ``bool`` - ``json:"canChange"``: Description
-
+2. ``passwd`` - ``string``: Description
 
 .. code-block:: javascript
 
@@ -740,6 +740,7 @@ Parameters
         Total     *hexutil.Big `json:"total"`
         CanChange bool         `json:"canChange"`
     }
+    passwd string
 
 -------
 Returns
@@ -821,6 +822,7 @@ Parameters
   - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
   - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
   - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+2. ``passwd`` - ``string``: Description
 
 .. code-block:: javascript
 
@@ -830,6 +832,7 @@ Parameters
         GasPrice *hexutil.Big    `json:"gasPrice"`
         Nonce    *hexutil.Uint64 `json:"nonce"`
     }
+    passwd string
 
 -------
 Returns
@@ -876,6 +879,7 @@ Parameters
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
   - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+2. ``passwd`` - ``string``: Description
 
 
 .. code-block:: javascript
@@ -892,6 +896,7 @@ Parameters
         To      common.Address `json:"to"`
         Value   *hexutil.Big   `json:"value"`
     }
+    passwd string
 
 
 -------
@@ -1526,6 +1531,7 @@ Parameters
     - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
 
   - ``SwapID`` - ``common.Hash``: Description
+2. ``passwd`` - ``string``: Description
 
 .. note:: Note text.
 
@@ -1540,7 +1546,7 @@ Parameters
         }
     	SwapID common.Hash
     }
-
+    passwd string
 
 -------
 Returns

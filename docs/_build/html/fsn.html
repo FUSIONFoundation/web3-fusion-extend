@@ -708,6 +708,9 @@
 <li><code class="docutils literal notranslate"><span class="pre">CanChange</span></code> - <code class="docutils literal notranslate"><span class="pre">bool</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;canChange&quot;</span></code>: Description</li>
 </ul>
 </div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">GenAssetArgs</span> <span class="p">{</span>
     <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
         <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
@@ -722,6 +725,7 @@
     <span class="nx">Total</span>     <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span> <span class="sb">`json:&quot;total&quot;`</span>
     <span class="nx">CanChange</span> <span class="nx">bool</span>         <span class="sb">`json:&quot;canChange&quot;`</span>
 <span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
 </pre></div>
 </div>
 </div>
@@ -803,12 +807,16 @@
 <li><code class="docutils literal notranslate"><span class="pre">Nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Uint64</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;nonce&quot;</span></code>: Description</li>
 </ul>
 </div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">FusionBaseArgs</span> <span class="p">{</span>
     <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
     <span class="nx">Gas</span>      <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;gas&quot;`</span>
     <span class="nx">GasPrice</span> <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>    <span class="sb">`json:&quot;gasPrice&quot;`</span>
     <span class="nx">Nonce</span>    <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Uint64</span> <span class="sb">`json:&quot;nonce&quot;`</span>
 <span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
 </pre></div>
 </div>
 </div>
@@ -856,6 +864,9 @@
 <li><code class="docutils literal notranslate"><span class="pre">Value</span></code> - <code class="docutils literal notranslate"><span class="pre">*hexutil.Big</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;value&quot;</span></code>: Description</li>
 </ul>
 </div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">SendAssetArgs</span> <span class="p">{</span>
     <span class="nx">FusionBaseArgs</span> <span class="p">{</span>
         <span class="nx">From</span>     <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>  <span class="sb">`json:&quot;from&quot;`</span>
@@ -868,6 +879,7 @@
     <span class="nx">To</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="sb">`json:&quot;to&quot;`</span>
     <span class="nx">Value</span>   <span class="o">*</span><span class="nx">hexutil</span><span class="p">.</span><span class="nx">Big</span>   <span class="sb">`json:&quot;value&quot;`</span>
 <span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
 </pre></div>
 </div>
 </div>
@@ -1469,6 +1481,9 @@ CP see the top SwapID the swap ID password the owner password</p>
 <li><code class="docutils literal notranslate"><span class="pre">SwapID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
 </ul>
 </div></blockquote>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal notranslate"><span class="pre">passwd</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+</ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Note text.</p>
@@ -1482,6 +1497,7 @@ CP see the top SwapID the swap ID password the owner password</p>
     <span class="p">}</span>
     <span class="nx">SwapID</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>
 <span class="p">}</span>
+<span class="nx">passwd</span> <span class="nx">string</span>
 </pre></div>
 </div>
 </div>
