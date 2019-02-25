@@ -154,21 +154,12 @@ buildGenNotationTx
 Parameters
 ----------
 
-1. ``FusionBaseArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``From`` - ``common.Address`` - ``json:"from"``: Description
-  - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-  - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-  - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
-
-.. code-block:: javascript
-
-    FusionBaseArgs {
-        From     common.Address  `json:"from"`
-        Gas      *hexutil.Uint64 `json:"gas"`
-        GasPrice *hexutil.Big    `json:"gasPrice"`
-        Nonce    *hexutil.Uint64 `json:"nonce"`
-    }
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
 -------
 Returns
@@ -219,10 +210,10 @@ Parameters
 
 1. ``Object``: The transaction object
 
-  - ``From`` - ``common.Address`` - ``json:"from"``: Description
-  - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-  - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-  - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
 2. ``passwd`` - ``string``: Description
 
@@ -259,36 +250,17 @@ Parameters
 
 1. ``GenAssetArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: The transaction object
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``Name`` - ``string`` - ``json:"name"``: Description
   - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
   - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
   - ``Total`` - ``*hexutil.Big`` - ``json:"total"``: Description
   - ``CanChange`` - ``bool`` - ``json:"canChange"``: Description
-
-
-.. code-block:: javascript
-
-    GenAssetArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        Name      string       `json:"name"`
-        Symbol    string       `json:"symbol"`
-        Decimals  uint8        `json:"decimals"`
-        Total     *hexutil.Big `json:"total"`
-        CanChange bool         `json:"canChange"`
-    }
-
 
 -------
 Returns
@@ -342,12 +314,12 @@ Parameters
 
 1. ``GenAssetArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``Name`` - ``string`` - ``json:"name"``: Description
   - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
   - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
@@ -355,25 +327,6 @@ Parameters
   - ``CanChange`` - ``bool`` - ``json:"canChange"``: Description
 
 2. ``passwd`` - ``string``: Description
-
-.. code-block:: javascript
-
-    GenAssetArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        Name      string       `json:"name"`
-        Symbol    string       `json:"symbol"`
-        Decimals  uint8        `json:"decimals"`
-        Total     *hexutil.Big `json:"total"`
-        CanChange bool         `json:"canChange"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -410,33 +363,16 @@ Parameters
 
 1. ``SendAssetArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
   - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
-
-
-.. code-block:: javascript
-
-    SendAssetArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID common.Hash    `json:"asset"`
-        To      common.Address `json:"to"`
-        Value   *hexutil.Big   `json:"value"`
-    }
-
 
 -------
 Returns
@@ -533,36 +469,18 @@ Parameters
 
 1. ``SendAssetArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
   - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. code-block:: javascript
-
-    SendAssetArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID common.Hash    `json:"asset"`
-        To      common.Address `json:"to"`
-        Value   *hexutil.Big   `json:"value"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -597,45 +515,23 @@ buildAssetToTimeLockTx
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``SendAssetArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
-
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 -------
 Returns
@@ -780,43 +676,21 @@ Parameters
 
   - ``SendAssetArgs`` - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -857,39 +731,19 @@ Parameters
 
   - ``SendAssetArgs`` - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
-
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 -------
 Returns
@@ -959,42 +813,21 @@ Parameters
 
   - ``SendAssetArgs`` - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
-    passwd string
 
 -------
 Returns
@@ -1031,38 +864,19 @@ Parameters
 
   - ``SendAssetArgs`` - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 -------
 Returns
@@ -1145,43 +959,21 @@ Parameters
 
   - ``SendAssetArgs`` - ``Object``: Description
 
-    - ``FusionBaseArgs`` - ``Object``: Description
+    - ``Object``: Description
 
-      - ``From`` - ``common.Address`` - ``json:"from"``: Description
-      - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-      - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-      - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+      - ``from`` - ``String|Number`` : The address for the sending account
+      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
     - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
     - ``To`` - ``common.Address`` - ``json:"to"``: Description
     - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. code-block:: javascript
-
-    TimeLockArgs {
-        SendAssetArgs {
-            FusionBaseArgs {
-                From     common.Address  `json:"from"`
-                Gas      *hexutil.Uint64 `json:"gas"`
-                GasPrice *hexutil.Big    `json:"gasPrice"`
-                Nonce    *hexutil.Uint64 `json:"nonce"`
-
-            }
-            AssetID common.Hash    `json:"asset"`
-            To      common.Address `json:"to"`
-            Value   *hexutil.Big   `json:"value"`
-        }
-        StartTime *hexutil.Uint64 `json:"start"`
-        EndTime   *hexutil.Uint64 `json:"end"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -1216,29 +1008,14 @@ Parameters
 
 1. ``BuyTicketArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
-
-
-.. code-block:: javascript
-
-    BuyTicketArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        Start *hexutil.Uint64 `json:"start"`
-        End   *hexutil.Uint64 `json:"end"`
-    }
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 -------
 Returns
@@ -1316,33 +1093,16 @@ Parameters
 
 1. ``BuyTicketArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
-  - ``StartTime`` - ``*hexutil.Uint64`` - ``json:"start"``: Description
-  - ``EndTime`` - ``*hexutil.Uint64`` - ``json:"end"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``start`` - ``Number``: Description
+  - ``end`` - ``Number``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. code-block:: javascript
-
-    BuyTicketArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        Start *hexutil.Uint64 `json:"start"`
-        End   *hexutil.Uint64 `json:"end"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -1377,36 +1137,18 @@ Parameters
 
 1. ``AssetValueChangeExArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
   - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
   - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
   - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
-
-.. code-block:: javascript
-
-    AssetValueChangeExArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID     common.Hash    `json:"asset"`
-        To          common.Address `json:"to"`
-        Value       *hexutil.Big   `json:"value"`
-        IsInc       bool           `json:"isInc"`
-        TransacData string         `json:"transacData"`
-    }
-
 
 -------
 Returns
@@ -1465,12 +1207,12 @@ Parameters
 
 1. ``AssetValueChangeExArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1479,24 +1221,6 @@ Parameters
   - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
 
 2. ``passwd`` - ``string``: Description
-
-.. code-block:: javascript
-
-    AssetValueChangeExArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID     common.Hash    `json:"asset"`
-        To          common.Address `json:"to"`
-        Value       *hexutil.Big   `json:"value"`
-        IsInc       bool           `json:"isInc"`
-        TransacData string         `json:"transacData"`
-    }
-    passwd string
 
 -------
 Returns
@@ -1531,36 +1255,18 @@ Parameters
 
 1. ``AssetValueChangeExArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
   - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
   - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
   - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
-
-.. code-block:: javascript
-
-    AssetValueChangeExArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID     common.Hash    `json:"asset"`
-        To          common.Address `json:"to"`
-        Value       *hexutil.Big   `json:"value"`
-        IsInc       bool           `json:"isInc"`
-        TransacData string         `json:"transacData"`
-    }
-
 
 -------
 Returns
@@ -1595,12 +1301,12 @@ Parameters
 
 1. ``AssetValueChangeExArgs`` - ``Object``: Description
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1609,25 +1315,6 @@ Parameters
   - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
 
 2. ``passwd`` - ``string``: Description
-
-.. code-block:: javascript
-
-    AssetValueChangeExArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-
-        }
-        AssetID     common.Hash    `json:"asset"`
-        To          common.Address `json:"to"`
-        Value       *hexutil.Big   `json:"value"`
-        IsInc       bool           `json:"isInc"`
-        TransacData string         `json:"transacData"`
-    }
-    passwd string
-
 
 -------
 Returns
@@ -1660,50 +1347,26 @@ buildMakeSwapTx
 Parameters
 ----------
 
-1. ``MakeSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``FromAssetID`` - ``common.Hash``: Description
-  - ``FromStartTime`` - ``*hexutil.Uint64``: Description
-  - ``FromEndTime`` - ``*hexutil.Uint64``: Description
+  - ``FromStartTime`` - ``Number``: Description
+  - ``FromEndTime`` - ``Number``: Description
   - ``MinFromAmount`` - ``*hexutil.Big``: Description
   - ``ToAssetID`` - ``common.Hash``: Description
-  - ``ToStartTime`` - ``*hexutil.Uint64``: Description
-  - ``ToEndTime`` - ``*hexutil.Uint64``: Description
+  - ``ToStartTime`` - ``Number``: Description
+  - ``ToEndTime`` - ``Number``: Description
   - ``MinToAmount`` - ``*hexutil.Big``: Description
   - ``SwapSize`` - ``*big.Int``: Description
   - ``Targes`` - ``[]common.Address``: Description
   - ``Time`` - ``*big.Int``: Description
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    MakeSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-        FromAssetID   common.Hash
-        FromStartTime *hexutil.Uint64
-        FromEndTime   *hexutil.Uint64
-        MinFromAmount *hexutil.Big
-        ToAssetID     common.Hash
-        ToStartTime   *hexutil.Uint64
-        ToEndTime     *hexutil.Uint64
-        MinToAmount   *hexutil.Big
-        SwapSize      *big.Int
-        Targes        []common.Address
-        Time          *big.Int
-    }
 
 -------
 Returns
@@ -1878,55 +1541,28 @@ makeSwap create a quantum swap CP see the top FromAssetID sell asset id MinFromA
 Parameters
 ----------
 
-1. ``MakeSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``FromAssetID`` - ``common.Hash``: Description
-  - ``FromStartTime`` - ``*hexutil.Uint64``: Description
-  - ``FromEndTime`` - ``*hexutil.Uint64``: Description
+  - ``FromStartTime`` - ``Number``: Description
+  - ``FromEndTime`` - ``Number``: Description
   - ``MinFromAmount`` - ``*hexutil.Big``: Description
   - ``ToAssetID`` - ``common.Hash``: Description
-  - ``ToStartTime`` - ``*hexutil.Uint64``: Description
-  - ``ToEndTime`` - ``*hexutil.Uint64``: Description
+  - ``ToStartTime`` - ``Number``: Description
+  - ``ToEndTime`` - ``Number``: Description
   - ``MinToAmount`` - ``*hexutil.Big``: Description
   - ``SwapSize`` - ``*big.Int``: Description
   - ``Targes`` - ``[]common.Address``: Description
   - ``Time`` - ``*big.Int``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    MakeSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-        FromAssetID   common.Hash
-        FromStartTime *hexutil.Uint64
-        FromEndTime   *hexutil.Uint64
-        MinFromAmount *hexutil.Big
-        ToAssetID     common.Hash
-        ToStartTime   *hexutil.Uint64
-        ToEndTime     *hexutil.Uint64
-        MinToAmount   *hexutil.Big
-        SwapSize      *big.Int
-        Targes        []common.Address
-        Time          *big.Int
-    }
-    passwd string
-
 
 -------
 Returns
@@ -1960,30 +1596,16 @@ buildRecallSwapTx
 Parameters
 ----------
 
-1. ``RecallSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    RecallSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-    	SwapID common.Hash
-    }
 
 -------
 Returns
@@ -2103,33 +1725,18 @@ Parameters
 ----------
 
 
-1. ``RecallSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
 
 2. ``passwd`` - ``string``: Description
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    RecallSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-    	SwapID common.Hash
-    }
-    passwd string
 
 -------
 Returns
@@ -2249,31 +1856,15 @@ Parameters
 
 1. ``TakeSwapArgs`` - ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
   - ``Size`` - ``*big.Int``: Description
-
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    TakeSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-    	SwapID common.Hash
-        Size   *big.Int
-    }
 
 -------
 Returns
@@ -2360,35 +1951,17 @@ Parameters
 
 1. ``TakeSwapArgs`` - ``Object``: Description 
 
-  - ``FusionBaseArgs`` - ``Object``: Description
+  - ``Object``: Description
 
-    - ``From`` - ``common.Address`` - ``json:"from"``: Description
-    - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
-    - ``GasPrice`` - ``*hexutil.Big`` - ``json:"gasPrice"``: Description
-    - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
+    - ``from`` - ``String|Number`` : The address for the sending account
+    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
   - ``Size`` - ``*big.Int``: Description
 
 2. ``passwd`` - ``string``: Description
-
-
-.. note:: Note text.
-
-.. code-block:: javascript
-
-    TakeSwapArgs {
-        FusionBaseArgs {
-            From     common.Address  `json:"from"`
-            Gas      *hexutil.Uint64 `json:"gas"`
-            GasPrice *hexutil.Big    `json:"gasPrice"`
-            Nonce    *hexutil.Uint64 `json:"nonce"`
-        }
-    	SwapID common.Hash
-        Size   *big.Int
-    }
-    passwd string
-
 
 -------
 Returns
