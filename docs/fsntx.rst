@@ -217,7 +217,7 @@ genNotation gen a notation for a account CP see the top and the "from" ignore fr
 Parameters
 ----------
 
-1. ``FusionBaseArgs`` - ``Object``: Description
+1. ``Object``: The transaction object
 
   - ``From`` - ``common.Address`` - ``json:"from"``: Description
   - ``Gas`` - ``*hexutil.Uint64`` - ``json:"gas"``: Description
@@ -225,16 +225,6 @@ Parameters
   - ``Nonce`` - ``*hexutil.Uint64`` - ``json:"nonce"``: Description
 
 2. ``passwd`` - ``string``: Description
-
-.. code-block:: javascript
-
-    FusionBaseArgs {
-        From     common.Address  `json:"from"`
-        Gas      *hexutil.Uint64 `json:"gas"`
-        GasPrice *hexutil.Big    `json:"gasPrice"`
-        Nonce    *hexutil.Uint64 `json:"nonce"`
-    }
-    passwd string
 
 -------
 Returns
