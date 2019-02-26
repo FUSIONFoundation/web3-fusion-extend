@@ -248,14 +248,12 @@ buildGenAssetTx
 Parameters
 ----------
 
-1. ``GenAssetArgs`` - ``Object``: Description
+1. ``Object``: The transaction object
 
-  - ``Object``: The transaction object
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``Name`` - ``string`` - ``json:"name"``: Description
   - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
   - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
@@ -312,14 +310,12 @@ genAsset generate a asset CP see the top and the "from" ignore from who gen the 
 Parameters
 ----------
 
-1. ``GenAssetArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``Name`` - ``string`` - ``json:"name"``: Description
   - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
   - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
@@ -361,14 +357,11 @@ buildSendAssetTx
 Parameters
 ----------
 
-1. ``SendAssetArgs`` - ``Object``: Description
-
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+1. ``Object``: Description
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -467,14 +460,11 @@ sendAsset send asset to other account CSP see the top
 Parameters
 ----------
 
-1. ``SendAssetArgs`` - ``Object``: Description
-
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+1. ``Object``: Description
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -517,18 +507,14 @@ Parameters
 
 1. ``Object``: Description 
 
-  - ``Object``: Description
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -672,20 +658,16 @@ assetToTimeLock send the asset to time lock CSP see the top startTime the start 
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``SendAssetArgs`` - ``Object``: Description
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -727,20 +709,15 @@ buildTimeLockToTimeLockTx
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SendAssetArgs`` - ``Object``: Description
-
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -809,20 +786,15 @@ timeLockToTimeLock send the time lock CSP see the top startTime the start time o
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SendAssetArgs`` - ``Object``: Description
-
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -860,20 +832,15 @@ buildTimeLockToAssetTx
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SendAssetArgs`` - ``Object``: Description
-
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -955,20 +922,15 @@ timeLockToAsset send the time lock to asset CSP see the top startTime the start 
 Parameters
 ----------
 
-1. ``TimeLockArgs`` - ``Object``: Description 
+1. ``Object``: Description 
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SendAssetArgs`` - ``Object``: Description
-
-    - ``Object``: Description
-
-      - ``from`` - ``String|Number`` : The address for the sending account
-      - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-      - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-      - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-
-    - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-    - ``To`` - ``common.Address`` - ``json:"to"``: Description
-    - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
+  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
+  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``Value`` - ``*hexutil.Big`` - ``json:"value"``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
@@ -1006,14 +968,12 @@ buildBuyTicketTx
 Parameters
 ----------
 
-1. ``BuyTicketArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
@@ -1091,14 +1051,12 @@ buyTicket buy the ticket CP see the top and the "from" ignore from who buy the t
 Parameters
 ----------
 
-1. ``BuyTicketArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
@@ -1135,14 +1093,12 @@ buildIncAssetTx
 Parameters
 ----------
 
-1. ``AssetValueChangeExArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1205,14 +1161,12 @@ Parameters
 ----------
 
 
-1. ``AssetValueChangeExArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1253,14 +1207,12 @@ buildDecAssetTx
 Parameters
 ----------
 
-1. ``AssetValueChangeExArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1299,14 +1251,12 @@ decAsset decrease account asset balance CSP see the top and the "from","to" igno
 Parameters
 ----------
 
-1. ``AssetValueChangeExArgs`` - ``Object``: Description
+1. ``Object``: Description
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
   - ``To`` - ``common.Address`` - ``json:"to"``: Description
@@ -1349,12 +1299,10 @@ Parameters
 
 1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``FromAssetID`` - ``common.Hash``: Description
   - ``FromStartTime`` - ``Number``: Description
@@ -1543,12 +1491,10 @@ Parameters
 
 1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``FromAssetID`` - ``common.Hash``: Description
   - ``FromStartTime`` - ``Number``: Description
@@ -1598,12 +1544,10 @@ Parameters
 
 1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
 
@@ -1727,12 +1671,10 @@ Parameters
 
 1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
 
@@ -1854,14 +1796,12 @@ buildTakeSwapTx
 Parameters
 ----------
 
-1. ``TakeSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
   - ``Size`` - ``*big.Int``: Description
@@ -1949,14 +1889,12 @@ takeSwap buy a quantum swap CP see the top SwapID the swap ID Size the package s
 Parameters
 ----------
 
-1. ``TakeSwapArgs`` - ``Object``: Description 
+1. ``Object``: Description 
 
-  - ``Object``: Description
-
-    - ``from`` - ``String|Number`` : The address for the sending account
-    - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
-    - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-    - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+  - ``from`` - ``String|Number`` : The address for the sending account
+  - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
+  - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
   - ``SwapID`` - ``common.Hash``: Description
   - ``Size`` - ``*big.Int``: Description

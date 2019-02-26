@@ -76,15 +76,15 @@
 </div>
 <div class="section" id="returns">
 <h3>Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">Asset</span> <span class="pre">Object</span></code>: With the following methods:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Object</span></code>: With the following methods:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">ID</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Hash</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">Owner</span>&#160;&#160;&#160;&#160; <span class="pre">Address</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">Name</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">string</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">Symbol</span>&#160;&#160;&#160; <span class="pre">string</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">Decimals</span>&#160; <span class="pre">uint8</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">Total</span>&#160;&#160;&#160;&#160; <span class="pre">*big.Int</span> <span class="pre">`json:&quot;,string&quot;`</span></code>: Description</li>
-<li><code class="docutils literal notranslate"><span class="pre">CanChange</span> <span class="pre">bool</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">ID</span></code> - <code class="docutils literal notranslate"><span class="pre">Hash</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Owner</span></code> - <code class="docutils literal notranslate"><span class="pre">Address</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Name</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Decimals</span></code> - <code class="docutils literal notranslate"><span class="pre">uint8</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Total</span></code> - <code class="docutils literal notranslate"><span class="pre">*big.Int</span> <span class="pre">`json:&quot;,string&quot;`</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">CanChange</span></code> - <code class="docutils literal notranslate"><span class="pre">bool</span></code>: Description</li>
 </ul>
 </div>
 <div class="section" id="example">
@@ -278,9 +278,9 @@
 <p>allTicketsByAddress get all tickets by address address the user’s address</p>
 <div class="section" id="id10">
 <h3>Parameters<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">address</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>
-</pre></div>
-</div>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id11">
 <h3>Returns<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
@@ -354,9 +354,12 @@
 <p>totalNumberOfTicketsByAddress return number of tickets an address controls address address that bought tickets</p>
 <div class="section" id="id16">
 <h3>Parameters<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">address</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code>: Description</li>
+</ol>
 </div>
 <div class="section" id="id17">
 <h3>Returns<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
@@ -384,23 +387,17 @@
 <div class="section" id="id19">
 <h3>Parameters<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">start</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">end</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 </ul>
@@ -467,23 +464,17 @@
 <div class="section" id="id25">
 <h3>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">start</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">end</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 </ul>
@@ -518,23 +509,17 @@
 <div class="section" id="id28">
 <h3>Parameters<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">TimeLockArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">start</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">end</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 </ul>
@@ -569,17 +554,14 @@
 <div class="section" id="id31">
 <h3>Parameters<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">BuyTicketArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">start</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">end</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 </ul>
@@ -615,18 +597,15 @@
 <div class="section" id="id34">
 <h3>Parameters<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">GenAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">FusionBaseArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">Name</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;name&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> - <code class="docutils literal notranslate"><span class="pre">string</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;symbol&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">Decimals</span></code> - <code class="docutils literal notranslate"><span class="pre">uint8</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;decimals&quot;</span></code>: Description</li>
@@ -751,17 +730,14 @@
 <div class="section" id="id40">
 <h3>Parameters<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">SendAssetArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
@@ -799,17 +775,14 @@
 <div class="section" id="id43">
 <h3>Parameters<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">AssetValueChangeExArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
@@ -883,17 +856,14 @@
 <div class="section" id="id46">
 <h3>Parameters<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">AssetValueChangeExArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">AssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;asset&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">To</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Address</span></code> - <code class="docutils literal notranslate"><span class="pre">json:&quot;to&quot;</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">value</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code>: Description</li>
@@ -1243,13 +1213,10 @@
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">FromAssetID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">FromStartTime</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">FromEndTime</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code>: Description</li>
@@ -1299,13 +1266,10 @@ CP see the top SwapID the swap ID password the owner password</p>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">SwapID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
 </ul>
 </div></blockquote>
@@ -1339,17 +1303,14 @@ CP see the top SwapID the swap ID password the owner password</p>
 <div class="section" id="id76">
 <h3>Parameters<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><span class="pre">TakeSwapArgs</span></code> - <code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
+<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">Object</span></code>: Description<ul>
 <li><code class="docutils literal notranslate"><span class="pre">from</span></code> - <code class="docutils literal notranslate"><span class="pre">String|Number</span></code> : The address for the sending account</li>
 <li><code class="docutils literal notranslate"><span class="pre">gas</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).</li>
 <li><code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> - <code class="docutils literal notranslate"><span class="pre">Number|String|BN|BigNumber</span></code> :  (optional) The price of gas for this transaction in wei.</li>
 <li><code class="docutils literal notranslate"><span class="pre">nonce</span></code> - <code class="docutils literal notranslate"><span class="pre">Number</span></code> :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.</li>
-</ul>
-</li>
 <li><code class="docutils literal notranslate"><span class="pre">SwapID</span></code> - <code class="docutils literal notranslate"><span class="pre">common.Hash</span></code>: Description</li>
 <li><code class="docutils literal notranslate"><span class="pre">Size</span></code> - <code class="docutils literal notranslate"><span class="pre">*big.Int</span></code>: Description</li>
 </ul>

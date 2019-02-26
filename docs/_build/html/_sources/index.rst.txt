@@ -25,6 +25,7 @@ Contents:
 
     autoPurchaseTickets
     blockexplorerapi
+    calculateMiningReward
     myFusionWallet
     PSNBlockExplorer <psnBlockExplorer>
     PurchaseTicket <purchaseTicket>
