@@ -18,12 +18,7 @@ npm install
 
 To install runtime dependecies
 
-```
-DB_CONNECT_STRING="wss://gateway.fusionnetwork.io:10001" node caculateMiningReward.js 
-```
-
-You can then host the api server for the database via:
-
+You can then run the application via:
 ```
 DB_CONNECT_STRING="wss://gateway.fusionnetwork.io:10001" node caculateMiningReward.js 
 ```
