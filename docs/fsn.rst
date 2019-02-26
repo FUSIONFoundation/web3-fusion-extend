@@ -54,10 +54,10 @@ Returns
 
 - ``ID`` - ``Hash``: Description
 - ``Owner`` - ``Address``: Description
-- ``Name`` - ``string``: Description
-- ``Symbol`` - ``string``: Description
-- ``Decimals`` - ``uint8``: Description
-- ``Total`` - ``*big.Int `json:",string"```: Description
+- ``Name`` - ``String``: Description
+- ``Symbol`` - ``String``: Description
+- ``Decimals`` - ``Number``: Description
+- ``Total`` - ``Number `json:",string"```: Description
 - ``CanChange`` - ``bool``: Description
 
 -------
@@ -276,7 +276,7 @@ allTicketsByAddress get all tickets by address address the user's address
 Parameters
 ----------
 
-1. ``address`` - ``common.Address``: Description
+1. ``address`` - ``String|Number``: Description
 
 -------
 Returns
@@ -365,7 +365,7 @@ Parameters
 
 .. code-block:: javascript
 
-1. ``address`` - ``common.Address``: Description
+1. ``address`` - ``String|Number``: Description
 
 -------
 Returns
@@ -405,14 +405,14 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 
 -------
@@ -491,14 +491,14 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -538,14 +538,14 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
     
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -587,7 +587,7 @@ Parameters
   - ``start`` - ``Number``: Description
   - ``end`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -626,14 +626,14 @@ Parameters
   - ``from`` - ``String|Number`` : The address for the sending account
   - ``gas`` - ``Number`` : (optional, default: To-Be-Determined) The amount of gas to use for the transaction (unused gas is refunded).
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
-  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
-  - ``Name`` - ``string`` - ``json:"name"``: Description
-  - ``Symbol`` - ``string`` - ``json:"symbol"``: Description
-  - ``Decimals`` - ``uint8`` - ``json:"decimals"``: Description
+  - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce. 
+  - ``name`` - ``String``: Description
+  - ``symbol`` - ``String``: Description
+  - ``decimals`` - ``Number``: Description
   - ``total`` - ``Number|String|BN|BigNumber``: Description
- - ``CanChange`` - ``bool`` - ``json:"canChange"``: Description
+  - ``canChange`` - ``bool``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -716,7 +716,7 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -758,11 +758,11 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -804,13 +804,13 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
-  - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
-  - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
+  - ``isInc`` - ``Boolean``: Description
+  - ``transacData`` - ``String``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -887,13 +887,13 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``AssetID`` - ``common.Hash`` - ``json:"asset"``: Description
-  - ``To`` - ``common.Address`` - ``json:"to"``: Description
+  - ``asset`` - ``String|Number``: Description
+  - ``to`` - ``String|Number``: Description
   - ``value`` - ``Number|String|BN|BigNumber``: Description
-  - ``IsInc`` - ``bool`` - ``json:"isInc"``: Description
-  - ``TransacData`` - ``string``-  ``json:"transacData"``: Description
+  - ``isInc`` - ``Boolean``: Description
+  - ``transacData`` - ``String``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -963,8 +963,8 @@ getAddressByNotation get the notation of the address notation account notation
 Parameters
 ----------
 
-1. ``notation`` - ``uint64``: Description
-2. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``notation`` - ``Number``: Description
+2. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1018,8 +1018,8 @@ getAllBalances get all assets balances address the user's address blockNumber de
 Parameters
 ----------
 
-1. ``address`` - ``common.Address``: Description
-2. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``address`` - ``String|Number``: Description
+2. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1060,8 +1060,8 @@ getAllTimeLockBalances get all time lock balances address the user's address blo
 Parameters
 ----------
 
-1. ``address`` - ``common.Address``: Description
-2. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``address`` - ``String|Number``: Description
+2. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1102,8 +1102,8 @@ getAsset get the asset info assetID the asset ID
 Parameters
 ----------
 
-1. ``assetID`` - ``common.Hash``: Description
-2. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``assetID`` - ``String|Number``: Description
+2. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1146,9 +1146,9 @@ getBalance like name assetID the asset ID address the user's address blockNumber
 Parameters
 ----------
 
-1. ``assetID`` - ``common.Hash``: Description
-2. ``address`` - ``common.Address``: Description
-3. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``assetID`` - ``String|Number``: Description
+2. ``address`` - ``String|Number``: Description
+3. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1190,8 +1190,8 @@ getNotation get the notation of address address the account address
 Parameters
 ----------
 
-1. ``address`` - ``common.Address``: Description
-2. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``address`` - ``String|Number``: Description
+2. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1232,9 +1232,9 @@ getTimeLockBalance like name assetID the asset ID address the user's address blo
 Parameters
 ----------
 
-1. ``assetID`` - ``common.Hash``: Description
-2. ``address`` - ``common.Address``: Description
-3. ``blockNr`` - ``rpc.BlockNumber``: Description
+1. ``assetID`` - ``String|Number``: Description
+2. ``address`` - ``String|Number``: Description
+3. ``blockNr`` - ``Number``: Description
 
 -------
 Returns
@@ -1275,19 +1275,19 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``FromAssetID`` - ``common.Hash``: Description
+  - ``FromAssetID`` - ``String|Number``: Description
   - ``FromStartTime`` - ``Number``: Description
   - ``FromEndTime`` - ``Number``: Description
   - ``MinFromAmount`` - ``Number|String|BN|BigNumber``: Description
-  - ``ToAssetID`` - ``common.Hash``: Description
+  - ``ToAssetID`` - ``String|Number``: Description
   - ``ToStartTime`` - ``Number``: Description
   - ``ToEndTime`` - ``Number``: Description
   - ``MinToAmount`` - ``Number|String|BN|BigNumber``: Description
-  - ``SwapSize`` - ``*big.Int``: Description
-  - ``Targes`` - ``[]common.Address``: Description
-  - ``Time`` - ``*big.Int``: Description
+  - ``SwapSize`` - ``Number``: Description
+  - ``Targes`` - ``Array String|Number``: Description
+  - ``Time`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -1329,9 +1329,9 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SwapID`` - ``common.Hash``: Description
+  - ``SwapID`` - ``String|Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
@@ -1371,10 +1371,10 @@ Parameters
   - ``gasPrice`` - ``Number|String|BN|BigNumber`` :  (optional) The price of gas for this transaction in wei.
   - ``nonce`` - ``Number`` :  (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 
-  - ``SwapID`` - ``common.Hash``: Description
-  - ``Size`` - ``*big.Int``: Description
+  - ``SwapID`` - ``String|Number``: Description
+  - ``Size`` - ``Number``: Description
 
-2. ``passwd`` - ``string``: Description
+2. ``passwd`` - ``String``: Description
 
 -------
 Returns
