@@ -10,7 +10,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 6800; // highest block will be determined after launch
+let highestBlock = 20000000; // highest block will be determined after launch
 
 let sumOfTimes = 0;
 let highestTime = 0;
@@ -20,9 +20,9 @@ let shortestTimeBlock;
 let lastBlockTime = 0;
 
 /*  Remember to set your environment variables to run this test
-    e.g. CONNECT_STRING="wss://gateway.fusionnetwork.io:10001"
+    e.g. CONNECT_STRING="wss://testpsn2.fusionnetwork.io:10001"
 
-    else the default will be "wss://gateway.fusionnetwork.io:10001"
+    else the default will be "wss://testpsn2.fusionnetwork.io:10001"
 */
 
 var web3;
