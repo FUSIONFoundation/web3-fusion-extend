@@ -140,7 +140,7 @@ function resumeBlockScan() {
       inHere = false;
     }
     if (!timerSet) {
-      timeerSet = setTimeout(() => {
+      timerSet = setTimeout(() => {
         timerSet = null;
         resumeBlockScan();
       }, 5000);
