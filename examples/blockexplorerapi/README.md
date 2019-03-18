@@ -10,12 +10,12 @@ from the fusion block chain and update a mysql database.
 You will need a node for the application readAllBlocksToDatabase.js to communicate with
 as well as a mysql database to store the information.
 
-You will need an environment string called DB_CONNECT_STRING
+You will need an environment string called DB_CONNECT_STRING and CONNECT_STRING
 
 It can be passed on the command line.
 
 ```
-DB_CONNECT_STRING="{'host':'mysqlserver,'user':'adminuser','password':'password','database':'fusionblockdb','connectionLimit':100}" node readAllBlocksToDatabase.js 
+CONNECT_STRING="ws://server.example.com:10001"  DB_CONNECT_STRING="{'host':'mysqlserver,'user':'adminuser','password':'password','database':'fusionblockdb','connectionLimit':100}" node readAllBlocksToDatabase.js 
 ```
 
 You can then host the api server for the database via:
