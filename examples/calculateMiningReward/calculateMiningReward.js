@@ -228,7 +228,7 @@ function printOutRewards() {
     let totalTimeLockedAccounts = 0
 
 
-    console.log( "miner,blocksMined,ERC20FSN_DUE,PFSN_DUE,timeLocked")
+    console.log( "miner,blocksMined,timeLocked,ERC20FSN_DUE,PFSN_EARNED")
 
     for ( miner of miners ) {
       let timelocked = originalBalanceList[miner] ? 0 : 1
@@ -238,7 +238,7 @@ function printOutRewards() {
       }, 0)
       let blockCount = blockArray.length
       let erc20Reward = pfsnReward / 4
-      console.log(  `${miner},${blockCount},${erc20Reward},${pfsnReward},${timelocked}`  )
+      console.log(  `${miner},${blockCount},${timelocked},${erc20Reward},${pfsnReward}`  )
       totalTimeLockedAccounts += timelocked
     }
 
