@@ -29,11 +29,12 @@
     "crypto-js": "^3.1.9-1",
     "mocha": "^5.2.0",
     "node-fetch": "^2.3.0",
-    "request-promise": "^4.2.2",
-    "web3": "1.0.0-beta.36"
+    "request-promise": "^4.2.2"
   },
   "dependencies": {
+    "bignumber.js": "^8.1.1",
     "command-line-args": "^5.0.2",
-    "web3": "1.0.0-beta.36"
+    "human-standard-token-abi": "^2.0.0",
+    "web3": "^1.0.0-beta.33"
   }
 }

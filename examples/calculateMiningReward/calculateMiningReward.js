@@ -5,12 +5,20 @@
  */
 var Web3 = require("web3");
 var web3FusionExtend = require("../../index.js");
+const sha3 = require( 'crypto-js/sha3' )
+const CryptoJS = require( 'crypto-js' )
+const BigNumber = require('bignumber.js');
+const abi = require('human-standard-token-abi')
+
+BigNumber.config({ DECIMAL_PLACES: 18,  EXPONENTIAL_AT: [-19, 20] })
+
 let version = 1.0;
 let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 319100 // highest block will be determined after launch
+let highestBlock = 50000 // 320001 // highest block will be determined after launch
+let ethereumBlockHeightToCheckBalance = 7406000 // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="wss://gateway.fusionnetwork.io:10001"
@@ -18,12 +26,22 @@ let highestBlock = 319100 // highest block will be determined after launch
     else the default will be "wss://gateway.fusionnetwork.io:10001"
 */
 
-var web3;
+let web3;
+let web3Ether
 let minerRewards = {};
+let minerEthereumBalance = {}
+
+let minerAtStasis = {}
 
 let connectString = process.env.CONNECT_STRING
 if ( !connectString ) {
   connectString = "wss://gateway.fusionnetwork.io:10001"
+}
+
+let connectStringEther = process.env.ETHEREUM_CONNECT_STRING
+if ( !connectStringEther ) {
+  console.log("Specify an ethereum gateway ETHEREUM_CONNECT_STRING")
+  process.exit(1)
 }
 
 /** the following function helps us connect and reconnect to the 
@@ -84,6 +102,63 @@ function keepWeb3Alive() {
 //
 keepWeb3Alive();
 
+
+// startup our web3Ether connection
+/** the following function helps us connect and reconnect to the 
+ * gateway specified
+ */
+let lastConnectTimerEther;
+function keepWeb3EtherAlive() {
+  //debugger
+  lastConnectTimerEther = null;
+  console.log("STARTING WEB3 Ethereum connection");
+  provider = new Web3.providers.WebsocketProvider(connectStringEther, {
+    timeout: 60000
+  });
+  provider.on("connect", function() {
+    web3Ether._isConnected = true;
+    scheduleNewScan(10);
+  });
+  provider.on("error", function(err) {
+    //debugger
+    if (provider && !provider.___disconnected) {
+      provider.___disconnected = true;
+      provider.disconnect();
+      provider = null;
+      web3Ether._isConnected = false;
+      console.log("web3 ether connection error ", err);
+      console.log("will try to reconnect");
+      lastConnectTimerEther = setTimeout(() => {
+        keepWeb3EtherAlive();
+      }, 1000);
+    }
+  });
+  provider.on("end", function(err) {
+    //debugger
+    if (!lastConnectTimerEther) {
+      if (provider && !provider.___disconnected) {
+        provider.___disconnected = true;
+        try {
+          provider.disconnect();
+        } catch (e) {}
+        provider = null;
+        web3Ether._isConnected = false;
+        console.log("web3 ether connection error ", err);
+        console.log("will try to reconnect");
+        lastConnectTimerEthere = setTimeout(() => {
+          keepWeb3EtherAlive();
+        }, 10000);
+      }
+    }
+  });
+  web3Ether = new Web3(provider);
+  web3Ether._isConnected = false;
+  web3Ether = web3FusionExtend.extend(web3Ether);
+}
+
+keepWeb3EtherAlive()
+
+
 let lastBlock = 1; // reporting will start at block as genesis block does not get a reward
 
 /** caclulate the reward at the block
@@ -128,6 +203,12 @@ function resumeBlockScan() {
     return;
   }
 
+  if ( !web3Ether._isConnected ) {
+      console.log("web3 ethere connection down returning");
+      callBlockScanAgain();
+      return;
+  }
+
   if (lastBlock === -1) {
     lastBlock = 0;
   }
@@ -155,12 +236,60 @@ function resumeBlockScan() {
   doBlockScan();
 }
 
+let socketInstance
+
+const getBalance = async function(address) {
+    let tokenAddress = '0xD0352a019e9AB9d757776F532377aAEbd36Fd541'.toLowerCase()
+    if ( socketInstance ) {
+        socketInstance.closeOnError = true;
+    }
+    socketInstance = new web3Ether.eth.Contract(abi, tokenAddress)
+
+
+    let bal = await socketInstance.methods.balanceOf(address).call()
+
+    console.log("Balance of " + address + " == " + bal )
+
+    return bal
+}
+
+const getBalanceOld = async function(address) {
+    let tokenAddress = '0xD0352a019e9AB9d757776F532377aAEbd36Fd541'.toLowerCase()
+    let index ='0000000000000000000000000000000000000000000000000000000000000000'
+    let key =  '00000000000000000000000' + address;
+    key = key.replace("x","");
+    key = key.replace("X","");
+    //let buf = Buffer.from(key+index, 'utf8');
+    let newkey = "0x"+
+    sha3bin(key+index, {
+        "encoding":"hex"
+    })
+
+    let res =  await web3Ether.eth.getStorageAt( tokenAddress, newkey, ethereumBlockHeightToCheckBalance );
+    return res
+}
+
+
+function sha3bin(value, options) {
+  if (options && options.encoding === 'hex') {
+      if (value.length > 2 && value.substr(0, 2) === '0x') {
+          value = value.substr(2);
+      }
+      value = CryptoJS.enc.Hex.parse(value);
+  }
+
+  return sha3(value, {
+      outputLength: 256
+  }).toString();
+} 
+
 /**
  * for the current block see who mined it and add to 
  * global object keeping track of count
  * every 100 print out a status message
  */
 async function doBlockScan() {
+  let zeroBN = new BigNumber( 0 )
   try {
     let block = await web3.eth.getBlock(lastBlock);
     if (!block) {
@@ -172,7 +301,28 @@ async function doBlockScan() {
     }
     let miner = block.miner.toLowerCase()
     if ( !minerRewards[miner] ) {
+      // cehck current balacne of new miner
       minerRewards[miner] = []
+      try {
+        let balance = await getBalance(miner)
+        minerEthereumBalance[miner]=balance
+        if ( balance !== "0x" && balance !== '0' ) {
+          let newBal = new BigNumber(balance)
+          if ( newBal.comparedTo( zeroBN ) !== 0 ) {
+            //debugger
+            let mgenesis = originalBalanceList[miner]
+            if ( mgenesis && mgenesis.balance ) {
+              if ( !isEthereumBalanceSmaller( new BigNumber(  mgenesis.balance ), newBal )  ) {
+                // new miner has same or more balance
+                minerAtStasis[miner] = true
+              }
+            }
+          }
+        }
+      } catch (  e )  {
+        console.log("failed to get balance of account ", miner , e )
+        process.exit(1)
+      }
     }
     let blocksForMiner = minerRewards[miner]
     blocksForMiner.push( lastBlock )
@@ -227,10 +377,14 @@ function printOutRewards() {
 
     let totalTimeLockedAccounts = 0
 
+    console.log(  Object.keys( minerAtStasis ).length + " miners have same or more balance on etheruem" )
 
-    console.log( "miner,blocksMined,timeLocked,ERC20FSN_DUE,PFSN_EARNED")
+
+    console.log( "miner,blocksMined,timeLocked,ERC20FSN_DUE,PFSN_EARNED,ORGBALANCE,ETHEREUMBALANCE")
 
     for ( miner of miners ) {
+      let orgBalance = "0"
+      let etherBalanceFSN = minerEthereumBalance[miner]
       let timelocked = originalBalanceList[miner] ? 0 : 1
       let blockArray = minerRewards[miner]
       let pfsnReward = blockArray.reduce( (accumulator, val )=> {
@@ -238,7 +392,18 @@ function printOutRewards() {
       }, 0)
       let blockCount = blockArray.length
       let erc20Reward = pfsnReward / 4
-      console.log(  `${miner},${blockCount},${timelocked},${erc20Reward},${pfsnReward}`  )
+      if ( !timelocked ) {
+        // confirm balances are not smaller on ethereum now
+        if ( !minerAtStasis[miner] ) {
+          timelocked = 1
+        }
+       }
+       let mgenesis = originalBalanceList[miner]
+       if ( mgenesis && mgenesis.balance ) {
+         orgBalance = new BigNumber( mgenesis.balance )
+         orgBalance = orgBalance.toFixed()
+       }
+      console.log(  `${miner},${blockCount},${timelocked},${erc20Reward},${pfsnReward},"${orgBalance}","${etherBalanceFSN}"`  )
       totalTimeLockedAccounts += timelocked
     }
 
@@ -246,7 +411,14 @@ function printOutRewards() {
     process.exit(0)
 }
 
-
+function isEthereumBalanceSmaller( originalBalance, ethereumBalance  )
+{
+    if ( originalBalance.comparedTo( ethereumBalance )  <= 0 ) {
+      return false 
+    } else {
+      return true
+    }
+}
 
 
 // original balance list from genesis block
