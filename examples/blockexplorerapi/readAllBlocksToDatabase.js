@@ -56,7 +56,7 @@ let buildTheSystem = [
   {
     txt: "Build Transactions",
     sql:
-      "BEGIN;\n"+
+      "BEGIN;\n" +
       "CREATE TABLE IF NOT EXISTS transactions (\n" +
       "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  height BIGINT NOT NULL,\n" +
@@ -84,15 +84,19 @@ let buildTheSystem = [
       "  INDEX `commandExtra3` (`commandExtra3`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
-      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n"+
-      // `DELIMITER $$\n
-      // CREATE TRIGGER if not exists transactionTriggerAfterInsert AFTER INSERT ON transactions\n
-      // FOR EACH ROW\n
-      // BEGIN\n
-      // UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';\n
-      // END$$\n
-      // DELIMITER ;\n` +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
       "COMMIT;"
+  },
+  {
+    txt: "create triggle for transaction",
+    sql:
+      // "DELIMITER ;;\n" +
+      "CREATE TRIGGER transactionTriggerAfterInsert AFTER INSERT ON transactions\n" +
+      "FOR EACH ROW\n" +
+      "BEGIN\n" +
+      "UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';\n" +
+      "END\n" 
+      // "DELIMITER ;\n"
   },
   {
     txt: "Build Info Table",
@@ -176,6 +180,19 @@ function createTables(resolve, reject) {
       }
     })
     .catch(err => {
+      if ( err.code === "ER_TRG_ALREADY_EXISTS" ) {
+        console.log("trigger already exists no problem")
+        buildIndex += 1;
+        if (buildIndex === buildTheSystem.length) {
+          console.log("All done building DB tables");
+          resolve(true);
+        } else {
+          setTimeout(() => {
+            createTables(resolve, reject);
+          }, 10);
+        }
+        return
+      }
       console.log("ERROR: " + buildTheSystem[buildIndex].txt, err);
       reject(err);
     });
@@ -214,7 +231,8 @@ function keepSQLAlive() {
       starttUp = true;
       console.error(
         "connect to database failed, trying again in five seconds",
-        err
+        err,
+        JSON.stringify(err)
       );
       setTimeout(() => {
         keepSQLAlive();
@@ -240,7 +258,7 @@ function keepWeb3Alive() {
   provider.on("connect", function() {
     //debugger
     web3._isConnected = true;
-    web3.fsn.enableBigIntJSONParse()
+    web3.fsn.enableBigIntJSONParse();
     scheduleNewScan(10);
   });
   provider.on("error", function(err) {
@@ -315,8 +333,8 @@ async function updateLastBlockProcessed() {
       [now, version]
     );
     return { success: true };
-  } catch (err ) {
-    console.log("UPDATET block error ", err );
+  } catch (err) {
+    console.log("UPDATET block error ", err);
     throw err;
   } finally {
     if (conn) {
@@ -446,7 +464,8 @@ async function getBalances(addrs, index, resolve, reject) {
   // debugger
   let address = addrs[index];
 
-  if ( !address ||
+  if (
+    !address ||
     address === web3.fsn.consts.FSNCallAddress ||
     address === web3.fsn.consts.TicketLogAddress ||
     address.length === 0
@@ -878,7 +897,8 @@ async function doBlockScan() {
   try {
     let currentBlock = await web3.eth.getBlockNumber();
     glb_highestBlockOnChain = currentBlock;
-    if (process.env.FILLIN !== "true" && (currentBlock +1 ) < lastBlock) { // wait for two blocks for data to fill in
+    if (process.env.FILLIN !== "true" && currentBlock + 1 < lastBlock) {
+      // wait for two blocks for data to fill in
       console.log("Really Waiting for new block..." + new Date());
       scheduleNewScan();
       return true;
@@ -891,20 +911,19 @@ async function doBlockScan() {
       scheduleNewScan();
       return;
     }
-    console.log( "Start Block -> " , lastBlock, block.hash);
+    console.log("Start Block -> ", lastBlock, block.hash);
     let jt = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
     await logBlock(block, jt);
     await logTransactions(block);
     await logTicketPurchased(lastBlock, jt);
-    console.log( "Did   Block -> " , lastBlock, block.hash);
+    console.log("Did   Block -> ", lastBlock, block.hash);
     if (process.env.FILLIN === "true") {
       scheduleNewScan(10);
       return true;
     }
-    await updateLastBlockProcessed()
+    await updateLastBlockProcessed();
     lastBlock += 1;
     scheduleNewScan(10);
-
   } catch (err) {
     console.log("uncaught error, try again ", err);
     scheduleNewScan();
