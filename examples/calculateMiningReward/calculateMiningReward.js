@@ -17,8 +17,8 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 100 //  328000// highest block will be determined after launch
-let ethereumBlockHeightToCheckBalance = 7406000 // height to check ethereum balanc
+let highestBlock = 328000// highest block will be determined after launch
+let ethereumBlockHeightToCheckBalance = 7456700  // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="wss://gateway.fusionnetwork.io:10001"
