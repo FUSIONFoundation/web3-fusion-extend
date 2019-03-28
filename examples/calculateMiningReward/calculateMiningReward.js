@@ -17,7 +17,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 50000 // 320001 // highest block will be determined after launch
+let highestBlock = 100 //  328000// highest block will be determined after launch
 let ethereumBlockHeightToCheckBalance = 7406000 // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
@@ -35,7 +35,8 @@ let minerAtStasis = {}
 
 let connectString = process.env.CONNECT_STRING
 if ( !connectString ) {
-  connectString = "wss://gateway.fusionnetwork.io:10001"
+  console.log("Specify a fusion gateway CONNECT_STRING")
+  process.exit(1)
 }
 
 let connectStringEther = process.env.ETHEREUM_CONNECT_STRING
@@ -194,7 +195,7 @@ function callBlockScanAgain() {
  * check if at highest block requested and printout report if so
  */
 function resumeBlockScan() {
-  if ( highestBlock === lastBlock ) {
+  if ( (highestBlock+1) === lastBlock ) {
     printOutRewards()
   }
   if (!web3._isConnected) {

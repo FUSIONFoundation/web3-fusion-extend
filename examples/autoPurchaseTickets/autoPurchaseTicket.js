@@ -17,7 +17,7 @@ console.log(`Example:
               -c --connectString web socket gateway to connect to
               -k  --keyStore keystore file to use
               -p  --passPharseFile key file
-              -d  --chainId (defaults to 1)
+              -d  --chainId (defaults to 88666)
               -g  --gasPrice gas price 1 - 100 (defaults to 2 gwei)
               -n  --Number of tickets to purchase`);
 
@@ -30,7 +30,7 @@ function RaiseErrorAndHalt({ condition, message }) {
   }
 }
 
-var chainId = 1
+var chainId = 88666
 if (options.chainId) {
   let val = parseInt(options.chainId);
   const condition = isNaN(val) || val < 1 ;
