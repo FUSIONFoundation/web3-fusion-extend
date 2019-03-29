@@ -3,6 +3,28 @@ var router = express.Router();
 
 var { getConnection } = require("../dbapi/dbapi.js");
 
+
+router.get("/minerForTicket/:ticketId" , function( req, res, next )  {
+    let ticketId = req.params.ticketId
+
+
+    getConnection().then(conn => {
+      conn
+        .query(`SELECT * FROM transactions where fusionCommand = 'BuyTicketFunc' and commandExtra = ?` , [ ticketId ] )
+        .then(rows => {
+          if ( rows.length === 1) {
+            res.json( { miner : rows[0].fromAddress , purchaseBlock : rows[0].height ,  purchaseTimeStamp : rows[0].timeStamp } )
+          } else {
+            return res.json( rows )
+          }
+        })
+        .finally(() => {
+          conn.release();
+        });
+    });
+    return
+})
+
 /* GET transactions listing. */
 // http://localhost:3000/blocks/30?sort=asc&page=200&size=50&field=timestamp
 // {"sort":"asc","page":"200","size":"50","field":"timestamp"}{"block":"30"}

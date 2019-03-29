@@ -10,7 +10,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 20000000; // highest block will be determined after launch
+let highestBlock = 5000; // highest block will be determined after launch
 
 let sumOfTimes = 0;
 let highestTime = 0;
@@ -18,6 +18,13 @@ let highestTimeBlock;
 let shortestTime = 100000000000000000000000;
 let shortestTimeBlock;
 let lastBlockTime = 0;
+
+
+let allTicketsRetreatedExpired = []
+
+
+let maxTD = 0 , maxTR = 0, maxTE = 0
+
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="wss://testpsn2.fusionnetwork.io:10001"
@@ -169,6 +176,11 @@ function resumeBlockScan() {
  */
 async function doBlockScan() {
   try {
+    if ( highestBlock === lastBlock + 1 ) {
+      console.log( "maxTD " + maxTD+ " , maxTR " +  maxTR + " ,  maxTE " + maxTE )
+      console.log("all done")
+      process.exit(1)
+    }
     let block = await web3.eth.getBlock(lastBlock);
     if (!block) {
       // wait for block to update
@@ -178,6 +190,30 @@ async function doBlockScan() {
       return;
     }
     let newTime = block.timestamp;
+    let ti = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
+
+    let TD = ti.deleted.length
+    let TR = ti.retreat.length
+    let TE = ti.expired.length
+
+    if ( maxTD < TD ) {
+        maxTD = TD
+    }
+    if ( maxTR < TR ) {
+      maxTR = TR
+    }
+    if ( maxTE < TE ) {
+      maxTE = TE
+    }
+
+    if ( TR ) {
+      allTicketsRetreatedExpired.push( ...ti.retreat )
+    }
+    if ( TE ) {
+      allTicketsRetreatedExpired.push( ...ti.expired )
+    }
+    
+    //console.log( jt )
     if (!lastBlockTime) {
       lastBlockTime = newTime;
       lastBlock += 1;
@@ -194,7 +230,7 @@ async function doBlockScan() {
       }
       sumOfTimes += timeDiff;
 
-      console.log( `Blck: ${lastBlock}, time: ${timeDiff} avgTime=${sumOfTimes/(lastBlock-1)}, highestTime=${highestTime} (b:${highestTimeBlock}), lowestTime=${shortestTime} (b:${shortestTimeBlock})  `)
+      console.log( `Blck: ${lastBlock}, time: ${timeDiff} avgTime=${sumOfTimes/(lastBlock-1)}, highestTime=${highestTime} (b:${highestTimeBlock}), lowestTime=${shortestTime} (b:${shortestTimeBlock}) TD ${TD} TE ${TE} TR ${TR}  TREL ${allTicketsRetreatedExpired.length}`)
 
       lastBlock += 1;
     }
