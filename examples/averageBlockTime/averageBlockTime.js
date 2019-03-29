@@ -3,6 +3,7 @@
  * example to how mining rewards can be calculated
  *
  */
+const rp = require("request-promise");
 var Web3 = require("web3");
 var web3FusionExtend = require("../../index.js");
 let version = 1.0;
@@ -10,7 +11,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 5000; // highest block will be determined after launch
+let highestBlock = 6500; // highest block will be determined after launch
 
 let sumOfTimes = 0;
 let highestTime = 0;
@@ -21,9 +22,11 @@ let lastBlockTime = 0;
 
 
 let allTicketsRetreatedExpired = []
-
+let minerRewards = {};
 
 let maxTD = 0 , maxTR = 0, maxTE = 0
+
+let dataprocessing = false 
 
 
 /*  Remember to set your environment variables to run this test
@@ -33,7 +36,7 @@ let maxTD = 0 , maxTR = 0, maxTE = 0
 */
 
 var web3;
-let minerRewards = {};
+
 
 let connectString = process.env.CONNECT_STRING;
 if (!connectString) {
@@ -45,6 +48,9 @@ if (!connectString) {
  */
 let lastConnectTimer;
 function keepWeb3Alive() {
+  if ( dataprocessing ) {
+    return
+  }
   //debugger
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
@@ -133,9 +139,7 @@ function callBlockScanAgain() {
  * check if at highest block requested and printout report if so
  */
 function resumeBlockScan() {
-  if (highestBlock === lastBlock) {
-    process.exit(1)
-  }
+
   if (!web3._isConnected) {
     console.log("web3 connection down returning");
     callBlockScanAgain();
@@ -179,7 +183,8 @@ async function doBlockScan() {
     if ( highestBlock === lastBlock + 1 ) {
       console.log( "maxTD " + maxTD+ " , maxTR " +  maxTR + " ,  maxTE " + maxTE )
       console.log("all done")
-      process.exit(1)
+      calculateTotalMinerValuesOfRetreatedAndExpiredTickets()
+      return
     }
     let block = await web3.eth.getBlock(lastBlock);
     if (!block) {
@@ -253,4 +258,53 @@ function scheduleNewScan(timeToSet) {
       resumeBlockScan();
     }, timeToSet || 500);
   }
+}
+
+
+let minerList = {}
+
+// let allTicketsRetreatedExpired = []
+// let minerRewards = {};
+
+
+function calculateTotalMinerValuesOfRetreatedAndExpiredTickets( index = -1 ) {
+  dataprocessing = true
+  index += 1;
+  if ( index === allTicketsRetreatedExpired.length ) {
+    console.log( "done finding miners for tickets" )
+    let miners = Object.keys(minerRewards)
+    miners = miners.sort( (a,b) => {
+          return a.localeCompare(b)
+    })
+    console.log("miner,ticketNumber,PFSNValue")
+    for ( let miner of miners ) {
+        let ticketNumber = minerRewards[miner].length
+        console.log( `${miner},${ticketNumber},${ticketNumber*200}`)
+    }
+    process.exit(1)
+  }
+
+  const requestOptions = {
+    method: "GET",
+    uri: "http://api.fusionnetwork.io/transactions/minerForTicket/" + allTicketsRetreatedExpired[index],
+    json: true,
+  };
+
+  if ( index % 250 === 0 ) {
+    console.log(`Calculating miners for ${index} of ${allTicketsRetreatedExpired.length}`)
+  }
+
+  rp(requestOptions).then(response => {
+    if ( response.miner ) {
+      if ( !minerRewards[response.miner] ) {
+        minerRewards[response.miner ] = []
+      }
+      minerRewards[response.miner].push(  allTicketsRetreatedExpired[index] )
+    }
+    calculateTotalMinerValuesOfRetreatedAndExpiredTickets( index )
+  } )
+  .catch( (e)=> {
+    console.log("can't get ticket " + allTicketsRetreatedExpired[index])
+    calculateTotalMinerValuesOfRetreatedAndExpiredTickets( index )
+  })
 }
