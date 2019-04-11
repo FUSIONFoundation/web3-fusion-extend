@@ -11,7 +11,9 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 6500; // highest block will be determined after launch
+let highestBlock = 90001; // do not process this block or higher
+let startCheckOfRetreats = 0
+let lastBlock = 1 ; // 1; // reporting will start at block as genesis block does not get a reward
 
 let sumOfTimes = 0;
 let highestTime = 0;
@@ -19,6 +21,7 @@ let highestTimeBlock;
 let shortestTime = 100000000000000000000000;
 let shortestTimeBlock;
 let lastBlockTime = 0;
+
 
 
 let allTicketsRetreatedExpired = []
@@ -65,6 +68,9 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
+    if ( dataprocessing ) {
+      return
+    }
     if (provider && !provider.___disconnected) {
       provider.___disconnected = true;
       provider.disconnect();
@@ -78,6 +84,9 @@ function keepWeb3Alive() {
     }
   });
   provider.on("end", function(err) {
+    if ( dataprocessing ) {
+      return
+    }
     //debugger
     if (!lastConnectTimer) {
       if (provider && !provider.___disconnected) {
@@ -104,7 +113,6 @@ function keepWeb3Alive() {
 //
 keepWeb3Alive();
 
-let lastBlock = 1; // reporting will start at block as genesis block does not get a reward
 
 /** caclulate the reward at the block
  *
@@ -200,15 +208,18 @@ async function doBlockScan() {
     let TD = ti.deleted.length
     let TR = ti.retreat.length
     let TE = ti.expired.length
+    let tn = ti.ticketNumber
 
-    if ( maxTD < TD ) {
-        maxTD = TD
-    }
-    if ( maxTR < TR ) {
-      maxTR = TR
-    }
-    if ( maxTE < TE ) {
-      maxTE = TE
+    if ( lastBlock > startCheckOfRetreats ) {
+      if ( maxTD < TD ) {
+          maxTD = TD
+      }
+      if ( maxTR < TR ) {
+        maxTR = TR
+      }
+      if ( maxTE < TE ) {
+        maxTE = TE
+      }
     }
 
     if ( TR ) {
@@ -235,7 +246,7 @@ async function doBlockScan() {
       }
       sumOfTimes += timeDiff;
 
-      console.log( `Blck: ${lastBlock}, time: ${timeDiff} avgTime=${sumOfTimes/(lastBlock-1)}, highestTime=${highestTime} (b:${highestTimeBlock}), lowestTime=${shortestTime} (b:${shortestTimeBlock}) TD ${TD} TE ${TE} TR ${TR}  TREL ${allTicketsRetreatedExpired.length}`)
+      console.log( `Blck: ${lastBlock}, time: ${timeDiff} avgTime=${sumOfTimes/(lastBlock-1)}, highestTime=${highestTime} (b:${highestTimeBlock}), lowestTime=${shortestTime} (b:${shortestTimeBlock}) Transacs ${block.transactions.length} TN ${tn} TD ${TD} TE ${TE} TR ${TR}  TREL ${allTicketsRetreatedExpired.length}`)
 
       lastBlock += 1;
     }
