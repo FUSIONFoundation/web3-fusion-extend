@@ -204,6 +204,8 @@ if (!connectString) {
   connectString = "wss://testpsn2.fusionnetwork.io:10001";
 }
 
+let blocks = {   }
+
 /** the following function helps us connect and reconnect to the
  * gateway specified
  */
@@ -284,13 +286,32 @@ async function checkReceipt() {
         console.log("done") 
 
         console.log("The total amount was transfered -> " + total.toFixed() )
-        process.exit(1)
+
+        // getting balance from each block
+        let blocksList = Object.keys(blocks)
+
+        for ( let block of blocksList ) {
+            let balances = await web3.fsn.getAllTimeLockBalances( "0xc98f8c6b319ecceccaa9361ed5372274674f96cf", block )
+            console.log( "block", block, "balance", JSON.stringify(balances))
+        }
         return
     }
 
+
+    console.log("===========================================================")
     let receipt = await web3.eth.getTransactionReceipt( transToCheck[index] )
     console.log( receipt.status + ", " +  transToCheck[index] + ", " + receipt.blockNumber )
+    let tran = await web3.eth.getTransaction(transToCheck[index])
 
+    blocks[receipt.blockNumber] = "true"
+
+    console.log("")
+    console.log( "transaction", transToCheck[index])
+    console.log( JSON.stringify(tran ) )
+    console.log("")
+    console.log( "receipt", transToCheck[index])
+    console.log( JSON.stringify( receipt ) )
+   
     if (receipt.logs.length) {
         let jsonLogData, saveData
         try {
@@ -304,12 +325,15 @@ async function checkReceipt() {
 
           total = total.add( valExtra )  
 
+          console.log(saveData)
+
         } catch (e) {
             console.log(e)
           logData = null;
           saveData = null;
         }
     }
+  
     index++
     scheduleNewScan(10);
 }
