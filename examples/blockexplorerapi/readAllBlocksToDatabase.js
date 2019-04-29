@@ -631,7 +631,10 @@ async function logTransaction(block, transactions, index, resolve, reject) {
 
     if (jsonLogData) {
       if (jsonLogData.To) {
-        balancesToGet[jsonLogData.To.toLowerCase()] = true;
+        let addTo = jsonLogData.To.toLowerCase()
+        balancesToGet[addTo] = true;
+        // we are reserving command extra 3 for To field
+        commandExtra3 = addTo
       }
 
       switch (fusionCommand) {
