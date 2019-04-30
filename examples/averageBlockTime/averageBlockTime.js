@@ -11,9 +11,9 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 90001; // do not process this block or higher
+let highestBlock = 100001; // do not process this block or higher
 let startCheckOfRetreats = 0
-let lastBlock = 85778; // 1; // reporting will start at block as genesis block does not get a reward
+let lastBlock = 1; // 1; // reporting will start at block as genesis block does not get a reward
 
 let sumOfTimes = 0;
 let highestTime = 0;

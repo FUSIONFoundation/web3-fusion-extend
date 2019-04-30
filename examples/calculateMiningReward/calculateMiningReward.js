@@ -17,13 +17,13 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 328000// highest block will be determined after launch
+let highestBlock = 100000 // <-- PSN 2.0 first reward ; //   PSN 1.0  328000// highest block will be determined after launch
 let ethereumBlockHeightToCheckBalance = 7456700  // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
     e.g. CONNECT_STRING="wss://gateway.fusionnetwork.io:10001"
 
-    else the default will be "wss://gateway.fusionnetwork.io:10001"
+    else the default will be "wss://gatewaypsn2w.fusionnetwork.io:10001"
 */
 
 let web3;
