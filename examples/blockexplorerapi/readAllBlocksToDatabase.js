@@ -253,7 +253,11 @@ function keepWeb3Alive() {
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
   provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING, {
-    timeout: 60000
+    timeout: 60000,
+    clientConfig: {
+      maxReceivedFrameSize: 100000000,
+      maxReceivedMessageSize: 100000000,
+    }
   });
   provider.on("connect", function() {
     //debugger
