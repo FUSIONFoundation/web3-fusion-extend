@@ -48,6 +48,7 @@ router.get("/:hash", function(req, res, next) {
   let hash = req.params.hash;
   let page =  req.query.page || 0;
   let size = req.query.size || 100;
+  let returnTickets = req.query.returnTickets || 'all'
   let field = allowedFields[req.query.field] ? req.query.field : 'height'
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
   let index = parseInt( req.query.index || -1 )
@@ -62,6 +63,25 @@ router.get("/:hash", function(req, res, next) {
 
   if ( isNaN(page) ) {
     page = 0
+  }
+
+  let tickreturns
+  let tickreturnsWhere
+
+  switch ( returnTickets.toLowerCase() ) {
+    default:
+    case 'all':
+      tickreturns = ''
+      ticketReturnWhere = ''
+      break
+    case 'onlytickets':
+      tickreturns = " and fusionCommand = 'BuyTicketFunc '"
+      ticketReturnWhere = " where fusionCommand = 'BuyTicketFunc'"
+      break
+    case 'notickets':
+      tickreturns = " and fusionCommand <> 'BuyTicketFunc '"
+      tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
+      break
   }
 
   if ( isNaN(index) ) {
@@ -90,7 +110,7 @@ router.get("/:hash", function(req, res, next) {
     let tsA = req.query.ts ?  req.query.ts.split("-") : []
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM transactions where hash  in (?)` , [ tsA ] )
+        .query(`SELECT * FROM transactions where hash  in (?) ${tickreturns}` , [ tsA ] )
         .then(rows => {
           res.json(rows)
         })
@@ -105,7 +125,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions where toAddress=? or commandExtra3 = ? or fromAddress=? order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions where toAddress=? or commandExtra3 = ? or fromAddress=? ${returnTickets} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
@@ -116,7 +136,7 @@ router.get("/:hash", function(req, res, next) {
     } else {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions ${tickreturnsWhere} order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
@@ -128,7 +148,7 @@ router.get("/:hash", function(req, res, next) {
   } else if ( hash === 'latest') {
     getConnection().then(conn => {
       conn
-        .query("SELECT * FROM transactions order by height, recCreated desc limit 1" )
+        .query(`SELECT * FROM transactions  ${tickreturnsWhere} order by height, recCreated desc limit 1`)
         .then(rows => {
           res.json(rows)
         })
@@ -140,7 +160,7 @@ router.get("/:hash", function(req, res, next) {
     // else get one block
     getConnection().then(conn => {
       conn
-        .query("select * from transactions where hash = ?", [hash])
+        .query(`select * from transactions  ${tickreturnsWhere} where hash = ?`, [hash])
         .then(rows => {
           res.json(rows)
         })
