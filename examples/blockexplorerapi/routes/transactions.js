@@ -35,6 +35,9 @@ router.get("/minerForTicket/:ticketId" , function( req, res, next )  {
  *   http://localhost:3000/transactions/all?sort=asc&page=2&size=10&field=height
  *   fields can be:  [ timestamp, hash , type, block , asset ]
  * 
+ * 
+ * https://localhost:3000/transactions/all?sort=desc&page=0&size=20&field=height&returnTickets=onlytickets
+ * 
  */
 router.get("/:hash", function(req, res, next) {
   let allowedFields = {
@@ -75,11 +78,11 @@ router.get("/:hash", function(req, res, next) {
       ticketReturnWhere = ''
       break
     case 'onlytickets':
-      tickreturns = " and fusionCommand = 'BuyTicketFunc '"
-      ticketReturnWhere = " where fusionCommand = 'BuyTicketFunc'"
+      tickreturns = " and fusionCommand = 'BuyTicketFunc'"
+      tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
       break
     case 'notickets':
-      tickreturns = " and fusionCommand <> 'BuyTicketFunc '"
+      tickreturns = " and fusionCommand <> 'BuyTicketFunc'"
       tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
       break
   }
@@ -125,7 +128,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress=?) ${returnTickets} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress=?) ${tickreturns} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
