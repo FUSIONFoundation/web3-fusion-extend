@@ -110,7 +110,7 @@ router.get("/:hash", function(req, res, next) {
     let tsA = req.query.ts ?  req.query.ts.split("-") : []
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM transactions where hash  in (?) ${tickreturns}` , [ tsA ] )
+        .query(`SELECT * FROM transactions where hash  in (?)` , [ tsA ] )
         .then(rows => {
           res.json(rows)
         })
@@ -125,7 +125,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
       getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions where toAddress=? or commandExtra3 = ? or fromAddress=? ${returnTickets} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
+          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress=?) ${returnTickets} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ] )
           .then(rows => {
             res.json(rows)
           })
@@ -160,7 +160,7 @@ router.get("/:hash", function(req, res, next) {
     // else get one block
     getConnection().then(conn => {
       conn
-        .query(`select * from transactions  ${tickreturnsWhere} where hash = ?`, [hash])
+        .query(`select * from transactions where hash = ?`, [hash])
         .then(rows => {
           res.json(rows)
         })
