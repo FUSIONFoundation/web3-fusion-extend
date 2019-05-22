@@ -494,7 +494,7 @@ async function getBalances(addrs, index, resolve, reject) {
     let balances = await web3.fsn.getAllBalances(address);
     let timeLockBalances = await web3.fsn.getAllTimeLockBalances(address);
     let tickets = await web3.fsn.allTicketsByAddress(address);
-    let swaps = await web3.fsn.allSwapsByAddress(address);
+    let swaps = -1 // new function will need to be supported to get this info as allSwaps is depreciated await web3.fsn.allSwapsByAddress(address);
     let notation = await web3.fsn.getNotation(address);
     all = JSON.stringify({
       balances,
