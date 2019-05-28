@@ -675,9 +675,6 @@ async function logTransaction(block, transactions, index, resolve, reject) {
         case "RecallSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
-        case "TransferNotationFunc":
-          commandExtra = jsonLogData.Notation;
-          break;
       }
     }
 
