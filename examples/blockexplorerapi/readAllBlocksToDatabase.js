@@ -95,8 +95,8 @@ let buildTheSystem = [
       "FOR EACH ROW\n" +
       "BEGIN\n" +
       "UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';\n" +
-      "END\n" 
-      // "DELIMITER ;\n"
+      "END\n"
+    // "DELIMITER ;\n"
   },
   {
     txt: "Build Info Table",
@@ -180,8 +180,8 @@ function createTables(resolve, reject) {
       }
     })
     .catch(err => {
-      if ( err.code === "ER_TRG_ALREADY_EXISTS" ) {
-        console.log("trigger already exists no problem")
+      if (err.code === "ER_TRG_ALREADY_EXISTS") {
+        console.log("trigger already exists no problem");
         buildIndex += 1;
         if (buildIndex === buildTheSystem.length) {
           console.log("All done building DB tables");
@@ -191,7 +191,7 @@ function createTables(resolve, reject) {
             createTables(resolve, reject);
           }, 10);
         }
-        return
+        return;
       }
       console.log("ERROR: " + buildTheSystem[buildIndex].txt, err);
       reject(err);
@@ -256,7 +256,7 @@ function keepWeb3Alive() {
     timeout: 60000,
     clientConfig: {
       maxReceivedFrameSize: 100000000,
-      maxReceivedMessageSize: 100000000,
+      maxReceivedMessageSize: 100000000
     }
   });
   provider.on("connect", function() {
@@ -494,7 +494,7 @@ async function getBalances(addrs, index, resolve, reject) {
     let balances = await web3.fsn.getAllBalances(address);
     let timeLockBalances = await web3.fsn.getAllTimeLockBalances(address);
     let tickets = await web3.fsn.allTicketsByAddress(address);
-    let swaps = -1 // new function will need to be supported to get this info as allSwaps is depreciated await web3.fsn.allSwapsByAddress(address);
+    let swaps = -1; // new function will need to be supported to get this info as allSwaps is depreciated await web3.fsn.allSwapsByAddress(address);
     let notation = await web3.fsn.getNotation(address);
     all = JSON.stringify({
       balances,
@@ -635,10 +635,10 @@ async function logTransaction(block, transactions, index, resolve, reject) {
 
     if (jsonLogData) {
       if (jsonLogData.To) {
-        let addTo = jsonLogData.To.toLowerCase()
+        let addTo = jsonLogData.To.toLowerCase();
         balancesToGet[addTo] = true;
         // we are reserving command extra 3 for To field
-        commandExtra3 = addTo
+        commandExtra3 = addTo;
       }
 
       switch (fusionCommand) {
@@ -666,13 +666,16 @@ async function logTransaction(block, transactions, index, resolve, reject) {
         case "MakeSwapFuncExt":
         case "MakeSwapFunc":
         case "MakeSwapFuncExtOld":
+        case "MakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
         case "TakeSwapFunc":
         case "TakeSwapFuncExt":
+        case "TakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
         case "RecallSwapFunc":
+        case "RecallMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
       }
