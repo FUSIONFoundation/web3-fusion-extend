@@ -17,7 +17,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 200000 // <-- PSN 2.0 first reward ; //   PSN 1.0  328000// highest block will be determined after launch
+let highestBlock = 300000 //  200000  PSN 2.0 second reward //  100000 PSN 2.0 first reward ; //   PSN 1.0  328000// highest block will be determined after launch
 let ethereumBlockHeightToCheckBalance = 7456700  // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
@@ -160,7 +160,7 @@ function keepWeb3EtherAlive() {
 keepWeb3EtherAlive()
 
 
-let lastBlock = 100001; // reporting will start at block as genesis block does not get a reward
+let lastBlock = 200001; // reporting will start at block as genesis block does not get a reward
 
 /** caclulate the reward at the block
  * 
