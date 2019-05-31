@@ -946,9 +946,7 @@ var onlineCounter = 0;
 
 function updateOnlinePrice() {
   if (!_isDBConnected) {
-    setTimeout(() => {
-      updateOnlinePrice();
-    }, 100);
+    return // this will be called on next block
   }
   if (!process.env.CMC_KEY) {
     return;
@@ -958,8 +956,8 @@ function updateOnlinePrice() {
   }
   if (lasttime !== 0) {
     let newtime = new Date().getTime();
-    if (lasttime + 420 * 1000 < newtime) {
-      // we check every 7 minutes to keep api correct
+    if (lasttime + (600 * 1000) < newtime) {
+      // we check every 10 minutes to keep api correct
       lasttime = newtime;
     } else {
       return;
