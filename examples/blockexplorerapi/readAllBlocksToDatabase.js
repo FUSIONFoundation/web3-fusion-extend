@@ -267,6 +267,7 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
+    debugger
     if (provider && !provider.___disconnected) {
       provider.___disconnected = true;
       provider.disconnect();
@@ -280,7 +281,7 @@ function keepWeb3Alive() {
     }
   });
   provider.on("end", function(err) {
-    //debugger
+    debugger
     if (!lastConnectTimer) {
       if (provider && !provider.___disconnected) {
         provider.___disconnected = true;
@@ -307,7 +308,7 @@ function keepWeb3Alive() {
 keepWeb3Alive();
 keepSQLAlive();
 
-let lastBlock = 0;
+let lastBlock = 1;
 
 function queryAddTagsForInsert(q, p) {
   for (let i = 0; i < p.length; i++) {
@@ -491,11 +492,12 @@ async function getBalances(addrs, index, resolve, reject) {
   let releaseConn = false;
   let conn;
   try {
-    let balances = await web3.fsn.getAllBalances(address);
-    let timeLockBalances = await web3.fsn.getAllTimeLockBalances(address);
-    let tickets = await web3.fsn.allTicketsByAddress(address);
+    let allInfo = await web3.fsn.allInfoByAddress( address )
+    let balances = allInfo.balances // await web3.fsn.getAllBalances(address);
+    let timeLockBalances = allInfo.timeLockBalances //  await web3.fsn.getAllTimeLockBalances(address);
+    let tickets = allInfo.tickets // await web3.fsn.allTicketsByAddress(address);
     let swaps = -1; // new function will need to be supported to get this info as allSwaps is depreciated await web3.fsn.allSwapsByAddress(address);
-    let notation = await web3.fsn.getNotation(address);
+    let notation = allInfo.notation // await web3.fsn.getNotation(address);
     all = JSON.stringify({
       balances,
       timeLockBalances,
@@ -922,8 +924,12 @@ async function doBlockScan() {
       return;
     }
     console.log("Start Block -> ", lastBlock, block.hash);
-    let jt = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
+    let c=  web3.utils.numberToHex(lastBlock)
+    dbg("get snapshot ")
+    let jt = await web3.fsn.getSnapshot(c);
+    dbg("snapshot done")
     await logBlock(block, jt);
+    dbg("log block done")
     await logTransactions(block);
     await logTicketPurchased(lastBlock, jt);
     console.log("Did   Block -> ", lastBlock, block.hash);
@@ -1108,4 +1114,8 @@ function formatDecimals(val, decimals) {
     val = insert(val, val.length - decimals, ".");
   }
   return val;
+}
+
+function dbg(a) {
+  console.log(a)
 }
