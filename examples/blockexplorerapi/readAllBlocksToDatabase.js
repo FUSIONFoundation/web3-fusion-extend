@@ -460,15 +460,33 @@ async function getTransactionLog(transaction) {
 
 let balancesToGet = {};
 
-async function getBalances(conn, addrs, index, resolve, reject) {
+async function getBalances( sql, conn, addrs, index, resolve, reject) {
+  if ( !sql ) {
+    sql = ""
+  }
   if (addrs.length === index) {
-    if ( conn && !conn.__released ) {
-      conn.__released = true 
-      conn.release()
-      conn = null
+    try {
+      // debugger
+      if ( sql.length > 0 ) {
+        rows = await conn.query(sql);
+      }
+      if ( conn && !conn.__released ) {
+        conn.__released = true 
+        conn.release()
+        conn = null
+      }
+      resolve(true);
+      return;
+    } catch (err) {
+      if ( conn && !conn.__released ) {
+        conn.__released = true 
+        conn.release()
+        conn = null
+      }
+      console.log(" getAllBalances error  ", err);
+      reject(err);
+      return
     }
-    resolve(true);
-    return;
   }
 
   // debugger
@@ -480,7 +498,7 @@ async function getBalances(conn, addrs, index, resolve, reject) {
     address === web3.fsn.consts.TicketLogAddress ||
     address.length === 0
   ) {
-    return getBalances(conn, addrs, index + 1, resolve, reject);
+    return getBalances(sql, conn, addrs, index + 1, resolve, reject);
   }
 
   let all;
@@ -488,7 +506,7 @@ async function getBalances(conn, addrs, index, resolve, reject) {
   if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
     // we have this balance already
     console.log("ALREADY HAVE BALANCE " + address);
-    getBalances(conn, addrs, index + 1, resolve, reject);
+    getBalances(sql, conn, addrs, index + 1, resolve, reject);
     return;
   }
 
@@ -530,15 +548,15 @@ async function getBalances(conn, addrs, index, resolve, reject) {
     let assetsHeld = Object.keys(Object.assign(balances, timeLockBalances))
       .length;
 
-    let sql =
+    sql = sql + 
       `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
 
-    rows = await conn.query(sql);
+
     balancesReturned[address] = glb_highestBlockOnChain;
 
-    getBalances(conn, addrs, index + 1, resolve, reject);
+    getBalances(sql,conn, addrs, index + 1, resolve, reject);
   } catch (err) {
     if ( conn && !conn.__released ) {
       conn.__released = true 
@@ -575,7 +593,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
   if (transactions.length === index) {
     let keys = Object.keys(balancesToGet);
     if (keys.length) {
-      return getBalances(conn, keys, 0, resolve, reject);
+      return getBalances( "", conn, keys, 0, resolve, reject);
     } else {
       if ( conn && !conn.__released ) {
         conn.__released = true
