@@ -267,7 +267,7 @@ function keepWeb3Alive() {
   });
   provider.on("error", function(err) {
     //debugger
-    debugger
+    //debugger
     if (provider && !provider.___disconnected) {
       provider.___disconnected = true;
       provider.disconnect();
@@ -281,7 +281,7 @@ function keepWeb3Alive() {
     }
   });
   provider.on("end", function(err) {
-    debugger
+    //debugger
     if (!lastConnectTimer) {
       if (provider && !provider.___disconnected) {
         provider.___disconnected = true;
@@ -405,7 +405,7 @@ async function logTransactions(block) {
 
   return new Promise((resolve, reject) => {
     console.log(block.transactions.length + " transactions ");
-    logTransaction(block, block.transactions, 0, resolve, reject);
+    logTransaction(null,block, block.transactions, 0, resolve, reject);
   });
 }
 
@@ -460,8 +460,13 @@ async function getTransactionLog(transaction) {
 
 let balancesToGet = {};
 
-async function getBalances(addrs, index, resolve, reject) {
+async function getBalances(conn, addrs, index, resolve, reject) {
   if (addrs.length === index) {
+    if ( conn && !conn.__released ) {
+      conn.__released = true 
+      conn.release()
+      conn = null
+    }
     resolve(true);
     return;
   }
@@ -475,7 +480,7 @@ async function getBalances(addrs, index, resolve, reject) {
     address === web3.fsn.consts.TicketLogAddress ||
     address.length === 0
   ) {
-    return getBalances(addrs, index + 1, resolve, reject);
+    return getBalances(conn, addrs, index + 1, resolve, reject);
   }
 
   let all;
@@ -483,14 +488,13 @@ async function getBalances(addrs, index, resolve, reject) {
   if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
     // we have this balance already
     console.log("ALREADY HAVE BALANCE " + address);
-    getBalances(addrs, index + 1, resolve, reject);
+    getBalances(conn, addrs, index + 1, resolve, reject);
     return;
   }
 
   console.log("GETTTING BALANCE " + address);
 
-  let releaseConn = false;
-  let conn;
+
   try {
     let allInfo = await web3.fsn.allInfoByAddress( address )
     let balances = allInfo.balances // await web3.fsn.getAllBalances(address);
@@ -505,7 +509,9 @@ async function getBalances(addrs, index, resolve, reject) {
       swaps,
       notation
     });
-    conn = await _pool.getConnection();
+    if ( !conn ) {
+      conn = await _pool.getConnection();
+    }
     let rows = await conn.query(
       `select ((select count(*) from transactions where toAddress="${address}")+
       (select count(*) from transactions where  fromAddress="${address}")) as 'count(*)';`
@@ -531,20 +537,37 @@ async function getBalances(addrs, index, resolve, reject) {
 
     rows = await conn.query(sql);
     balancesReturned[address] = glb_highestBlockOnChain;
-    conn.release();
-    conn = null;
-    getBalances(addrs, index + 1, resolve, reject);
+
+    getBalances(conn, addrs, index + 1, resolve, reject);
   } catch (err) {
+    if ( conn && !conn.__released ) {
+      conn.__released = true 
+      conn.release()
+      conn = null
+    }
     console.log(" getAllBalances error  ", err);
     reject(err);
   } finally {
-    if (conn) {
-      conn.release();
-    }
   }
 }
 
-async function logTransaction(block, transactions, index, resolve, reject) {
+let lastAssetBlock = -1
+let assets = { }
+async function cachedGetAsset( block, getAssetBalance) {
+  // await web3.fsn.getAsset(getAssetBalance);
+  if ( block !== lastAssetBlock ) {
+    lastAssetBlock = block
+    assets = {}
+  }
+  if ( assets[getAssetBalance] !== undefined ) {
+    return assets[getAssetBalance]
+  }
+  let asset =  await web3.fsn.getAsset(getAssetBalance);
+  assets[getAssetBalance] = asset
+  return asset
+}
+
+async function logTransaction( conn , block, transactions, index, resolve, reject) {
   console.log("   Transaction " + index + " being proceessed");
   if (index === 0) {
     balancesToGet = {};
@@ -552,27 +575,36 @@ async function logTransaction(block, transactions, index, resolve, reject) {
   if (transactions.length === index) {
     let keys = Object.keys(balancesToGet);
     if (keys.length) {
-      return getBalances(keys, 0, resolve, reject);
+      return getBalances(conn, keys, 0, resolve, reject);
     } else {
+      if ( conn && !conn.__released ) {
+        conn.__released = true
+        conn.release()
+        conn = null
+      } 
       resolve(true);
     }
     return;
   }
   if (!web3._isConnected) {
     reject(new Error("web3 not connected"));
-    retturn;
+    return;
   }
 
-  let conn;
   try {
-    let transaction = await web3.eth.getTransaction(transactions[index]);
-    let receipt = await web3.eth.getTransactionReceipt(transactions[index]);
+    let data = await web3.fsn.getTransactionAndReceipt(transactions[index]);
+    let transaction = data.tx //  await web3.eth.getTransaction(transactions[index]);
+    let receipt = data.receiptFound ? data.receipt : null // await web3.eth.getTransactionReceipt(transactions[index]);
     if (!receipt) {
       reject(new Error("transaction not complete, no receipt"));
       return;
     }
-    let log = await getTransactionLog(transaction);
-    conn = await _pool.getConnection();
+
+    let log = receipt.logs.length > 0 ? receipt.logs[0] : undefined
+
+    if ( !conn ) {
+      conn = await _pool.getConnection();
+    }
     // merge receipt and transaction
     //debugger
     transaction.topics =
@@ -714,38 +746,31 @@ async function logTransaction(block, transactions, index, resolve, reject) {
 
     index += 1;
     if (getAssetBalance) {
-      let asset = await web3.fsn.getAsset(getAssetBalance);
+      let asset = cachedGetAsset( block, getAssetBalance) // await web3.fsn.getAsset(getAssetBalance);
       let totalSupply = asset.Total;
       await conn.query(
         "UPDATE transactions set commandExtra3  = ? where hash = ?;",
         [totalSupply, transaction.hash.toLowerCase()]
       );
-      conn.release();
-      conn = null;
-      logTransaction(block, transactions, index, resolve, reject);
+      logTransaction(conn,block, transactions, index, resolve, reject);
     } else {
-      conn.release();
-      conn = null;
-      releaseConn = true;
-      logTransaction(block, transactions, index, resolve, reject);
+      logTransaction(conn,block, transactions, index, resolve, reject);
     }
   } catch (err) {
-    if (conn) {
-      conn.release();
-      conn = null;
-    }
     if (err.code === "ER_DUP_ENTRY") {
       // block was already written
       // normal when we restart scan
-      logTransaction(block, transactions, index + 1, resolve, reject);
+      logTransaction(conn,block, transactions, index + 1, resolve, reject);
       return true;
+    }
+    if (conn && !conn.__released) {
+      conn.__released = true
+      conn.release();
+      conn = null;
     }
     console.log("transaction log error ", err);
     reject(err);
   } finally {
-    if (conn) {
-      conn.release();
-    }
   }
 }
 
