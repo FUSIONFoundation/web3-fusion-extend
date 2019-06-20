@@ -28,6 +28,25 @@ const VERSION_ID = "VERSION_ID";
 let glb_highestBlockOnChain;
 let balancesReturned = {};
 
+/** these balances are read on block 1 so the info
+ * in the genesis account will be loaded into the
+ * database
+ */
+let genesisAccounts = [
+  "0x9c48c796cb0bed51a14291bc8cc56dab5aed7b5c" , // foundation total supply
+
+  "0x0Ac469cf34C4d65515E4eF27eAF0F71F15C5A2fd" , // usan generator
+
+  "0xd2452651834e8f0c19c9d85e0bf09fe99283dabc" , // foundation miner 1
+  "0x7da669ea4234473e224a8f5a5f6257729e6f03cd" , // foundation miner 2
+  "0x8e448859d7502b1ecf0c8d18008feeff89a30c60" , // foundation miner 3
+  "0x722c6716dad0d7f8c1adbfd3360edbe99813f3aa" , // foundation miner 4
+  "0x0e93335afe434a73e005cab8bd1b2dc153b73549" , // foundation miner 5
+  "0xe3db01c89dcdd68b80e7dfdf931b00a6335d72dd" , // foundation miner 6
+  "0xc4a9441afb052cb454240136cce71fb09316ea94" , // foundation miner 7
+  "0xfa37b7c3f21060458361ed5322be5af3740bce3c"   // foundation miner 8
+]
+
 let buildTheSystem = [
   {
     txt: "Build Blocks",
@@ -589,6 +608,12 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
   console.log("   Transaction " + index + " being proceessed");
   if (index === 0) {
     balancesToGet = {};
+    if ( block.number === 1 ) {
+      // add the genesis accounts to balances to get
+      for ( let act of genesisAccounts ) {
+        balancesToGet[act] = true
+      }
+    }
   }
   if (transactions.length === index) {
     let keys = Object.keys(balancesToGet);
