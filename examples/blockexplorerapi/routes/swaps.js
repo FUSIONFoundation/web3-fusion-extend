@@ -33,7 +33,9 @@ router.get("/:swap", function(req, res, next) {
   if (req.params.swap === "all") {
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt')  order by timeStamp ${sort}  limit ?,?`, [
+        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') 
+        and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or fusionCommand = 'TakeSwapFunc'))
+                 order by timeStamp ${sort}  limit ?,?`, [
           page * size,
           size
         ])
