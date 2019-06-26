@@ -38,16 +38,23 @@ router.get("/:swap", function(req, res, next) {
   }
 
   if (req.params.swap === "all") {
+    let params = []
     let  extra =  includeDeleted ? "" :  " and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or fusionCommand = 'TakeSwapFunc')) "
-   
+    if ( req.query.fromAsset ) {
+      extra += " and commandExtra2 = ? "
+      params.push( req.query.fromAsset )
+    }
+    if ( req.query.toAsset ) {
+        extra += " and commandExtra3 = ? "
+        params.push( req.query.toAsset )
+    }
+    params.push(    page * size )
+    params.push(   size )
     getConnection().then(conn => {
       conn
         .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') `
          + extra +
-                 ` order by timeStamp ${sort}  limit ?,?`, [
-          page * size,
-          size
-        ])
+                 ` order by timeStamp ${sort}  limit ?,?`, params )
         .then(rows => {
           res.json(rows);
         })
