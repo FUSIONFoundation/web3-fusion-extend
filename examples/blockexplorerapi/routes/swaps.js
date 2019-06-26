@@ -48,6 +48,10 @@ router.get("/:swap", function(req, res, next) {
         extra += " and commandExtra3 = ? "
         params.push( req.query.toAsset )
     }
+    if ( req.query.address ) {
+      extra +=  " and fromAddress = ? "
+      params.push( req.query.address )
+    }
     params.push(    page * size )
     params.push(   size )
     getConnection().then(conn => {
