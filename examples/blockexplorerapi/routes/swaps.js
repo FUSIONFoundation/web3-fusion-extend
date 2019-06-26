@@ -15,8 +15,15 @@ var { getConnection } = require("../dbapi/dbapi.js");
 router.get("/:swap", function(req, res, next) {
   let page = req.query.page || 0;
   let size = req.query.size || 1;
+  let includeDeleted = req.query.includeDeleted || "false"
 
   let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+
+  if ( includeDeleted.toLowerCase() === 'true' ) {
+    includeDeleted = true
+  } else {
+    includeDeleted = false
+  }
 
   page = parseInt(page);
   size = parseInt(size);
@@ -31,11 +38,13 @@ router.get("/:swap", function(req, res, next) {
   }
 
   if (req.params.swap === "all") {
+    let  extra =  includeDeleted ? "" :  " and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or fusionCommand = 'TakeSwapFunc')) "
+   
     getConnection().then(conn => {
       conn
-        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') 
-        and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or fusionCommand = 'TakeSwapFunc'))
-                 order by timeStamp ${sort}  limit ?,?`, [
+        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') `
+         + extra +
+                 ` order by timeStamp ${sort}  limit ?,?`, [
           page * size,
           size
         ])

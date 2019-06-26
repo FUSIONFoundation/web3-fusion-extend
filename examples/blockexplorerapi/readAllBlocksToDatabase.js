@@ -662,6 +662,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     let commandExtra2;
     let commandExtra3;
     let getAssetBalance;
+    let blockNumber = parseInt( transaction.blockNumber )
 
     let logData = null;
     let jsonLogData;
@@ -742,6 +743,10 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           break;
         case "MakeSwapFuncExt":
         case "MakeSwapFunc":
+          commandExtra = jsonLogData.SwapID;
+          commandExtra2 = jsonLogData.FromAssetID
+          commandExtra3 = jsonLogData.ToAssetID
+          break
         case "MakeSwapFuncExtOld":
         case "MakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
@@ -769,7 +774,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     // "  transaction json,\n" +
     let params = [
       transaction.hash.toLowerCase(),
-      transaction.blockNumber,
+      blockNumber,
       block.timestamp,
       now,
       now,
