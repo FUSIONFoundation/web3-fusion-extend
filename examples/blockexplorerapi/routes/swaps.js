@@ -52,9 +52,19 @@ router.get("/:swap", function(req, res, next) {
       extra +=  " and fromAddress = ? "
       params.push( req.query.address )
     }
-    params.push(    page * size )
-    params.push(   size )
+  
+
     getConnection().then(conn => {
+      if ( req.query.target ) {
+        let s = conn.escape(req.query.target)
+        s= s.replace( "'" , "")
+        s = s.replace("'", "")
+        extra +=  ` and data like '%${s}%' `
+      }
+
+      params.push(    page * size )
+      params.push(   size )
+
       conn
         .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') `
          + extra +
@@ -64,7 +74,7 @@ router.get("/:swap", function(req, res, next) {
         })
         .finally(() => {
           conn.release();
-        });
+        })
     });
   } else {
     getConnection().then(conn => {
