@@ -693,7 +693,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     balancesToGet[transaction.from] = true;
 
     if (transaction.topics) {
-      let topic = parseInt(transaction.topics[0].substr(2));
+      let topic = parseInt(transaction.topics[0] , 16 );
       if (
         transaction.to === web3.fsn.consts.FSNCallAddress ||
         transaction.from === web3.fsn.consts.FSNCallAddress
