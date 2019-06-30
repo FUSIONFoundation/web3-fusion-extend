@@ -739,7 +739,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           fusionCommand = jsonLogData.LockType;
           break;
         case "BuyTicketFunc":
-          commandExtra = jsonLogData.Ticket;
+          commandExtra = jsonLogData.TicketID;
           break;
         case "MakeSwapFuncExt":
         case "MakeSwapFunc":
