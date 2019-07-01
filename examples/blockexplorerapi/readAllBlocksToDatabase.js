@@ -28,6 +28,27 @@ const VERSION_ID = "VERSION_ID";
 let glb_highestBlockOnChain;
 let balancesReturned = {};
 
+let numberOfBlocksToWait = 1
+
+let checkPriceOfFSN = true
+
+if ( process.env.NUMBER_OF_BLOCKS_TO_WAIT ) {
+  let x = parseInt(  process.env.NUMBER_OF_BLOCKS_TO_WAIT  )
+  if ( isNaN(x) || x <= 0 ) {
+    console.log("NUMBER_OF_BLOCKS_TO_WAIT must be a number and > 0 ")
+    process.exit(1)
+  }
+}
+
+if ( process.env.CHECK_FSN_PRICE && process.env.CHECK_FSN_PRICE.toLowerCase() === 'false' ) {
+  checkPriceOfFSN  = false
+  console.log("NOT UPDATING FSN PRICE")
+} else {
+  console.log("FSN PRICE WILL BE UPDATED")
+}
+
+console.log( `NUMBER_OF_BLOCKS_TO_WAIT set to --> ${numberOfBlocksToWait}` )
+
 /** these balances are read on block 1 so the info
  * in the genesis account will be loaded into the
  * database
@@ -982,7 +1003,7 @@ async function doBlockScan() {
   try {
     let currentBlock = await web3.eth.getBlockNumber();
     glb_highestBlockOnChain = currentBlock;
-    if (process.env.FILLIN !== "true" && currentBlock + 1 < lastBlock) {
+    if (process.env.FILLIN !== "true" && currentBlock + numberOfBlocksToWait < lastBlock) {
       // wait for two blocks for data to fill in
       console.log("Really Waiting for new block..." + new Date());
       scheduleNewScan();
@@ -1032,6 +1053,9 @@ function updateOnlinePrice() {
   }
   if (inpriceget) {
     return;
+  }
+  if ( !checkPriceOfFSN ) {
+    return
   }
   if (lasttime !== 0) {
     let newtime = new Date().getTime();
