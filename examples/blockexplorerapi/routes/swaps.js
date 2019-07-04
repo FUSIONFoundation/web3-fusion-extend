@@ -39,7 +39,7 @@ router.get("/:swap", function(req, res, next) {
 
   if (req.params.swap === "all") {
     let params = []
-    let  extra =  includeDeleted ? "" :  " and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or fusionCommand = 'TakeSwapFunc')) "
+    let  extra =  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or (fusionCommand = 'TakeSwapFunc' and data like '{"Deleted":"true"%') )) `
     if ( req.query.fromAsset ) {
       extra += " and commandExtra2 = ? "
       params.push( req.query.fromAsset )
