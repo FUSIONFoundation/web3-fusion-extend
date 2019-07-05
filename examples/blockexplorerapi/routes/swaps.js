@@ -66,7 +66,7 @@ router.get("/:swap", function(req, res, next) {
       params.push(   size )
 
       conn
-        .query(`SELECT * FROM transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt') `
+        .query(`SELECT * FROM transactions where fusionCommand = 'MakeSwapFunc' `
          + extra +
                  ` order by timeStamp ${sort}  limit ?,?`, params )
         .then(rows => {
@@ -79,7 +79,7 @@ router.get("/:swap", function(req, res, next) {
   } else {
     getConnection().then(conn => {
       conn
-        .query("select * from transactions where (fusionCommand = 'MakeSwapFunc' or fusionCommand = 'MakeSwapFuncExt')  and commandExtra = ? ", [
+        .query("select * from transactions where fusionCommand = 'MakeSwapFunc'  and commandExtra = ? ", [
           req.params.swap
         ])
         .then(rows => {
