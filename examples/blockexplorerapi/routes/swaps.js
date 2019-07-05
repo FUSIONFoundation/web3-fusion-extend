@@ -39,7 +39,11 @@ router.get("/:swap", function(req, res, next) {
 
   if (req.params.swap === "all") {
     let params = []
-    let  extra =  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or (fusionCommand = 'TakeSwapFunc' and data like '{"Deleted":"true"%') )) `
+    let extra =""
+    if ( req.query.address ) {
+      extra +=  " and fromAddress = ? "
+      params.push( req.query.address )
+    }
     if ( req.query.fromAsset ) {
       extra += " and commandExtra2 = ? "
       params.push( req.query.fromAsset )
@@ -48,11 +52,9 @@ router.get("/:swap", function(req, res, next) {
         extra += " and commandExtra3 = ? "
         params.push( req.query.toAsset )
     }
-    if ( req.query.address ) {
-      extra +=  " and fromAddress = ? "
-      params.push( req.query.address )
-    }
-  
+    /*** TOO SLOW , disable until we fix
+     *     extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or (fusionCommand = 'TakeSwapFunc' and data like '{"Deleted":"true"%') )) `
+    */
 
     getConnection().then(conn => {
       if ( req.query.target ) {
