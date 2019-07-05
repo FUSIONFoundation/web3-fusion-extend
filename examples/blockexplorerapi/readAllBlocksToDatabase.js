@@ -109,6 +109,7 @@ let buildTheSystem = [
       "  commandExtra VARCHAR(128),\n" +
       "  commandExtra2 VARCHAR(128),\n" +
       "  commandExtra3 VARCHAR(128),\n" +
+      '  swapDeleted BOOL,\n' +
       "  data text,\n" +
       "  transaction json,\n" +
       "  receipt json,\n" +
@@ -122,6 +123,8 @@ let buildTheSystem = [
       "  INDEX `commandExtra` (`commandExtra`),\n" +
       "  INDEX `commandExtra2` (`commandExtra2`),\n" +
       "  INDEX `commandExtra3` (`commandExtra3`),\n" +
+      "  INDEX `swapDeletedCmdX` (`swapDeleted`,`commandExtra`),\n" +
+      "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
@@ -732,6 +735,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
       balancesToGet[transaction.to] = true;
     }
 
+    let swapDeleted = false
     if (jsonLogData) {
       if (jsonLogData.To) {
         let addTo = jsonLogData.To.toLowerCase();
@@ -773,12 +777,30 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           commandExtra = jsonLogData.SwapID;
           break;
         case "TakeSwapFunc":
+          commandExtra = jsonLogData.SwapID;
+          swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
+          // we need the maker of this swap to get the balance
+          try {
+            // we need to update the balance of the maker as well
+            let query = `select fromAddress from transactions where commandExtra = ? and fusionCommand = 'MakeSwapFunc`
+            let rows = conn.query( query, [ commandExtra ])
+            let address = rows[0].fromAddress;
+            balancesToGet[address] = true;
+            debugger
+          } catch (e ) {
+            debugger
+            console.log("takeSwap get address failed", e)
+            // if it doesn't work balance can be refreshed later
+          }
+          break;
         case "TakeSwapFuncExt":
         case "TakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
+          swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
           break;
         case "RecallSwapFunc":
         case "RecallMultiSwapFunc":
+          swapDeleted = true
           commandExtra = jsonLogData.SwapID;
           break;
       }
@@ -805,6 +827,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
       commandExtra,
       commandExtra2,
       commandExtra3,
+      swapDeleted,
       saveData,
       JSON.stringify(transaction),
       JSON.stringify(receipt)

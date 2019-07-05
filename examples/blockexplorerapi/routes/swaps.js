@@ -52,9 +52,8 @@ router.get("/:swap", function(req, res, next) {
         extra += " and commandExtra3 = ? "
         params.push( req.query.toAsset )
     }
-    /*** TOO SLOW , disable until we fix
-     *     extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (fusionCommand = 'RecallSwapFunc' or (fusionCommand = 'TakeSwapFunc' and data like '{"Deleted":"true"%') )) `
-    */
+     
+    extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (swapDeleted<>0)) `
 
     getConnection().then(conn => {
       if ( req.query.target ) {
