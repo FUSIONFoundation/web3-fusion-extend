@@ -53,7 +53,7 @@ router.get("/:swap", function(req, res, next) {
         params.push( req.query.toAsset )
     }
      
-    extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (swapDeleted<>0)) `
+   // extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (swapDeleted<>0)) `
 
     getConnection().then(conn => {
       if ( req.query.target ) {
