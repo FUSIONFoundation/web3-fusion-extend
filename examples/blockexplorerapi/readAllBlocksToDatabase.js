@@ -124,6 +124,7 @@ let buildTheSystem = [
       "  INDEX `commandExtra2` (`commandExtra2`),\n" +
       "  INDEX `commandExtra3` (`commandExtra3`),\n" +
       "  INDEX `swapDeletedCmdX` (`swapDeleted`,`commandExtra`),\n" +
+      "  INDEX `cmdSwapFusionCmd` (`commandExtra`,`swapDeleted`,`fusionCommand`),\n"+
       "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
