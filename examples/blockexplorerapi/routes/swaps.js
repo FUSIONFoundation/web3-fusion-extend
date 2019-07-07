@@ -28,9 +28,9 @@ router.get("/:swap", function(req, res, next) {
   page = parseInt(page);
   size = parseInt(size);
 
-  if (size > 100 || size < 1 || isNaN(size)) {
+  if (size > 30 || size < 1 || isNaN(size)) {
     console.log("size ", size);
-    size = 100;
+    size = 30;
   }
 
   if (isNaN(page)) {
@@ -53,7 +53,7 @@ router.get("/:swap", function(req, res, next) {
         params.push( req.query.toAsset )
     }
      
-   // extra +=  includeDeleted ? "" :  ` and commandExtra not in (SELECT commandExtra FROM transactions where (swapDeleted<>0)) `
+   extra +=  includeDeleted ? "" :  ` and not exists (SELECT swap FROM deletedSwaps where swap=commandExtra) `
 
     getConnection().then(conn => {
       if ( req.query.target ) {
