@@ -132,6 +132,21 @@ let buildTheSystem = [
       "COMMIT;"
   },
   {
+    txt: "Build DeletedSwaps",
+    sql:
+      "BEGIN;\n" +
+      "CREATE TABLE IF NOT EXISTS deletedSwaps (\n" +
+      "  swap VARCHAR(68) NOT NULL UNIQUE,\n" +
+      "  hash VARCHAR(68) NOT NULL,\n" +
+      "  height BIGINT NOT NULL,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  PRIMARY KEY (swap),\n" +
+      "  INDEX `hash` (`hash`),\n" +
+      "  INDEX `height` (`height`)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
+      "COMMIT;"
+  },
+  {
     txt: "create triggle for transaction",
     sql:
       // "DELIMITER ;;\n" +
@@ -151,7 +166,7 @@ let buildTheSystem = [
       "  lastheightProcessed BIGINT NOT NULL,\n" +
       "  transactionCount BIGINT NOT NULL,\n" +
       "  version BIGINT NOT NULL,\n" +
-      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recpCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
@@ -794,7 +809,6 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
             // if it doesn't work balance can be refreshed later
           }
           break;
-        case "TakeSwapFuncExt":
         case "TakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
           swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
@@ -805,6 +819,31 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           commandExtra = jsonLogData.SwapID;
           break;
       }
+    }
+
+    if ( swapDeleted ) {
+      // update the swap deleted table
+      /* 
+            "  swap VARCHAR(68) NOT NULL UNIQUE,\n" +
+      "  hash VARCHAR(68) NOT NULL,\n" +
+      "  height BIGINT NOT NULL,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      */
+     /** command to rebuild if neccessary
+      * 
+      * INSERT INTO deletedSwaps(swap,hash,height,recreated) 
+        select commandExtra, hash, height, recCreated  from transactions  where swapDeleted <> 0
+      *
+      */
+     let swapQuery = "Insert into deletedSwaps Values(";
+      let params = [
+        commandExtra,
+        transaction.hash.toLowerCase(),
+        blockNumber,
+        new Date(),
+      ]
+      swapQuery = queryAddTagsForInsert(swapQuery, params);
+      await conn.query(swapQuery, params);
     }
 
     // "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
