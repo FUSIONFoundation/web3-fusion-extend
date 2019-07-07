@@ -127,6 +127,8 @@ let buildTheSystem = [
       "  INDEX `cmdSwapFusionCmd` (`commandExtra`,`swapDeleted`,`fusionCommand`),\n"+
       "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
+      "  INDEX `descFCmdFAddrTimeS` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` DESC),\n" +
+      "  INDEX `fusionCommandAddressTimeStamp` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` ASC),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
       "COMMIT;"

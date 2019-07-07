@@ -53,7 +53,7 @@ router.get("/:swap", function(req, res, next) {
         params.push( req.query.toAsset )
     }
      
-   extra +=  includeDeleted ? "" :  ` and not exists (SELECT swap FROM deletedSwaps where swap=commandExtra) `
+    extra +=  includeDeleted ? "" :  ` and not exists (SELECT swap FROM deletedSwaps where swap=commandExtra) `
 
     getConnection().then(conn => {
       if ( req.query.target ) {
