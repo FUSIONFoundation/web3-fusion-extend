@@ -127,6 +127,10 @@ let buildTheSystem = [
       "  INDEX `cmdSwapFusionCmd` (`commandExtra`,`swapDeleted`,`fusionCommand`),\n"+
       "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
       "  INDEX `toAddress` (`toAddress`),\n" +
+      "  INDEX `cmd3AndFCmd` (`commandExtra3` ASC, `fusionCommand` ASC),\n"+
+      // INDEX `toAddressAndFCmd` (`toAddress` ASC, `fusionCommand` ASC);
+      // INDEX `fromAddressAndFCmd` (`fromAddress` ASC, `fusionCommand` ASC);
+      // INDEX `toAdrCmd3FAddFCmd` (`toAddress` ASC, `commandExtra3` ASC, `fromAddress` ASC, `fusionCommand` ASC);
       "  INDEX `descFCmdFAddrTimeS` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` DESC),\n" +
       "  INDEX `fusionCommandAddressTimeStamp` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` ASC),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
