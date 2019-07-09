@@ -17,7 +17,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 300000 //  200000  PSN 2.0 second reward //  100000 PSN 2.0 first reward ; //   PSN 1.0  328000// highest block will be determined after launch
+let highestBlock = 600000 //400000 // 300000 //  200000  PSN 2.0 second reward //  100000 PSN 2.0 first reward ; //   PSN 1.0  328000// highest block will be determined after launch
 let ethereumBlockHeightToCheckBalance = 7456700  // height to check ethereum balanc
 
 /*  Remember to set your environment variables to run this test
@@ -54,7 +54,7 @@ function keepWeb3Alive() {
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
   provider = new Web3.providers.WebsocketProvider(connectString, {
-    timeout: 60000
+    timeout: 10000
   });
   provider.on("connect", function() {
     //debugger
@@ -66,7 +66,10 @@ function keepWeb3Alive() {
     //debugger
     if (provider && !provider.___disconnected) {
       provider.___disconnected = true;
-      provider.disconnect();
+      try {
+        provider.disconnect();
+      } catch (e ) {
+      }
       provider = null;
       web3._isConnected = false;
       console.log("web3 connection error ", err);
@@ -160,7 +163,7 @@ function keepWeb3EtherAlive() {
 keepWeb3EtherAlive()
 
 
-let lastBlock = 200001; // reporting will start at block as genesis block does not get a reward
+let lastBlock = 500001; // reporting will start at block as genesis block does not get a reward
 
 /** caclulate the reward at the block
  * 
@@ -290,6 +293,11 @@ function sha3bin(value, options) {
  * every 100 print out a status message
  */
 async function doBlockScan() {
+  if ( !web3._isConnected ) {
+      console.log("Do block scan - web3 not connected will try again in 2 seconds")
+      scheduleNewScan(2000);
+      return
+  }
   let zeroBN = new BigNumber( 0 )
   try {
     let block = await web3.eth.getBlock(lastBlock);
