@@ -11,7 +11,7 @@ let inHere;
 let counter;
 let timerSet;
 
-let highestBlock = 100001; // do not process this block or higher
+let highestBlock = 6701; // do not process this block or higher
 let startCheckOfRetreats = 0
 let lastBlock = 1; // 1; // reporting will start at block as genesis block does not get a reward
 
@@ -43,7 +43,7 @@ var web3;
 
 let connectString = process.env.CONNECT_STRING;
 if (!connectString) {
-  connectString = "wss://testpsn2.fusionnetwork.io:10001";
+  connectString = "wss://mainnetpublicgateway1.fusionnetwork.io:10001";
 }
 
 /** the following function helps us connect and reconnect to the
@@ -205,9 +205,9 @@ async function doBlockScan() {
     let newTime = block.timestamp;
     let ti = await web3.fsn.getSnapshot(web3.utils.numberToHex(lastBlock));
 
-    let TD = ti.deleted.length
-    let TR = ti.retreat.length
-    let TE = ti.expired.length
+    let TD = ti.deleted !== undefined ? ti.deleted.length : 0
+    let TR = ti.retreat !== undefined ? ti.retreat.length  : 0
+    let TE = ti.expired !== undefined ? ti.expired.length  : 0
     let tn = ti.ticketNumber
 
     if ( lastBlock > startCheckOfRetreats ) {
