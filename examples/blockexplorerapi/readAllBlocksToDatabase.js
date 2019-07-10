@@ -153,6 +153,27 @@ let buildTheSystem = [
       "COMMIT;"
   },
   {
+    txt: "Build Swaps",
+    sql:
+      "BEGIN;\n" +
+      "CREATE TABLE IF NOT EXISTS swaps (\n" +
+      "  swapID VARCHAR(68) NOT NULL UNIQUE,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  hash VARCHAR(68) NOT NULL,\n" +
+      "  fromAddress VARCHAR(68),\n" +
+      "  fromAsset VARCHAR(68),\n" +
+      "  toAsset VARCHAR(68),\n" +
+      "  size BIGINT,\n" +
+      "  data text,\n" +
+      "  PRIMARY KEY (swapID),\n" +
+      "  INDEX `hash` (`hash`),\n" +
+      "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `toAsset` (`toAsset`),\n" +
+      "  INDEX `fromAsset` (`fromAsset`)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
+      "COMMIT;"
+  },
+  {
     txt: "create triggle for transaction",
     sql:
       // "DELIMITER ;;\n" +
@@ -793,8 +814,25 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           commandExtra = jsonLogData.SwapID;
           commandExtra2 = jsonLogData.FromAssetID
           commandExtra3 = jsonLogData.ToAssetID
+          // add the swap to the swap list
+          //
+          {
+            let swapValues = 
+            [ 
+              jsonLogData.SwapID,
+              now,
+              transaction.hash.toLowerCase(),
+              transaction.from,
+              jsonLogData.FrommAssetID,
+              jsonLogData.ToAssetID,
+              jsonLogData.SwapSize,
+              saveData
+            ]
+            let querySwaps = "Insert into swaps Values(";
+            querySwaps = queryAddTagsForInsert(querySwaps, swapValues);
+            await conn.query(querySwaps, swapValues);
+          }
           break
-        case "MakeSwapFuncExtOld":
         case "MakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
           break;
@@ -804,15 +842,20 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           // we need the maker of this swap to get the balance
           try {
             // we need to update the balance of the maker as well
-            let query = `select fromAddress from transactions where commandExtra = ? and fusionCommand = 'MakeSwapFunc'`
+            let query = `select * from swaps where swapID = ?`
             let rows = await conn.query( query, [ commandExtra ])
             let address = rows[0].fromAddress;
+            let size = rows[0].size
+            size = size - jsonLogData.size
+            if ( size === 0 ) {
+              let querySwaps = "delete from swaps where swapID=?";
+              await conn.query(querySwaps,  [jsonLogData.SwapID]);
+            }
             balancesToGet[address] = true;
-            debugger
           } catch (e ) {
-            debugger
-            console.log("takeSwap get address failed", e)
+            console.log("takeSwap update failed ", e)
             // if it doesn't work balance can be refreshed later
+            throw e
           }
           break;
         case "TakeMultiSwapFunc":
@@ -821,6 +864,10 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           break;
         case "RecallSwapFunc":
         case "RecallMultiSwapFunc":
+          {
+            let querySwaps = "delete from swaps where swapID=?";
+            await conn.query(querySwaps,  [jsonLogData.SwapID]);
+          }
           swapDeleted = true
           commandExtra = jsonLogData.SwapID;
           break;
