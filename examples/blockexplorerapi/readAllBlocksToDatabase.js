@@ -805,7 +805,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           try {
             // we need to update the balance of the maker as well
             let query = `select fromAddress from transactions where commandExtra = ? and fusionCommand = 'MakeSwapFunc`
-            let rows = conn.query( query, [ commandExtra ])
+            let rows = await conn.query( query, [ commandExtra ])
             let address = rows[0].fromAddress;
             balancesToGet[address] = true;
             debugger
