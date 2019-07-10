@@ -167,6 +167,7 @@ let buildTheSystem = [
       "  data text,\n" +
       "  PRIMARY KEY (swapID),\n" +
       "  INDEX `hash` (`hash`),\n" +
+      "  INDEX `recCreated` (`recCreated`),\n" +
       "  INDEX `fromAddress` (`fromAddress`),\n" +
       "  INDEX `toAsset` (`toAsset`),\n" +
       "  INDEX `fromAsset` (`fromAsset`)\n" +
@@ -850,6 +851,9 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
             if ( size === 0 ) {
               let querySwaps = "delete from swaps where swapID=?";
               await conn.query(querySwaps,  [jsonLogData.SwapID]);
+            } else {
+              let querySwaps = "update swaps set `size` = ? where swapID=?";
+              await conn.query(querySwaps,  [jsize, sonLogData.SwapID ]);
             }
             balancesToGet[address] = true;
           } catch (e ) {
