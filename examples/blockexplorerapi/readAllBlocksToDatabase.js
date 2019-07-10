@@ -823,7 +823,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
               now,
               transaction.hash.toLowerCase(),
               transaction.from,
-              jsonLogData.FrommAssetID,
+              jsonLogData.FromAssetID,
               jsonLogData.ToAssetID,
               jsonLogData.SwapSize,
               saveData
