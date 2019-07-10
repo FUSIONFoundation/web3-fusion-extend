@@ -172,7 +172,7 @@ let buildTheSystem = [
       "  lastheightProcessed BIGINT NOT NULL,\n" +
       "  transactionCount BIGINT NOT NULL,\n" +
       "  version BIGINT NOT NULL,\n" +
-      "  recpCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       "  PRIMARY KEY (lastheightProcessed)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;" +
