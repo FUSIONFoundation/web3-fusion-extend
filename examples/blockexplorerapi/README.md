@@ -18,6 +18,28 @@ It can be passed on the command line.
 CONNECT_STRING="ws://server.example.com:10001"  DB_CONNECT_STRING="{'host':'mysqlserver,'user':'adminuser','password':'password','database':'fusionblockdb','connectionLimit':100}" node readAllBlocksToDatabase.js 
 ```
 
+NOTE: When running readAllBlocksToDatabase to reload the database it is important
+to execute this query to update the number of transactions for each account
+as it will only updatee transactions and balances once for speed of reloading.
+
+UPDATE currentBalance 
+SET 
+    numberOfTransactions = (SELECT 
+            ((SELECT 
+                        COUNT(*)
+                    FROM
+                        transactions
+                    WHERE
+                        toAddress = currentBalance._id) + (SELECT 
+                        COUNT(*)
+                    FROM
+                        transactions
+                    WHERE
+                        fromAddress = currentBalance._id)) AS 'count'
+        )
+
+
+
 You can then host the api server for the database via:
 
 ```
