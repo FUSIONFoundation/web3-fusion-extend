@@ -851,7 +851,8 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
             let rows = await conn.query( query, [ commandExtra ])
             let address = rows[0].fromAddress;
             let size = rows[0].size
-            size = size - jsonLogData.size
+            debugger
+            size = size - jsonLogData.Size
             if ( size === 0 ) {
               let querySwaps = "delete from swaps where swapID=?";
               await conn.query(querySwaps,  [jsonLogData.SwapID]);
