@@ -159,6 +159,8 @@ let buildTheSystem = [
       "CREATE TABLE IF NOT EXISTS swaps (\n" +
       "  swapID VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  height BIGINT NOT NULL,\n" +
+      "  timeStamp BIGINT UNSIGNED,\n" +
       "  hash VARCHAR(68) NOT NULL,\n" +
       "  fromAddress VARCHAR(68),\n" +
       "  fromAsset VARCHAR(68),\n" +
@@ -822,6 +824,8 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
             [ 
               jsonLogData.SwapID,
               now,
+              blockNumber,
+              block.timestamp,
               transaction.hash.toLowerCase(),
               transaction.from,
               jsonLogData.FromAssetID,
