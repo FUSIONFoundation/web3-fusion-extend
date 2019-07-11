@@ -41,15 +41,30 @@ router.get("/:swap", function(req, res, next) {
     let params = []
     let extra =""
     if ( req.query.address ) {
-      extra +=  " and fromAddress = ? "
+      if ( extra.length > 0 ) {
+        extra += " and "
+      } else {
+        extra = " where "
+      }
+      extra +=  " fromAddress = ? "
       params.push( req.query.address )
     }
     if ( req.query.fromAsset ) {
-      extra += " and fromAsset = ? "
+      if ( extra.length > 0 ) {
+        extra += " and "
+      } else {
+        extra = " where "
+      }
+      extra += "  fromAsset = ? "
       params.push( req.query.fromAsset )
     }
     if ( req.query.toAsset ) {
-        extra += " and toAsset = ? "
+        if ( extra.length > 0 ) {
+          extra += " and "
+        } else {
+          extra = " where "
+        }
+        extra += "  toAsset = ? "
         params.push( req.query.toAsset )
     }
      
@@ -58,7 +73,12 @@ router.get("/:swap", function(req, res, next) {
         let s = conn.escape(req.query.target)
         s= s.replace( "'" , "")
         s = s.replace("'", "")
-        extra +=  ` and data like '%${s}%' `
+        if ( extra.length > 0 ) {
+          extra += " and "
+        } else {
+          extra = " where "
+        }
+        extra +=  ` data like '%${s}%' `
       }
 
       params.push(    page * size )
