@@ -857,7 +857,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
               await conn.query(querySwaps,  [jsonLogData.SwapID]);
             } else {
               let querySwaps = "update swaps set `size` = ? where swapID=?";
-              await conn.query(querySwaps,  [jsize, sonLogData.SwapID ]);
+              await conn.query(querySwaps,  [size, sonLogData.SwapID ]);
             }
             balancesToGet[address] = true;
           } catch (e ) {
