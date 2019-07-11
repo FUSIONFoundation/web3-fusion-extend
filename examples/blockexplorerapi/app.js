@@ -14,6 +14,7 @@ var balanceRouter = require('./routes/balance');
 var transactionRouter = require('./routes/transactions');
 var assetRouter = require('./routes/asset');
 var swapsRouter = require('./routes/swaps');
+var swaps2Router = require('./routes/swaps2');
 var fsnpriceRouter = require('./routes/fsnprice');
 var searchRouter = require('./routes/search');
 var leaderboardRouter = require("./routes/leaderboard")
@@ -64,6 +65,7 @@ app.use("/balances", balanceRouter )
 app.use("/transactions", transactionRouter )
 app.use("/assets" , assetRouter)
 app.use("/swaps", swapsRouter ) 
+app.use("/swaps2", swaps2Router )
 app.use("/fsnprice", fsnpriceRouter )
 app.use("/search", searchRouter )
 app.use("/leaderboard", leaderboardRouter )
