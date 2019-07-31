@@ -29,7 +29,7 @@ router.get("/verified", function(req, res, next) {
 
   getConnection().then(conn => {
     conn
-      .query(`SELECT * FROM fusionAssetLink.assets limit ?,?`, [
+      .query(`SELECT * FROM testnetFusionAssetLink.assets limit ?,?`, [
         (index>=0 ? index : page*size),
         size
       ])
