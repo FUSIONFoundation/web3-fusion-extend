@@ -2,6 +2,7 @@ var assert = require("assert");
 var Web3 = require("web3");
 var web3FusionExtend = require("../../index.js");
 var mysql = require("promise-mysql");
+let chalk = require('chalk');
 const fetch = require("node-fetch");
 const CryptoJS = require("crypto-js");
 const rp = require("request-promise");
@@ -493,7 +494,7 @@ async function logTransactions(block) {
   }
 
   return new Promise((resolve, reject) => {
-    console.log(block.transactions.length + " transactions ");
+      console.log(`[${chalk.green('INFO')}] Block has ${block.transactions.length} transaction.`);
     logTransaction(null,block, block.transactions, 0, resolve, reject);
   });
 }
@@ -560,7 +561,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
         rows = await conn.query(sql);
       }
       if ( conn && !conn.__released ) {
-        conn.__released = true 
+        conn.__released = true
         conn.release()
         conn = null
       }
@@ -568,7 +569,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
       return;
     } catch (err) {
       if ( conn && !conn.__released ) {
-        conn.__released = true 
+        conn.__released = true
         conn.release()
         conn = null
       }
@@ -598,10 +599,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
     getBalances(sql, conn, addrs, index + 1, resolve, reject);
     return;
   }
-
-  console.log("GETTTING BALANCE " + address);
-
-
+    console.log(`[${chalk.green('BALANCE')}] Getting balance for ${address}`);
   try {
     let allInfo = await web3.fsn.allInfoByAddress( address )
     let balances = allInfo.balances // await web3.fsn.getAllBalances(address);
@@ -637,7 +635,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
     let assetsHeld = Object.keys(Object.assign(balances, timeLockBalances))
       .length;
 
-    sql = sql + 
+    sql = sql +
       `INSERT INTO currentBalance( _id, recCreated, recEdited,  numberOfTransactions, assetsHeld,  fsnBalance, san , balanceInfo )\n` +
       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
@@ -648,7 +646,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
     getBalances(sql,conn, addrs, index + 1, resolve, reject);
   } catch (err) {
     if ( conn && !conn.__released ) {
-      conn.__released = true 
+      conn.__released = true
       conn.release()
       conn = null
     }
@@ -675,7 +673,7 @@ async function cachedGetAsset( block, getAssetBalance) {
 }
 
 async function logTransaction( conn , block, transactions, index, resolve, reject) {
-  console.log("   Transaction " + index + " being proceessed");
+    console.log(`[${chalk.red('TRANSACTION')}] Transaction ${index} being processed.`);
   if (index === 0) {
     balancesToGet = {};
     if ( block.number === 1 ) {
@@ -694,7 +692,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
         conn.__released = true
         conn.release()
         conn = null
-      } 
+      }
       resolve(true);
     }
     return;
@@ -820,8 +818,8 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           // add the swap to the swap list
           //
           {
-            let swapValues = 
-            [ 
+            let swapValues =
+            [
               jsonLogData.SwapID,
               now,
               blockNumber,
@@ -885,15 +883,15 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
 
     if ( swapDeleted ) {
       // update the swap deleted table
-      /* 
+      /*
             "  swap VARCHAR(68) NOT NULL UNIQUE,\n" +
       "  hash VARCHAR(68) NOT NULL,\n" +
       "  height BIGINT NOT NULL,\n" +
       "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
       */
      /** command to rebuild if neccessary
-      * 
-      * INSERT INTO deletedSwaps(swap,hash,height,recreated) 
+      *
+      * INSERT INTO deletedSwaps(swap,hash,height,recreated)
         select commandExtra, hash, height, recCreated  from transactions  where swapDeleted <> 0
       *
       */
@@ -1142,16 +1140,16 @@ async function doBlockScan() {
       scheduleNewScan();
       return;
     }
-    console.log("Start Block -> ", lastBlock, block.hash);
+    console.log(`[${chalk.red('BLOCK')}][${chalk.green(lastBlock)}] Starting Block`);
     let c=  web3.utils.numberToHex(lastBlock)
-    dbg("get snapshot ")
+    console.log(`[${chalk.red('BLOCK')}][${chalk.green(lastBlock)}] Get Snapshot`);
     let jt = await web3.fsn.getSnapshot(c);
-    dbg("snapshot done")
+    console.log(`[${chalk.red('BLOCK')}][${chalk.green(lastBlock)}] Snapshot Done`);
     await logBlock(block, jt);
-    dbg("log block done")
+    console.log(`[${chalk.red('BLOCK')}][${chalk.green(lastBlock)}] Log Block Done`);
     await logTransactions(block);
     await logTicketPurchased(lastBlock, jt);
-    console.log("Did   Block -> ", lastBlock, block.hash);
+    console.log(`[${chalk.red('BLOCK')}][${chalk.green(lastBlock)}] Block ${lastBlock} Done.`);
     if (process.env.FILLIN === "true") {
       scheduleNewScan(10);
       return true;
@@ -1193,7 +1191,7 @@ function updateOnlinePrice() {
   } else {
     lasttime = new Date().getTime();
   }
-  console.log("get quote");
+    console.log(`[${chalk.red('PRICE')}] Getting latest FSN market statistics.`);
 
   inpriceget = true;
   onlineCounter += 1;
