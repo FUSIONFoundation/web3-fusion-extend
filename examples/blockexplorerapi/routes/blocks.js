@@ -65,7 +65,6 @@ router.get("/:block", function (req, res, next) {
 
         let addrQuery;
         if(address){
-            console.log(address);
             addrQuery = `where (miner = '${address}')`;
         }
 

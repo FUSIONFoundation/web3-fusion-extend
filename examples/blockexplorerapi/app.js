@@ -24,7 +24,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.enable('trust proxy'); 
+app.enable('trust proxy');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,20 +41,17 @@ app.use(noSniff())
 //   max: 5000,
 // });
 // with nginx this becomes a problem
- 
+
 // only apply to requests that begin with /user/
 // app.use('/', apiLimiter);
 
 // enable cor support
 app.use(function(req, res, next) {
-  console.log("return")
-  
-
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-Content-Type-Options, Content-Type, Accept, Authorization");
- 
-  
+
+
     // Pass to next layer of middleware
   next();
 });
@@ -64,7 +61,7 @@ app.use('/blocks', blocksRouter)
 app.use("/balances", balanceRouter )
 app.use("/transactions", transactionRouter )
 app.use("/assets" , assetRouter)
-app.use("/swaps", swapsRouter ) 
+app.use("/swaps", swapsRouter )
 app.use("/swaps2", swaps2Router )
 app.use("/fsnprice", fsnpriceRouter )
 app.use("/search", searchRouter )

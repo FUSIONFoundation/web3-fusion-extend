@@ -6,8 +6,6 @@ var { getConnection } = require("../dbapi/dbapi.js");
 
 router.get("/minerForTicket/:ticketId" , function( req, res, next )  {
     let ticketId = req.params.ticketId
-
-
     getConnection().then(conn => {
       conn
         .query(`SELECT * FROM transactions where fusionCommand = 'BuyTicketFunc' and commandExtra = ?` , [ ticketId ] )
@@ -82,7 +80,7 @@ router.get("/:hash", function(req, res, next) {
       tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
       break
     case 'notickets':
-      tickreturns = " and fusionCommand <> 'BuyTicketFunc'"
+      tickreturns = " and fusionCommand <> 'BuyTicketFunc' OR fusionCommand IS NULL"
       tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
       break
   }
@@ -129,7 +127,7 @@ router.get("/:hash", function(req, res, next) {
     if ( req.query.address  ) {
         getConnection().then(conn => {
         conn
-          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress= ? or JSON_EXTRACT(receipt, '$.from') = '${req.query.address}' or JSON_EXTRACT(receipt, '$.to') = '${req.query.address}') ${tickreturns} order by ${field} ${sort} limit ?,?` , [ req.query.address, req.query.address,  req.query.address, (index>=0 ? index : page*size), size ])
+          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress= ? or JSON_EXTRACT(receipt, '$.from') = '${req.query.address.toLowerCase()}' or JSON_EXTRACT(receipt, '$.to') = '${req.query.address.toLowerCase()}') ${tickreturns} order by ${field} ${sort} limit ?,?` , [ req.query.address.toLowerCase(), req.query.address.toLowerCase(),  req.query.address.toLowerCase(), (index>=0 ? index : page*size), size ])
           .then(rows => {
             res.json(rows)
           })
