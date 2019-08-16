@@ -80,7 +80,7 @@ router.get("/:hash", function(req, res, next) {
       tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
       break
     case 'notickets':
-      tickreturns = " and fusionCommand <> 'BuyTicketFunc' OR fusionCommand IS NULL"
+      tickreturns = ""
       tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
       break
   }
