@@ -1,24 +1,28 @@
 var express = require("express");
 var router = express.Router();
 
-var { getConnection } = require("../dbapi/dbapi.js");
+var {getConnection} = require("../dbapi/dbapi.js");
 
 
-router.get("/minerForTicket/:ticketId" , function( req, res, next )  {
+router.get("/minerForTicket/:ticketId", function (req, res, next) {
     let ticketId = req.params.ticketId
     getConnection().then(conn => {
-      conn
-        .query(`SELECT * FROM transactions where fusionCommand = 'BuyTicketFunc' and commandExtra = ?` , [ ticketId ] )
-        .then(rows => {
-          if ( rows.length === 1) {
-            res.json( { miner : rows[0].fromAddress , purchaseBlock : rows[0].height ,  purchaseTimeStamp : rows[0].timeStamp } )
-          } else {
-            return res.json( rows )
-          }
-        })
-        .finally(() => {
-          conn.release();
-        });
+        conn
+            .query(`SELECT * FROM transactions where fusionCommand = 'BuyTicketFunc' and commandExtra = ?`, [ticketId])
+            .then(rows => {
+                if (rows.length === 1) {
+                    res.json({
+                        miner: rows[0].fromAddress,
+                        purchaseBlock: rows[0].height,
+                        purchaseTimeStamp: rows[0].timeStamp
+                    })
+                } else {
+                    return res.json(rows)
+                }
+            })
+            .finally(() => {
+                conn.release();
+            });
     });
     return
 })
@@ -37,140 +41,152 @@ router.get("/minerForTicket/:ticketId" , function( req, res, next )  {
  * https://localhost:3000/transactions/all?sort=desc&page=0&size=20&field=height&returnTickets=onlytickets
  *
  */
-router.get("/:hash", function(req, res, next) {
-  let allowedFields = {
-    timestamp: true,
-    hash: true,
-    type: true,
-    block: true,
-    height: true,
-    asset: true
-  };
-  let hash = req.params.hash;
-  let page =  req.query.page || 0;
-  let size = req.query.size || 100;
-  let returnTickets = req.query.returnTickets || 'all'
-  let field = allowedFields[req.query.field] ? req.query.field : 'height'
-  let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
-  let index = parseInt( req.query.index || -1 )
+router.get("/:hash", function (req, res, next) {
+    let allowedFields = {
+        timestamp: true,
+        hash: true,
+        type: true,
+        block: true,
+        height: true,
+        asset: true
+    };
+    let hash = req.params.hash;
+    let page = req.query.page || 0;
+    let size = req.query.size || 100;
+    let returnTickets = req.query.returnTickets || 'all'
+    let field = allowedFields[req.query.field] ? req.query.field : 'height'
+    let sort = req.query.sort === 'desc' ? 'desc' : 'asc'
+    let index = parseInt(req.query.index || -1)
 
-  page = parseInt( page )
-  size = parseInt( size )
+    page = parseInt(page)
+    size = parseInt(size)
 
-  if ( size > 100 || size < 1  || isNaN(size) ) {
-    console.log( "size " , size )
-    size = 100
-  }
-
-  if ( isNaN(page) ) {
-    page = 0
-  }
-
-  let tickreturns
-  let tickreturnsWhere
-
-  switch ( returnTickets.toLowerCase() ) {
-    default:
-    case 'all':
-      tickreturns = ''
-      ticketReturnWhere = ''
-      break
-    case 'onlytickets':
-      tickreturns = " and fusionCommand = 'BuyTicketFunc'"
-      tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
-      break
-    case 'notickets':
-      tickreturns = ""
-      tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
-      break
-  }
-
-  if ( isNaN(index) ) {
-    index = -1
-  }
-
-  if ( field === 'block' ) {
-      field = 'height'
-  }
-
-  if ( field === 'type' ) {
-      field = 'fusionCommand'
-  }
-
-  if ( field === 'timestamp' ) {
-      //field = `timestamp  ${sort}, recCreated`
-      field = `timestamp `
-  }
-
-  if ( field === 'height' ) {
-      //field = `height  ${sort}, recCreated`
-      field = `height `
-  }
-
-  if ( hash === 'ts' ) {
-    let tsA = req.query.ts ?  req.query.ts.split("-") : []
-    getConnection().then(conn => {
-      conn
-        .query(`SELECT * FROM transactions where hash  in (?)` , [ tsA ] )
-        .then(rows => {
-          res.json(rows)
-        })
-        .finally(() => {
-          conn.release();
-        });
-    });
-    return
-  }
-
-  if (hash === "all") {
-    console.log(req.query.address);
-    if ( req.query.address  ) {
-        getConnection().then(conn => {
-        conn
-          .query(`SELECT * FROM transactions where (toAddress=? or commandExtra3 = ? or fromAddress= ? or JSON_EXTRACT(receipt, '$.from') = '${req.query.address.toLowerCase()}' or JSON_EXTRACT(receipt, '$.to') = '${req.query.address.toLowerCase()}') ${tickreturns} order by ${field} ${sort} limit ?,?` , [ req.query.address.toLowerCase(), req.query.address.toLowerCase(),  req.query.address.toLowerCase(), (index>=0 ? index : page*size), size ])
-          .then(rows => {
-            res.json(rows)
-          })
-          .finally(() => {
-            conn.release();
-          });
-      });
-    } else {
-      getConnection().then(conn => {
-        conn
-          .query(`SELECT * FROM transactions ${tickreturnsWhere} order by ${field} ${sort}  limit ?,?` , [ (index>=0 ? index : page*size), size ] )
-          .then(rows => {
-            res.json(rows)
-          })
-          .finally(() => {
-            conn.release();
-          });
-      });
+    if (size > 100 || size < 1 || isNaN(size)) {
+        console.log("size ", size)
+        size = 100
     }
-  } else if ( hash === 'latest') {
-    getConnection().then(conn => {
-      conn
-        .query(`SELECT * FROM transactions  ${tickreturnsWhere} order by height, recCreated desc limit 1`)
-        .then(rows => {
-          res.json(rows)
-        })
-        .finally(() => {
-          conn.release();
+
+    if (isNaN(page)) {
+        page = 0
+    }
+
+    let tickreturns
+    let tickreturnsWhere
+
+    switch (returnTickets.toLowerCase()) {
+        default:
+        case 'all':
+            tickreturns = `select * from transactions
+   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff')
+   OR (fromAddress = '${req.query.address}'
+   OR toAddress = '${req.query.address}'
+   OR commandExtra3 = '${req.query.address}'
+   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
+   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
+            ticketReturnWhere = ''
+            break
+        case 'onlytickets':
+            tickreturns = " and fusionCommand = 'BuyTicketFunc'"
+            tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
+            break
+        case 'notickets':
+            tickreturns = `select * from transactions
+   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff'
+   OR fusionCommand <> 'BuyTicketFunc')
+   AND (fromAddress = '${req.query.address}'
+   OR toAddress = '${req.query.address}'
+   OR commandExtra3 = '${req.query.address}'
+   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
+   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
+            tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
+            break
+    }
+
+    if (isNaN(index)) {
+        index = -1
+    }
+
+    if (field === 'block') {
+        field = 'height'
+    }
+
+    if (field === 'type') {
+        field = 'fusionCommand'
+    }
+
+    if (field === 'timestamp') {
+        //field = `timestamp  ${sort}, recCreated`
+        field = `timestamp `
+    }
+
+    if (field === 'height') {
+        //field = `height  ${sort}, recCreated`
+        field = `height `
+    }
+
+    if (hash === 'ts') {
+        let tsA = req.query.ts ? req.query.ts.split("-") : []
+        getConnection().then(conn => {
+            conn
+                .query(`SELECT * FROM transactions where hash  in (?)`, [tsA])
+                .then(rows => {
+                    res.json(rows)
+                })
+                .finally(() => {
+                    conn.release();
+                });
         });
-    });
-  } else {
-    // else get one block
-    getConnection().then(conn => {
-      conn
-        .query(`select * from transactions where hash = ?`, [hash])
-        .then(rows => {
-          res.json(rows)
-        })
-        .finally(() => {
-          conn.release();
+        return
+    }
+
+    if (hash === "all") {
+        if (req.query.address) {
+            getConnection().then(conn => {
+                conn
+                    .query(`${tickreturns} order by ${field} ${sort} limit ?,?`, [(index >= 0 ? index : page * size), size])
+                    .then(rows => {
+                        res.json(rows)
+                    })
+                    .finally(() => {
+                        conn.release();
+                    });
+            });
+        } else {
+            getConnection().then(conn => {
+                conn
+                    .query(`SELECT * FROM transactions ${tickreturnsWhere} order by ${field} ${sort}  limit ?,?`, [(index >= 0 ? index : page * size), size])
+                    .then(rows => {
+                        res.json(rows)
+                    })
+                    .finally(() => {
+                        conn.release();
+                    });
+            });
+        }
+    } else if (hash === 'latest') {
+        getConnection().then(conn => {
+            conn
+                .query(`SELECT * FROM transactions  ${tickreturnsWhere} order by height, recCreated desc limit 1`)
+                .then(rows => {
+                    res.json(rows)
+                })
+                .finally(() => {
+                    conn.release();
+                });
         });
-    });
-  }
+    } else {
+        // else get one block
+        getConnection().then(conn => {
+            conn
+                .query(`select * from transactions where hash = ?`, [hash])
+                .then(rows => {
+                    res.json(rows)
+                })
+                .finally(() => {
+                    conn.release();
+                });
+        });
+    }
 });
 
 module.exports = router;

@@ -10,36 +10,36 @@ var _masterConnection;
 var mysql = require("promise-mysql");
 
 function keepSQLAlive() {
-  _isDBConnected = false;
-  _pool = mysql.createPool(
-    Object.assign({ multipleStatements: true }, dbConnect)
-  );
+    _isDBConnected = false;
+    _pool = mysql.createPool(
+        Object.assign({ multipleStatements: true }, dbConnect)
+    );
 
-  _pool
-    .getConnection()
-    .then(conn => {
-        conn.release()
-        // console.log(rows)
-        _isDBConnected = true;
-        console.log("Databsase connected!");
-        return { success: true };
-    })
-    .catch(err => {
-      console.error(
-        "connect to database failed, trying again in five seconds",
-        err
-      );
-      setTimeout(() => {
-        keepSQLAlive();
-      }, 5000);
-    });
+    _pool
+        .getConnection()
+        .then(conn => {
+            conn.release()
+            // console.log(rows)
+            _isDBConnected = true;
+            console.log("Databsase connected!");
+            return { success: true };
+        })
+        .catch(err => {
+            console.error(
+                "connect to database failed, trying again in five seconds",
+                err
+            );
+            setTimeout(() => {
+                keepSQLAlive();
+            }, 5000);
+        });
 }
 
 keepSQLAlive()
 
 exports.getConnection = function() {
     return _pool.getConnection().then(conn => {
-      return conn
+        return conn
     }).catch( (e) => {
         console.log("error getting connection ", e )
         throw e
