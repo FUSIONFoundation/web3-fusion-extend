@@ -1171,25 +1171,11 @@ function updateOnlinePrice() {
   if (!_isDBConnected) {
     return // this will be called on next block
   }
-  if (!process.env.CMC_KEY) {
-    return;
-  }
   if (inpriceget) {
     return;
   }
   if ( !checkPriceOfFSN ) {
     return
-  }
-  if (lasttime !== 0) {
-    let newtime = new Date().getTime();
-    if (lasttime + (600 * 1000) < newtime) {
-      // we check every 10 minutes to keep api correct
-      lasttime = newtime;
-    } else {
-      return;
-    }
-  } else {
-    lasttime = new Date().getTime();
   }
     console.log(`[${chalk.red('PRICE')}] Getting latest FSN market statistics.`);
 
@@ -1202,83 +1188,31 @@ function updateOnlinePrice() {
 
   const requestOptions = {
     method: "GET",
-    uri: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest",
-    qs: {
-      id: 2530,
-      // symbol: "FSN",
-      convert: "USD"
-    },
-    headers: {
-      "X-CMC_PRO_API_KEY": process.env.CMC_KEY
-    },
+    uri: "https://api.coinpaprika.com/v1/ticker/fsn-fusion",
     json: true,
     gzip: true
   };
-
-  // let x = {
-  //   status: {
-  //     timestamp: "2018-12-09T12:48:28.094Z",
-  //     error_code: 0,
-  //     error_message: null,
-  //     elapsed: 5,
-  //     credit_count: 1
-  //   },
-  //   data: {
-  //     FSN: {
-  //       id: 2530,
-  //       name: "Fusion",
-  //       symbol: "FSN",
-  //       slug: "fusion",
-  //       circulating_supply: 29704811.2,
-  //       total_supply: 57344000,
-  //       max_supply: null,
-  //       date_added: "2018-02-16T00:00:00.000Z",
-  //       num_market_pairs: 13,
-  //       tags: [],
-  //       platform: {
-  //         id: 1027,
-  //         name: "Ethereum",
-  //         symbol: "ETH",
-  //         slug: "ethereum"
-  //       },
-  //       cmc_rank: 133,
-  //       last_updated: "2018-12-09T12:46:22.000Z",
-  //       quote: {
-  //         USD: {
-  //           price: 0.654078335847,
-  //           volume_24h: 506902.697094068,
-  //           percent_change_1h: 0.685086,
-  //           percent_change_24h: 1.13452,
-  //           percent_change_7d: -3.37596,
-  //           market_cap: 19429273.476345327,
-  //           last_updated: "2018-12-09T12:46:22.000Z"
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
 
   rp(requestOptions)
     .then(response => {
       inpriceget = false;
       let x = response;
-      if (x.status.error_code === 0) {
+      if (x) {
         let query = "Insert into priceWatch Values(";
-        x.data.FSN = x.data["2530"];
         priceStructure = {
-          price: x.data.FSN.quote.USD.price,
-          market_cap: x.data.FSN.quote.USD.market_cap,
-          circulating_supply: x.data.FSN.circulating_supply, // : 29704811.2,
-          percentChange1H: x.data.FSN.quote.USD.percent_change_1h,
-          percentChange24H: x.data.FSN.quote.USD.percent_change_24h,
-          last_updated: x.data.FSN.quote.USD.last_updated,
-          total_supply: x.data.FSN.total_supply
+          price: x.price_usd,
+          market_cap: x.market_cap_usd,
+          circulating_supply: x.circulating_supply, // : 29704811.2,
+          percentChange1H: x.percent_change_1h,
+          percentChange24H: x.percent_change_24h,
+          last_updated: x.last_updated,
+          total_supply: x.total_supply
         };
 
         let now = new Date();
 
         let params = [
-          x.status.timestamp,
+          priceStructure.last_updated,
           now,
           now,
           priceStructure.price,
