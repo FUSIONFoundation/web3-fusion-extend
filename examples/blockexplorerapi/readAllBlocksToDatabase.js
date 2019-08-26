@@ -1220,7 +1220,7 @@ function updateOnlinePrice() {
           priceStructure.circulating_supply,
           priceStructure.percentChange1H,
           priceStructure.percentChange24H,
-          new Date(priceStructure.last_updated),
+          new Date( priceStructure.last_updated ),
           priceStructure.total_supply
         ];
 
