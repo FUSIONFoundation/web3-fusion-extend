@@ -33,7 +33,7 @@ router.get("/", function(req, res, next) {
 getConnection().then(conn => {
     conn
     .query(`Begin;
-           SELECT * FROM priceWatch order by last_updated ${sort}  limit ?,?;
+           SELECT * FROM priceWatch order by recCreated ${sort}  limit ?,?;
            Select "TotalTransactions", transactionCount from info where _id ="INFO_ID";
            Select "TotalAssets", count(*) from transactions where fusioncommand='GenAssetFunc';
            SELECT * FROM blocks order by timestamp desc  limit 0,2;
@@ -45,7 +45,7 @@ getConnection().then(conn => {
     ])
     .then(rows => {
         if ( rows.length === 7 ) {
-            let lastTwoBlocks = JSON.parse( JSON.stringify( rows[4] )) 
+            let lastTwoBlocks = JSON.parse( JSON.stringify( rows[4] ))
             return res.json( {
                 priceInfo : JSON.parse( JSON.stringify( rows[1][0] ) ) ,
                 totalTransactions :  JSON.parse( JSON.stringify( rows[2][0]['transactionCount'])),
