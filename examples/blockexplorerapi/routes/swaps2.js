@@ -67,7 +67,7 @@ router.get("/:swap", function(req, res, next) {
         extra += "  toAsset = ? "
         params.push( req.query.toAsset )
     }
-     
+
     getConnection().then(conn => {
       if ( req.query.target ) {
         let s = conn.escape(req.query.target)
@@ -81,19 +81,32 @@ router.get("/:swap", function(req, res, next) {
         extra +=  ` data like '%${s}%' `
       }
 
-      params.push(    page * size )
+      params.push(   page * size )
       params.push(   size )
+
+      let returnData = {};
 
       conn
         .query(`SELECT * FROM swaps `
          + extra +
                  ` order by recCreated ${sort}  limit ?,?`, params )
         .then(rows => {
-          res.json(rows);
+          returnData = rows;
         })
         .finally(() => {
-          conn.release();
+          // conn.release();
         })
+        conn
+            .query(`SELECT COUNT(*) FROM swaps `
+                + extra +
+                ` order by recCreated ${sort}  limit ?,?`, params )
+            .then(rows => {
+                returnData[size] = rows;
+                res.json(returnData)
+            })
+            .finally(() => {
+                conn.release();
+            })
     });
   } else {
     getConnection().then(conn => {
