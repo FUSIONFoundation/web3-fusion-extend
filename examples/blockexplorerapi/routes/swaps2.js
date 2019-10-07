@@ -78,18 +78,20 @@ router.get("/:swap", function(req, res, next) {
         } else {
           extra = " where "
         }
-        extra +=  ` data like '%${s}%' `
+        extra +=  ` data like '%${s}%'`
+      }
+
+      if(!req.query.target){
+        extra =  ` WHERE JSON_LENGTH(data,"$.Targes") = 0 `
       }
 
       params.push(   page * size )
       params.push(   size )
 
       let returnData = {};
-
       conn
         .query(`SELECT * FROM swaps `
-         + extra +
-                 ` order by recCreated ${sort}  limit ?,?`, params )
+         + extra + ` order by recCreated ${sort}  limit ?,?`, params )
         .then(rows => {
           returnData = rows;
         })
