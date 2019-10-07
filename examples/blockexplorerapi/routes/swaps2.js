@@ -78,13 +78,17 @@ router.get("/:swap", function(req, res, next) {
         } else {
           extra = " where "
         }
-        extra +=  ` data like '%${s}%'`
+        extra +=  ` data like '%${s}%' `
       }
-
-      if(!req.query.target){
-        extra =  ` WHERE JSON_LENGTH(data,"$.Targes") = 0 `
-      }
-
+        if(!req.query.target && !req.query.address){
+          let x = ``;
+          if(req.query.fromAddress || req.query.toAddress || req.query.fromAsset || req.query.toAsset) {
+            x = `AND`
+          } else {
+            x = `WHERE`
+          }
+            extra += `${x} JSON_LENGTH(data,"$.Targes") = 0 `
+        }
       params.push(   page * size )
       params.push(   size )
 
