@@ -468,7 +468,6 @@ async function logBlock(block, tkinfo) {
     ];
 
     query = queryAddTagsForInsert(query, params);
-
     let okPacket = await conn.query(query, params);
     return okPacket.affectedRows === 1;
   } catch (err) {
@@ -830,7 +829,8 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
               jsonLogData.ToAssetID,
               jsonLogData.SwapSize,
               saveData
-            ]
+            ];
+
             let querySwaps = "Insert into swaps Values(";
             querySwaps = queryAddTagsForInsert(querySwaps, swapValues);
             await conn.query(querySwaps, swapValues);
@@ -838,6 +838,29 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           break
         case "MakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
+          commandExtra2 = jsonLogData.FromAssetID;
+          commandExtra3 = jsonLogData.ToAssetID;
+        {
+            let swapValues =
+                [
+                    jsonLogData.SwapID,
+                    now,
+                    blockNumber,
+                    block.timestamp,
+                    transaction.hash.toLowerCase(),
+                    transaction.from,
+                    jsonLogData.FromAssetID[0],
+                    jsonLogData.ToAssetID[0],
+                    jsonLogData.SwapSize,
+                    JSON.stringify(saveData)
+                ]
+
+            console.log(JSON.stringify(swapValues));
+
+            let querySwaps = "Insert into swaps Values(";
+            querySwaps = queryAddTagsForInsert(querySwaps, swapValues);
+            await conn.query(querySwaps, swapValues);
+        }
           break;
         case "TakeSwapFunc":
           commandExtra = jsonLogData.SwapID;
