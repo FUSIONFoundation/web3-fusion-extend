@@ -852,12 +852,12 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
                     jsonLogData.FromAssetID[0],
                     jsonLogData.ToAssetID[0],
                     jsonLogData.SwapSize,
-                    JSON.stringify(saveData)
+                    saveData
                 ]
 
             console.log(JSON.stringify(swapValues));
 
-            let querySwaps = "Insert into swaps Values(";
+            let querySwaps = "Insert into swaps (swapID, recCreated, height, timeStamp, hash, fromAddress, fromAsset, toAsset, size, data)  Values(";
             querySwaps = queryAddTagsForInsert(querySwaps, swapValues);
             await conn.query(querySwaps, swapValues);
         }
@@ -889,9 +889,31 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           }
           break;
         case "TakeMultiSwapFunc":
-          commandExtra = jsonLogData.SwapID;
-          swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
-          break;
+            commandExtra = jsonLogData.SwapID;
+            swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
+            // we need the maker of this swap to get the balance
+            try {
+                // we need to update the balance of the maker as well
+                let query = `select * from swaps where swapID = ?`
+                let rows = await conn.query( query, [ commandExtra ])
+                let address = rows[0].fromAddress;
+                let size = rows[0].size
+                debugger
+                size = size - jsonLogData.Size
+                if ( size === 0 ) {
+                    let querySwaps = "delete from swaps where swapID=?";
+                    await conn.query(querySwaps,  [jsonLogData.SwapID]);
+                } else {
+                    let querySwaps = "update swaps set `size` = ? where swapID=?";
+                    await conn.query(querySwaps,  [size, jsonLogData.SwapID ]);
+                }
+                balancesToGet[address] = true;
+            } catch (e ) {
+                console.log("takeSwap update failed ", e)
+                // if it doesn't work balance can be refreshed later
+                throw e
+            }
+            break;
         case "RecallSwapFunc":
         case "RecallMultiSwapFunc":
           {
