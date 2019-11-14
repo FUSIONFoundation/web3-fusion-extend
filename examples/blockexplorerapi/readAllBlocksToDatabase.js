@@ -863,15 +863,25 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
         }
           break;
         case "TakeSwapFunc":
+        case "TakeMultiSwapFunc":
           commandExtra = jsonLogData.SwapID;
+          console.log(jsonLogData);
           swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
           // we need the maker of this swap to get the balance
           try {
             // we need to update the balance of the maker as well
-            let query = `select * from swaps where swapID = ?`
-            let rows = await conn.query( query, [ commandExtra ])
-            let address = rows[0].fromAddress;
-            let size = rows[0].size
+            let query = `select * from swaps where swapID = ?`;
+            let rows = await conn.query( query , [commandExtra]);
+            console.log(rows);
+            let address;
+            let size;
+            if ( rows.length === 0){
+              address = "";
+              size = 0;
+            } else {
+              address = rows[0].fromAddress;
+              size = rows[0].size
+            }
             debugger
             size = size - jsonLogData.Size
             if ( size === 0 ) {
@@ -888,32 +898,6 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
             throw e
           }
           break;
-        case "TakeMultiSwapFunc":
-            commandExtra = jsonLogData.SwapID;
-            swapDeleted = ((jsonLogData.Deleted === "true") || (jsonLogData.Deleted === true) )
-            // we need the maker of this swap to get the balance
-            try {
-                // we need to update the balance of the maker as well
-                let query = `select * from swaps where swapID = ?`
-                let rows = await conn.query( query, [ commandExtra ])
-                let address = rows[0].fromAddress;
-                let size = rows[0].size
-                debugger
-                size = size - jsonLogData.Size
-                if ( size === 0 ) {
-                    let querySwaps = "delete from swaps where swapID=?";
-                    await conn.query(querySwaps,  [jsonLogData.SwapID]);
-                } else {
-                    let querySwaps = "update swaps set `size` = ? where swapID=?";
-                    await conn.query(querySwaps,  [size, jsonLogData.SwapID ]);
-                }
-                balancesToGet[address] = true;
-            } catch (e ) {
-                console.log("takeSwap update failed ", e)
-                // if it doesn't work balance can be refreshed later
-                throw e
-            }
-            break;
         case "RecallSwapFunc":
         case "RecallMultiSwapFunc":
           {
