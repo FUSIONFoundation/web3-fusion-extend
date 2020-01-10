@@ -114,6 +114,7 @@ let buildTheSystem = [
             "  data text,\n" +
             "  transaction json,\n" +
             "  receipt json,\n" +
+            "  toAddressReceipt VARCHAR(128),\n" +
             "  PRIMARY KEY (hash),\n" +
             "  INDEX `height` (`height`),\n" +
             "  INDEX `heightDesc` (`height` DESC),\n" +
@@ -961,8 +962,11 @@ async function logTransaction(conn, block, transactions, index, resolve, reject)
             swapDeleted,
             JSON.stringify(saveData),
             JSON.stringify(transaction),
-            JSON.stringify(receipt)
+            JSON.stringify(receipt),
+            receipt.to
         ];
+
+        console.log(saveData);
 
         if (Array.isArray(params[8])) {
             params[8] = params[8][0];

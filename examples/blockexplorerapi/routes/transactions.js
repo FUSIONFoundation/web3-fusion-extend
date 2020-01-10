@@ -48,9 +48,11 @@ router.get("/:hash", function (req, res, next) {
         type: true,
         block: true,
         height: true,
-        asset: true
+        asset: true,
+        commandExtra: undefined
     };
     let hash = req.params.hash;
+    let commandExtra = req.query.commandExtra;
     let page = req.query.page || 0;
     let size = req.query.size || 100;
     let returnTickets = req.query.returnTickets || 'all'
