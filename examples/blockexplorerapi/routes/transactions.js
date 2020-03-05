@@ -76,13 +76,10 @@ router.get("/:hash", function (req, res, next) {
     switch (returnTickets.toLowerCase()) {
         default:
         case 'all':
-            tickreturns = `select * from transactions
-   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff')
-   OR (fromAddress = '${req.query.address}'
+            tickreturns = `SELECT * FROM transactions
+   WHERE fromAddress = '${req.query.address}'
    OR toAddress = '${req.query.address}'
-   OR commandExtra3 = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
+   OR commandExtra3 = '${req.query.address}'`;
             ticketReturnWhere = ''
             break
         case 'onlytickets':
@@ -90,14 +87,11 @@ router.get("/:hash", function (req, res, next) {
             tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
             break
         case 'notickets':
-            tickreturns = `select * from transactions
-   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff'
-   OR fusionCommand <> 'BuyTicketFunc')
-   AND (fromAddress = '${req.query.address}'
-   OR toAddress = '${req.query.address}'
-   OR commandExtra3 = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
+            tickreturns = `SELECT * FROM transactions
+   WHERE (fusionCommand <> 'BuyTicketFunc' OR fusionCommand IS NULL)
+   AND (toAddress = '${req.query.address}'
+   OR fromAddress = '${req.query.address}'
+   OR commandExtra3 = '${req.query.address}')`;
             tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
             break
     }
