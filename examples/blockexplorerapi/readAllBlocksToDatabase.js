@@ -139,52 +139,6 @@ let buildTheSystem = [
             ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
             "COMMIT;"
     },
-
-    {
-        txt: "Build Ticket Transactions",
-        sql:
-            "BEGIN;\n" +
-            "CREATE TABLE IF NOT EXISTS ticketTransactions (\n" +
-            "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
-            "  height BIGINT NOT NULL,\n" +
-            "  timeStamp BIGINT UNSIGNED,\n" +
-            "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-            "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
-            "  fromAddress VARCHAR(68),\n" +
-            "  toAddress VARCHAR(68),\n" +
-            "  fusionCommand VARCHAR(128),\n" +
-            "  commandExtra VARCHAR(128),\n" +
-            "  commandExtra2 VARCHAR(128),\n" +
-            "  commandExtra3 VARCHAR(128),\n" +
-            '  swapDeleted BOOL,\n' +
-            "  data text,\n" +
-            "  transaction json,\n" +
-            "  receipt json,\n" +
-            "  toAddressReceipt VARCHAR(128),\n" +
-            "  PRIMARY KEY (hash),\n" +
-            "  INDEX `height` (`height`),\n" +
-            "  INDEX `heightDesc` (`height` DESC),\n" +
-            "  INDEX `recCreated` (`recCreated`),\n" +
-            "  INDEX `toFromAddress` (`toAddress`,`fromAddress`),\n" +
-            "  INDEX `fromAddress` (`fromAddress`),\n" +
-            "  INDEX `timestamp` (`timeStamp`),\n" +
-            "  INDEX `commandExtra` (`commandExtra`),\n" +
-            "  INDEX `commandExtra2` (`commandExtra2`),\n" +
-            "  INDEX `commandExtra3` (`commandExtra3`),\n" +
-            "  INDEX `swapDeletedCmdX` (`swapDeleted`,`commandExtra`),\n" +
-            "  INDEX `cmdSwapFusionCmd` (`commandExtra`,`swapDeleted`,`fusionCommand`),\n" +
-            "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
-            "  INDEX `toAddress` (`toAddress`),\n" +
-            "  INDEX `cmd3AndFCmd` (`commandExtra3` ASC, `fusionCommand` ASC),\n" +
-            // INDEX `toAddressAndFCmd` (`toAddress` ASC, `fusionCommand` ASC);
-            // INDEX `fromAddressAndFCmd` (`fromAddress` ASC, `fusionCommand` ASC);
-            // INDEX `toAdrCmd3FAddFCmd` (`toAddress` ASC, `commandExtra3` ASC, `fromAddress` ASC, `fusionCommand` ASC);
-            "  INDEX `descFCmdFAddrTimeS` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` DESC),\n" +
-            "  INDEX `fusionCommandAddressTimeStamp` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` ASC),\n" +
-            "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
-            ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
-            "COMMIT;"
-    },
     {
         txt: "Build DeletedSwaps",
         sql:
@@ -773,7 +727,6 @@ async function logTransaction(conn, block, transactions, index, resolve, reject)
         // debugger;
 
         let query = "Insert into transactions Values(";
-        let ticketQuery = "Insert into ticketTransactions Values(";
         let now = new Date();
         let fusionCommand;
         let commandExtra;
@@ -1013,6 +966,8 @@ async function logTransaction(conn, block, transactions, index, resolve, reject)
             receipt.to
         ];
 
+        console.log(saveData);
+
         if (Array.isArray(params[8])) {
             params[8] = params[8][0];
         }
@@ -1024,13 +979,7 @@ async function logTransaction(conn, block, transactions, index, resolve, reject)
         }
 
         query = queryAddTagsForInsert(query, params);
-        ticketQuery = queryAddTagsForInsert(ticketQuery, params);
-
-        if (fusionCommand === "BuyTicketFunc") {
-            await conn.query(ticketQuery, params);
-        } else {
-            await conn.query(query, params);
-        }
+        await conn.query(query, params);
 
         index += 1;
         if (getAssetBalance) {
