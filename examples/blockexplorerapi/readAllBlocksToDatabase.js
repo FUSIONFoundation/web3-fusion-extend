@@ -139,6 +139,39 @@ let buildTheSystem = [
       "COMMIT;"
   },
   {
+    txt: "Build Ticket Transactions",
+    sql:
+      "BEGIN;\n" +
+      "CREATE TABLE IF NOT EXISTS tickets (\n" +
+      "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+      "  height BIGINT NOT NULL,\n" +
+      "  timeStamp BIGINT UNSIGNED,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  fromAddress VARCHAR(68),\n" +
+      "  toAddress VARCHAR(68),\n" +
+      "  fusionCommand VARCHAR(128),\n" +
+      "  commandExtra VARCHAR(128),\n" +
+      "  commandExtra2 VARCHAR(128),\n" +
+      "  commandExtra3 VARCHAR(128),\n" +
+      '  swapDeleted BOOL,\n' +
+      "  data text,\n" +
+      "  transaction json,\n" +
+      "  receipt json,\n" +
+      "  PRIMARY KEY (hash),\n" +
+      "  INDEX `height` (`height`),\n" +
+      "  INDEX `heightDesc` (`height` DESC),\n" +
+      "  INDEX `recCreated` (`recCreated`),\n" +
+      "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `timestamp` (`timeStamp`),\n" +
+      "  INDEX `commandExtra` (`commandExtra`),\n" +
+      "  INDEX `toAddress` (`toAddress`),\n" +
+      "  INDEX `fromDesc` (`fromAddress` ASC, `timeStamp` DESC),\n" +
+      "  INDEX `fromAsc` (`fromAddress` ASC, `timeStamp` ASC)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
+      "COMMIT;"
+  },
+  {
     txt: "Build DeletedSwaps",
     sql:
       "BEGIN;\n" +
@@ -723,6 +756,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     // debugger;
 
     let query = "Insert into transactions Values(";
+    let queryTick = "Insert into tickets Values(";
     let now = new Date();
     let fusionCommand;
     let commandExtra;
@@ -771,7 +805,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
         transaction.from === web3.fsn.consts.TicketLogAddress
       ) {
         fusionCommand =
-          web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
+        web3.fsn.consts.TicketLogAddress_Topic_To_Function[topic];
         balancesToGet[transaction.to] = true;
       }
     } else {
@@ -963,7 +997,13 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     ];
 
     query = queryAddTagsForInsert(query, params);
-    await conn.query(query, params);
+    queryTick = queryAddTagsForInsert(queryTick, params);
+    
+    if (fusionCommand === 'BuyTicketFunc') {
+      await conn.query(queryTick, params);
+    } else {
+      await conn.query(query, params);
+    }
 
     index += 1;
     if (getAssetBalance) {

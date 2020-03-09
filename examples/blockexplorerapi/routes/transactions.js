@@ -88,7 +88,7 @@ router.get("/:hash", function (req, res, next) {
             break
         case 'notickets':
             tickreturns = `SELECT * FROM transactions
-   WHERE (fusionCommand <> 'BuyTicketFunc' OR fusionCommand IS NULL)
+   WHERE (fusionCommand <> 'BuyTicketFunc' OR (fusionCommand IS NULL AND data IS NULL))
    AND (toAddress = '${req.query.address}'
    OR fromAddress = '${req.query.address}'
    OR commandExtra3 = '${req.query.address}')`;

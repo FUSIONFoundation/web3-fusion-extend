@@ -9,9 +9,9 @@ var _masterConnection;
 
 var mysql = require("promise-mysql");
 
-function keepSQLAlive() {
+async function keepSQLAlive() {
     _isDBConnected = false;
-    _pool = mysql.createPool(
+    _pool = await mysql.createPool(
         Object.assign({ multipleStatements: true }, dbConnect)
     );
 
