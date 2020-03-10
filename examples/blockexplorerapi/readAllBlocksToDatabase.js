@@ -139,6 +139,50 @@ let buildTheSystem = [
       "COMMIT;"
   },
   {
+    txt: "Build Condensed Transactions",
+    sql:
+      "BEGIN;\n" +
+      "CREATE TABLE IF NOT EXISTS conTx (\n" +
+      "  hash VARCHAR(68) NOT NULL UNIQUE,\n" +
+      "  height BIGINT NOT NULL,\n" +
+      "  timeStamp BIGINT UNSIGNED,\n" +
+      "  recCreated DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  recEdited DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
+      "  fromAddress VARCHAR(68),\n" +
+      "  toAddress VARCHAR(68),\n" +
+      "  fusionCommand VARCHAR(128),\n" +
+      "  commandExtra VARCHAR(128),\n" +
+      "  commandExtra2 VARCHAR(128),\n" +
+      "  commandExtra3 VARCHAR(128),\n" +
+      '  swapDeleted BOOL,\n' +
+      "  data text,\n" +
+      "  transaction json,\n" +
+      "  receipt json,\n" +
+      "  PRIMARY KEY (hash),\n" +
+      "  INDEX `height` (`height`),\n" +
+      "  INDEX `heightDesc` (`height` DESC),\n" +
+      "  INDEX `recCreated` (`recCreated`),\n" +
+      "  INDEX `toFromAddress` (`toAddress`,`fromAddress`),\n" +
+      "  INDEX `fromAddress` (`fromAddress`),\n" +
+      "  INDEX `timestamp` (`timeStamp`),\n" +
+      "  INDEX `commandExtra` (`commandExtra`),\n" +
+      "  INDEX `commandExtra2` (`commandExtra2`),\n" +
+      "  INDEX `commandExtra3` (`commandExtra3`),\n" +
+      "  INDEX `swapDeletedCmdX` (`swapDeleted`,`commandExtra`),\n" +
+      "  INDEX `cmdSwapFusionCmd` (`commandExtra`,`swapDeleted`,`fusionCommand`),\n"+
+      "  INDEX `swapDeletedCmd` (`swapDeleted`),\n" +
+      "  INDEX `toAddress` (`toAddress`),\n" +
+      "  INDEX `cmd3AndFCmd` (`commandExtra3` ASC, `fusionCommand` ASC),\n"+
+      // INDEX `toAddressAndFCmd` (`toAddress` ASC, `fusionCommand` ASC);
+      // INDEX `fromAddressAndFCmd` (`fromAddress` ASC, `fusionCommand` ASC);
+      // INDEX `toAdrCmd3FAddFCmd` (`toAddress` ASC, `commandExtra3` ASC, `fromAddress` ASC, `fusionCommand` ASC);
+      "  INDEX `descFCmdFAddrTimeS` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` DESC),\n" +
+      "  INDEX `fusionCommandAddressTimeStamp` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` ASC),\n" +
+      "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
+      ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
+      "COMMIT;"
+  },
+  {
     txt: "Build Ticket Transactions",
     sql:
       "BEGIN;\n" +
@@ -211,15 +255,13 @@ let buildTheSystem = [
       "COMMIT;"
   },
   {
-    txt: "create triggle for transaction",
+    txt: "create trigger for transaction",
     sql:
-      // "DELIMITER ;;\n" +
       "CREATE TRIGGER transactionTriggerAfterInsert AFTER INSERT ON transactions\n" +
       "FOR EACH ROW\n" +
       "BEGIN\n" +
       "UPDATE info set transactionCount=transactionCount+1 where _id = 'INFO_ID';\n" +
       "END\n"
-    // "DELIMITER ;\n"
   },
   {
     txt: "Build Info Table",
@@ -756,7 +798,7 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     // debugger;
 
     let query = "Insert into transactions Values(";
-    let queryTick = "Insert into tickets Values(";
+    let queryConTx = "Insert into conTx Values(";
     let now = new Date();
     let fusionCommand;
     let commandExtra;
@@ -842,6 +884,27 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
           break;
         case "BuyTicketFunc":
           commandExtra = jsonLogData.TicketID;
+
+          let ticketValues = [
+            transaction.hash.toLowerCase(),
+            blockNumber,
+            block.timestamp,
+            now,
+            now,
+            transaction.from,
+            transaction.to,
+            fusionCommand,
+            commandExtra,
+            commandExtra2,
+            commandExtra3,
+            swapDeleted,
+            saveData,
+            JSON.stringify(transaction),
+            JSON.stringify(receipt)
+          ];
+          let queryTicket = "Insert into tickets Values(";
+          queryTicket = queryAddTagsForInsert(queryTicket, ticketValues);
+          await conn.query(queryTicket, ticketValues);
           break;
         case "MakeSwapFuncExt":
         case "MakeSwapFunc":
@@ -997,13 +1060,14 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
     ];
 
     query = queryAddTagsForInsert(query, params);
-    queryTick = queryAddTagsForInsert(queryTick, params);
-    
-    if (fusionCommand === 'BuyTicketFunc') {
-      await conn.query(queryTick, params);
-    } else {
-      await conn.query(query, params);
+    queryConTx = queryAddTagsForInsert(queryConTx, params);
+
+    if (!fusionCommand || fusionCommand !== 'BuyTicketFunc') {
+      await conn.query(queryConTx, params);
     }
+
+    await conn.query(query, params);
+
 
     index += 1;
     if (getAssetBalance) {
