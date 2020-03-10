@@ -365,7 +365,7 @@ function createTables(resolve, reject) {
 
 let starttUp = true;
 
-function keepSQLAlive() {
+async function keepSQLAlive() {
   _isDBConnected = false;
   _pool = await mysql.createPool(
     Object.assign({ multipleStatements: true }, dbConnect)
