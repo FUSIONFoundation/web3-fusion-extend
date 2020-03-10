@@ -134,6 +134,7 @@ let buildTheSystem = [
       // INDEX `toAdrCmd3FAddFCmd` (`toAddress` ASC, `commandExtra3` ASC, `fromAddress` ASC, `fusionCommand` ASC);
       "  INDEX `descFCmdFAddrTimeS` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` DESC),\n" +
       "  INDEX `fusionCommandAddressTimeStamp` (`fusionCommand` ASC, `fromAddress` ASC, `timeStamp` ASC),\n" +
+      "  INDEX `fusionCommandAddressToFrom` (`fusionCommand`, `fromAddress`, `toAddress`, `commandExtra3`),\n" +
       "  INDEX `fusionCommand` (`fusionCommand`,`commandExtra`)\n" +
       ") ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n" +
       "COMMIT;"
