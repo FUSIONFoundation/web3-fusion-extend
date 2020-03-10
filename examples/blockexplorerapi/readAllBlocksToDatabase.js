@@ -367,7 +367,7 @@ let starttUp = true;
 
 function keepSQLAlive() {
   _isDBConnected = false;
-  _pool = mysql.createPool(
+  _pool = await mysql.createPool(
     Object.assign({ multipleStatements: true }, dbConnect)
   );
 
