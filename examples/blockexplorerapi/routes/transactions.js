@@ -76,32 +76,23 @@ router.get("/:hash", function (req, res, next) {
     switch (returnTickets.toLowerCase()) {
         default:
         case 'all':
-            tickreturns = `(SELECT * FROM transactions
+            tickreturns = `SELECT * FROM transactions
                 WHERE fromAddress = '${req.query.address}'
                 OR toAddress = '${req.query.address}'
-                OR commandExtra3 = '${req.query.address}'
-                ORDER BY height DESC LIMIT ${page*size+size})
-                UNION ALL
-                (SELECT * FROM tickets
-                WHERE fromAddress = '${req.query.address}
-                ORDER BY height DESC LIMIT ${page*size+size})`;
-            tickreturnsAll = `(SELECT * FROM transactions 
-                ORDER BY height DESC LIMIT ${page*size+size})
-                UNION ALL
-                (SELECT * FROM tickets 
-                ORDER BY height DESC LIMIT ${page*size+size})`
+                OR commandExtra3 = '${req.query.address}'`;
+            tickreturnsAll = `SELECT * FROM transactions`
             break
         case 'onlytickets':
             tickreturns = `SELECT * FROM tickets WHERE fromAddress = '${req.query.address}'`;
             tickreturnsAll = `SELECT * FROM tickets`
             break
         case 'notickets':
-            tickreturns = `SELECT * FROM transactions
+            tickreturns = `SELECT * FROM conTx
                 WHERE (fusionCommand IS NOT NULL OR (fusionCommand IS NULL AND data IS NULL))
                 AND (toAddress = '${req.query.address}'
                 OR fromAddress = '${req.query.address}'
                 OR commandExtra3 = '${req.query.address}')`;
-            tickreturnsAll = `SELECT * FROM transactions
+            tickreturnsAll = `SELECT * FROM conTx
                 WHERE (fusionCommand IS NOT NULL OR (fusionCommand IS NULL AND data IS NULL))`
                 break
     }
@@ -197,7 +188,7 @@ router.get("/:hash", function (req, res, next) {
         // else get one block
         getConnection().then(conn => {
             conn
-                .query(`SELECT * FROM transactions WHERE hash = '${hash}' UNION ALL SELECT * FROM tickets WHERE hash = '${hash}'`)
+                .query(`SELECT * FROM transactions WHERE hash = '${hash}'`)
                 .then(rows => {
                     res.json(rows)
                 })

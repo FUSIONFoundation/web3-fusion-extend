@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "command-line-args": "^5.0.2",
-    "promise-mysql": "^3.3.1"
+    "promise-mysql": "^4.1.3"
   }
 }
