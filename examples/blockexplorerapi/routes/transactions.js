@@ -8,7 +8,7 @@ router.get("/minerForTicket/:ticketId", function (req, res, next) {
     let ticketId = req.params.ticketId
     getConnection().then(conn => {
         conn
-            .query(`SELECT * FROM transactions where fusionCommand = 'BuyTicketFunc' and commandExtra = ?`, [ticketId])
+            .query(`SELECT * FROM tickets where commandExtra = ?`, [ticketId])
             .then(rows => {
                 if (rows.length === 1) {
                     res.json({
@@ -48,11 +48,9 @@ router.get("/:hash", function (req, res, next) {
         type: true,
         block: true,
         height: true,
-        asset: true,
-        commandExtra: undefined
+        asset: true
     };
     let hash = req.params.hash;
-    let commandExtra = req.query.commandExtra;
     let page = req.query.page || 0;
     let size = req.query.size || 100;
     let returnTickets = req.query.returnTickets || 'all'
@@ -73,35 +71,30 @@ router.get("/:hash", function (req, res, next) {
     }
 
     let tickreturns
-    let tickreturnsWhere
+    let tickreturnsAll
 
     switch (returnTickets.toLowerCase()) {
         default:
         case 'all':
-            tickreturns = `select * from transactions
-   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff')
-   OR (fromAddress = '${req.query.address}'
-   OR toAddress = '${req.query.address}'
-   OR commandExtra3 = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
-            ticketReturnWhere = ''
+            tickreturns = `SELECT * FROM transactions
+                WHERE fromAddress = '${req.query.address}'
+                OR toAddress = '${req.query.address}'
+                OR commandExtra3 = '${req.query.address}'`;
+            tickreturnsAll = `SELECT * FROM transactions`
             break
         case 'onlytickets':
-            tickreturns = " and fusionCommand = 'BuyTicketFunc'"
-            tickreturnsWhere = " where fusionCommand = 'BuyTicketFunc'"
+            tickreturns = `SELECT * FROM tickets WHERE fromAddress = '${req.query.address}'`;
+            tickreturnsAll = `SELECT * FROM tickets`
             break
         case 'notickets':
-            tickreturns = `select * from transactions
-   where (toAddress <> '0xffffffffffffffffffffffffffffffffffffffff'
-   OR fusionCommand <> 'BuyTicketFunc')
-   AND (fromAddress = '${req.query.address}'
-   OR toAddress = '${req.query.address}'
-   OR commandExtra3 = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.to') = '${req.query.address}'
-   OR JSON_EXTRACT(receipt, '$.from') = '${req.query.address}')`;
-            tickreturnsWhere = " where fusionCommand <> 'BuyTicketFunc'"
-            break
+            tickreturns = `SELECT * FROM conTx
+                WHERE (fusionCommand IS NOT NULL OR (fusionCommand IS NULL AND data IS NULL))
+                AND (toAddress = '${req.query.address}'
+                OR fromAddress = '${req.query.address}'
+                OR commandExtra3 = '${req.query.address}')`;
+            tickreturnsAll = `SELECT * FROM conTx
+                WHERE (fusionCommand IS NOT NULL OR (fusionCommand IS NULL AND data IS NULL))`
+                break
     }
 
     if (isNaN(index)) {
@@ -130,7 +123,7 @@ router.get("/:hash", function (req, res, next) {
         let tsA = req.query.ts ? req.query.ts.split("-") : []
         getConnection().then(conn => {
             conn
-                .query(`SELECT * FROM transactions where hash  in (?)`, [tsA])
+                .query(`SELECT * FROM transactions where hash in (?)`, [tsA])
                 .then(rows => {
                     res.json(rows)
                 })
@@ -143,6 +136,7 @@ router.get("/:hash", function (req, res, next) {
 
     if (hash === "all") {
         if (req.query.address) {
+            console.log(tickreturns)
             getConnection().then(conn => {
                 conn
                     .query(`${tickreturns} order by ${field} ${sort} limit ?,?`, [(index >= 0 ? index : page * size), size])
@@ -154,9 +148,10 @@ router.get("/:hash", function (req, res, next) {
                     });
             });
         } else {
+            console.log(tickreturnsAll)
             getConnection().then(conn => {
                 conn
-                    .query(`SELECT * FROM transactions ${tickreturnsWhere} order by ${field} ${sort}  limit ?,?`, [(index >= 0 ? index : page * size), size])
+                    .query(`${tickreturnsAll} order by ${field} ${sort} limit ?,?`, [(index >= 0 ? index : page * size), size])
                     .then(rows => {
                         res.json(rows)
                     })
@@ -166,21 +161,34 @@ router.get("/:hash", function (req, res, next) {
             });
         }
     } else if (hash === 'latest') {
-        getConnection().then(conn => {
-            conn
-                .query(`SELECT * FROM transactions  ${tickreturnsWhere} order by height, recCreated desc limit 1`)
-                .then(rows => {
-                    res.json(rows)
-                })
-                .finally(() => {
-                    conn.release();
-                });
-        });
+        if (req.query.address) {
+            getConnection().then(conn => {
+                conn
+                    .query(`${tickreturns} order by height, recCreated desc limit 1`)
+                    .then(rows => {
+                        res.json(rows)
+                    })
+                    .finally(() => {
+                        conn.release();
+                    });
+            });
+        } else {
+            getConnection().then(conn => {
+                conn
+                    .query(`${tickreturnsAll} order by height, recCreated desc limit 1`)
+                    .then(rows => {
+                        res.json(rows)
+                    })
+                    .finally(() => {
+                        conn.release();
+                    });
+            });
+        }
     } else {
         // else get one block
         getConnection().then(conn => {
             conn
-                .query(`select * from transactions where hash = ?`, [hash])
+                .query(`SELECT * FROM transactions WHERE hash = '${hash}'`)
                 .then(rows => {
                     res.json(rows)
                 })
