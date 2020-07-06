@@ -419,7 +419,7 @@ function keepWeb3Alive() {
   lastConnectTimer = null;
   console.log("STARTING WEB3 connection");
   provider = new Web3.providers.WebsocketProvider(process.env.CONNECT_STRING, {
-    timeout: 60000,
+    timeout: 150000,
     clientConfig: {
       maxReceivedFrameSize: 100000000,
       maxReceivedMessageSize: 100000000
@@ -625,7 +625,7 @@ async function getTransactionLog(transaction) {
 
 let balancesToGet = {};
 
-async function getBalances( sql, conn, addrs, index, resolve, reject) {
+async function getBalances(sql, conn, addrs, index) {
   if ( !sql ) {
     sql = ""
   }
@@ -640,7 +640,6 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
         conn.release()
         conn = null
       }
-      resolve(true);
       return;
     } catch (err) {
       if ( conn && !conn.__released ) {
@@ -649,7 +648,6 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
         conn = null
       }
       console.log(" getAllBalances error  ", err);
-      reject(err);
       return
     }
   }
@@ -671,7 +669,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
   if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
     // we have this balance already
     console.log("ALREADY HAVE BALANCE " + address);
-    getBalances(sql, conn, addrs, index + 1, resolve, reject);
+    getBalances(sql, conn, addrs, index + 1);
     return;
   }
     console.log(`[${chalk.green('BALANCE')}] Getting balance for ${address}`);
@@ -718,7 +716,7 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
 
     balancesReturned[address] = glb_highestBlockOnChain;
 
-    getBalances(sql,conn, addrs, index + 1, resolve, reject);
+    getBalances(sql,conn, addrs, index + 1);
   } catch (err) {
     if ( conn && !conn.__released ) {
       conn.__released = true
@@ -726,7 +724,6 @@ async function getBalances( sql, conn, addrs, index, resolve, reject) {
       conn = null
     }
     console.log(" getAllBalances error  ", err);
-    reject(err);
   } finally {
   }
 }
@@ -761,7 +758,8 @@ async function logTransaction( conn , block, transactions, index, resolve, rejec
   if (transactions.length === index) {
     let keys = Object.keys(balancesToGet);
     if (keys.length) {
-      return getBalances( "", conn, keys, 0, resolve, reject);
+      getBalances( "", conn, keys, 0);
+      resolve(true);
     } else {
       if ( conn && !conn.__released ) {
         conn.__released = true
@@ -1162,7 +1160,6 @@ function resumeBlockScan() {
     return;
   }
 
-  updateOnlinePrice();
   if (lastBlock === -1) {
     lastBlock = 0;
   }
@@ -1252,7 +1249,7 @@ function scheduleNewScan(timeToSet) {
     timerSet = setTimeout(() => {
       timerSet = null;
       resumeBlockScan();
-    }, timeToSet || 14000);
+    }, timeToSet || 4500);
   }
 }
 
@@ -1290,6 +1287,7 @@ async function doBlockScan() {
     }
     await updateLastBlockProcessed();
     lastBlock += 1;
+    updateOnlinePrice();
     scheduleNewScan(10);
   } catch (err) {
     console.log("uncaught error, try again ", err);
