@@ -624,6 +624,7 @@ async function getTransactionLog(transaction) {
 }
 
 let balancesToGet = {};
+let addressQueue = {};
 
 async function getBalances(sql, conn, addrs, index) {
   if ( !sql ) {
@@ -659,12 +660,15 @@ async function getBalances(sql, conn, addrs, index) {
     !address ||
     address === web3.fsn.consts.FSNCallAddress ||
     address === web3.fsn.consts.TicketLogAddress ||
-    address.length === 0
+    address.length === 0 ||
+    addressQueue[address]
   ) {
-    return getBalances(sql, conn, addrs, index + 1, resolve, reject);
+    console.log("ALREADY GETTING BALANCE " + address);
+    return getBalances(sql, conn, addrs, index + 1);
   }
 
   let all;
+  addressQueue[address] = true;
 
   if (balancesReturned[address] && balancesReturned[address] > lastBlock) {
     // we have this balance already
@@ -713,9 +717,9 @@ async function getBalances(sql, conn, addrs, index) {
       `VALUES(  "${address}", NOW(), NOW(), ${count},  ${assetsHeld}, '${fsnBalance}', '${notation}',  '${all}'  )\n` +
       `ON DUPLICATE KEY UPDATE recEdited = NOW(), assetsHeld = ${assetsHeld}, fsnBalance = '${fsnBalance}', numberOfTransactions = ${count}, san = '${notation}', balanceInfo =  '${all}' ;\n`;
 
-
     balancesReturned[address] = glb_highestBlockOnChain;
-
+    delete addressQueue[address];
+    
     getBalances(sql,conn, addrs, index + 1);
   } catch (err) {
     if ( conn && !conn.__released ) {
